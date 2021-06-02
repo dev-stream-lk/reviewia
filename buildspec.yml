@@ -4,7 +4,8 @@ phases:
   build:
     commands:
       - echo Entered to the build phase
-      - mvn -f /reviewia-backend/pom.xml clean package
+        - cd reviewia-backend
+      - mvn clean package
   post_build:
     commands:
       - echo Build completed successfully
