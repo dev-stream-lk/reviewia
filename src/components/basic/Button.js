@@ -16,7 +16,7 @@ const useStyles = makeStyles( theme => ({
 export default function Button(props) {
 
     const classes = useStyles();
-    const {text="Button", variant="contained", color="primary", size="medium", onClick, ...others} = props;
+    const {text="Button", variant="contained", color="primary", size="medium", ...others} = props;
 
     return (
         <MuiButton
