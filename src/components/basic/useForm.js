@@ -1,6 +1,24 @@
 import { makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
 
+
+// USE THIS THEMPLATE FOR VALIDATION
+// const validate = (fieldValues= values) => {
+//     let temp = {}
+
+//     if('name' in fieldValues)
+//         temp.name = fieldValues.name ? "" : "This field is required";
+//     if('cource' in fieldValues)
+//         temp.cource = fieldValues.cource ? "" : "This field is required";
+
+//     setErrors({
+//         ...errors,
+//         ...temp
+//     })
+
+//     return Object.values(temp).every(x=> x=="");
+// }
+
 const useStyles = makeStyles( theme => ({
     root:{
         padding: theme.spacing(5),
