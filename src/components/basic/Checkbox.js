@@ -15,10 +15,10 @@ const convertToDefaultEventPara = (name, value) => ({
 export default function Checkbox(props) {
 
     const classes = useStyles();
-    const {name, label,value, onChange, ...others} = props;
+    const {name, label,value, onChange, className=null, ...others} = props;
 
     return (
-        <FormControl>
+        <FormControl className={className}>
             <FormControlLabel 
                 control={
                     <MuiCheckbox name={name} checked={value} onChange={e => onChange(convertToDefaultEventPara(name,e.target.checked))} {...others}/>
