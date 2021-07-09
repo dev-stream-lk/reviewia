@@ -1,9 +1,13 @@
-import { Grid, ListItemText, makeStyles, Typography, List, Link, ListItem } from '@material-ui/core';
+import { Grid, ListItemText, makeStyles, Typography, List, Link, ListItem, CardActions, CardHeader, CardMedia, CardContent, Box } from '@material-ui/core';
 import React from 'react';
 import Controls from '../components/Controls';
 import Header from '../components/Header';
 import HeadImage from '../static/img/homepage_head.svg';
 import SearchIcon from '@material-ui/icons/Search';
+import Footer from '../components/Footer';
+import Phone from '../static/img/j7.jpg';
+import Rating from '@material-ui/lab/Rating';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 
 const useStyles = makeStyles( theme => ({
     headSection:{
@@ -43,11 +47,83 @@ const useStyles = makeStyles( theme => ({
             width:"70%"
         }
     },
+    trendingSection:{
+        marginBottom: 50
+    },
     list:{
         textAlign:"left"
+    },
+
+    PopularCategoryLink:{
+        "&.MuiLink-button":{
+            textAlign:"left",
+            paddingLeft: theme.spacing(2)
+        },
+    },
+    mostViewedCard:{
+        
+    },
+    boxClassName:{
+        width:"100%",
+        margin:0,
+    },
+    divClassName:{
+        padding: theme.spacing(1)
     }
 }))
 
+const MostViewdCard = (props) => {
+
+    let {value=4.75} = props;
+
+    return (
+        <Controls.Card >
+            <CardHeader
+                title="Samsung J7 nxt"
+                subheader="34 Aug, 2021"
+            >
+            </CardHeader>
+            <CardMedia title="Samsung Galaxy j7 Nxt">
+                <img src={Phone} />
+            </CardMedia>
+            <CardContent>
+                <Rating
+                    name="phone"
+                    value={value}
+                    precision={0.25}
+                    getLabelText={(val) => `${val} Heart${val !== 1 ? 's' : ''}`}
+                    readOnly
+                />
+                <Box>{value}</Box>
+            </CardContent>
+            <CardActions>
+
+            </CardActions>
+        </Controls.Card>
+    )
+}
+
+
+const PopularcategoryItem = (props) => {
+
+    const classes = useStyles();
+    const {href="", primary, ...others} = props;
+
+    return (
+        <Controls.Paper boxClassName={classes.boxClassName} divClassName={classes.divClassName}>
+            <Link href={href} className={classes.PopularCategoryLink}  {...others} component="button" underline="none" style={{width:"100%"}}>
+                <ListItemText
+                    primary={primary}
+                    secondary="34553 posts"
+                    secondaryTypographyProps = {{
+                        style:{marginLeft:30}
+                    }}
+                />
+                <ArrowForwardIcon style={{position:"absolute",top:10, right:10}} />
+            </Link>
+        </Controls.Paper>   
+    )
+}
 
 export default function HomePage() {
 
@@ -76,7 +152,7 @@ export default function HomePage() {
                         <Controls.Input
                             endAdornment={<SearchIcon/>}
                             fullWidth={true}
-                            size="large"
+                            size="medium"
                             className={classes.headSearchInput}
                             placeholder="What are you looking for..."
                         >
@@ -88,37 +164,21 @@ export default function HomePage() {
             {/* End Head section */}
 
             {/* Start Trending section */}
-            <Grid container>
+            <Grid container className={classes.trendingSection}>
                 {/* Start Popular categories */}
                 <Grid item xs={12} md={4}>
                     <Controls.Paper>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="h4" component="div">
                             Popular Categories
                         </Typography>
 
                         <List className={classes.list}>
-                            <ListItem>
-                                <Link href="/df" to="/dfdf" component="button" underline="none">
-                                    <ListItemText primary="Electronics"></ListItemText>
-                                </Link>
-                            </ListItem>
-                            <ListItem>
-                                <Link href="/df" to="/dfdf" component="button" underline="none">
-                                    <ListItemText primary="Vehicles"></ListItemText>
-                                </Link>
-                            </ListItem>
-                            <ListItem>
-                                <Link href="/df" to="/dfdf" component="button" underline="none">
-                                    <ListItemText primary="category-01"></ListItemText>
-                                </Link>
-                            </ListItem>
-                            <ListItem>
-                                <Link href="/df" to="/dfdf" component="button" underline="none">
-                                    <ListItemText primary="category-01"></ListItemText>
-                                </Link>
-                            </ListItem>
+                                { ["Electronics","vehicle","category-01","category-02","category-03","category-04"].map( (item,index) => (
+                                    <ListItem key={index}>
+                                        <PopularcategoryItem href={index} primary={item} />      
+                                    </ListItem>
+                                ))}
                         </List>
-
                     </Controls.Paper>
                 </Grid>
                 {/* End Popular categories */}
@@ -126,15 +186,33 @@ export default function HomePage() {
                 {/* Start Most view  */}
                 <Grid item xs={12} md={8}>
                     <Controls.Paper>
-                        <Typography variant="h6" component="div">
-                            Popular Categories
-                        </Typography>
+                        <Grid container spacing={2}>
+                            <Grid container justify="center">
+                                <Typography variant="h4" component="div">
+                                    Most Viewed
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} sm={4} lg={3}>
+                                <MostViewdCard/>                            
+                            </Grid>
+                            <Grid item xs={6} sm={4} lg={3}>
+                                <MostViewdCard/>                            
+                            </Grid>
+                            <Grid item xs={6} sm={4} lg={3}>
+                                <MostViewdCard/>                            
+                            </Grid>
+                            <Grid item xs={6} sm={4} lg={3}>
+                                <MostViewdCard/>                            
+                            </Grid>
+                        </Grid>
                     </Controls.Paper>
                 </Grid>
                 {/* End Most view  */}
             </Grid>
 
             {/* End Trending section */}
+
+            <Footer></Footer>
         </div>
     )
 }
