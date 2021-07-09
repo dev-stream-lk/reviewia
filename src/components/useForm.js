@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 
 //     if('name' in fieldValues)
 //         temp.name = fieldValues.name ? "" : "This field is required";
-//     if('cource' in fieldValues)
+//     if('course' in fieldValues)
 //         temp.cource = fieldValues.cource ? "" : "This field is required";
 
 //     setErrors({
@@ -29,7 +29,7 @@ const useStyles = makeStyles( theme => ({
     }
 }))
 
-export function useForm(initialValues,validateOnChange, validate) {
+export function useForm(initialValues,validateOnChange=false, validate = null) {
 
     const [values, setValues] = useState(initialValues);
     const [errors, setErrors] = useState({});

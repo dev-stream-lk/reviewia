@@ -3,6 +3,7 @@ import React from 'react';
 
 import Header from '../components/Header';
 import Login from './Login';
+import HomePage from './HomePage';
 
 export default function UserForm() {
 
@@ -10,7 +11,8 @@ export default function UserForm() {
     return (
         <Grid container>
                 {/* <Header></Header> */}
-                <Login></Login>
+                {/* <Login></Login> */}
+                <HomePage></HomePage>
         </Grid>
         
     )
