@@ -7,6 +7,7 @@ import DatePicker from './basic/DatePicker';
 import Popup from '../components/basic/Popup';
 import ActionButton from '../components/basic/ActionButton';
 import Paper from '../components/basic/Paper';
+import Card from '../components/basic/Card';
 
 const  Controls = {
     Input,
@@ -17,7 +18,8 @@ const  Controls = {
     Button,
     Popup,
     ActionButton,
-    Paper
+    Paper,
+    Card
 }
 
 export default Controls;
