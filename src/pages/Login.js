@@ -18,9 +18,9 @@ const useStyles = makeStyles( theme => ({
 
     paper: {
         marginTop: theme.spacing(10),
-        borderRadius:"10px",
-        overflow:"hidden",
-        boxShadow:"0px 0px 5px 2px rgba(0,0,0,0.21)",
+        // borderRadius:"10px",
+        // overflow:"hidden",
+        // boxShadow:"0px 0px 5px 2px rgba(0,0,0,0.21)",
     },
 }))
 
@@ -36,7 +36,7 @@ export default function Login() {
             <Grid item xs={5}>
             </Grid>
             <Grid item xs={7} className={classes.wrapper}>
-                <Paper className={classes.paper}>
+                <Controls.Paper className={classes.paper}>
                     <Grid container alignItems="center">
                         <Grid item xs={6} style={selected===0 ? {backgroundColor:"#236CC7"}: {boxShadow:"0px 2px 2px 1px rgba(0,0,0,0.21)",}}>
                             <Controls.ActionButton
@@ -110,7 +110,7 @@ export default function Login() {
                             </Grid>
                         </Grid>
                     </Form>
-                </Paper>
+                </Controls.Paper>
             </Grid>
         </Grid>
     )
