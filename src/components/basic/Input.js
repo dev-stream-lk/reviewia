@@ -24,16 +24,18 @@ export default function Input(props) {
             value={value}
             size={size}
             InputProps={{
-                startAdornment:(
-                    <InputAdornment position="start">
-                        {startAdornment}
-                    </InputAdornment>
-                ),
-                endAdornment:(
-                    <InputAdornment position="end">
-                        {endAdornment}
-                    </InputAdornment>
-                )
+                ...startAdornment?
+                        {startAdornment:(
+                            <InputAdornment position="start">
+                                {startAdornment}
+                            </InputAdornment>
+                        )}:{},
+                ...endAdornment ? 
+                        {endAdornment:(
+                            <InputAdornment position="end">
+                                {endAdornment}
+                            </InputAdornment>
+                        )}:{}
             }}
             onChange={onChange}
             { ...(error && {error:true, helperText:error})}
