@@ -1,69 +1,102 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import ThumbUp from "@material-ui/icons/ThumbUpAltOutlined";
+import ThumbDown from "@material-ui/icons/ThumbDownAltOutlined";
+import { Rating, Skeleton } from "@material-ui/lab";
+import { IconButton } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
+  typography : {
+    textAlign: "start"
+  },
   paper: {
-    padding: theme.spacing(2),
-    margin: 'auto',
-    maxWidth: 'auto',
-    maxHeight: 'auto'
+    height: 250,
+    width: "100%",
+    display: 'flex',
+    flexDirection: "row",
+    alignItems: "center"
   },
   image: {
     width: 128,
     height: 128,
   },
   img: {
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
+    margin: "auto",
+    display: "block",
+    maxWidth: "100%",
+    maxHeight: "100%",
   },
 }));
 
-export default function Review() {
+export default function Review({description}) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <Grid container spacing={2}>
-          <Grid item>
-            <ButtonBase className={classes.image}>
-              <img className={classes.img} alt="complex" src="/static/images/grid/complex.jpg" />
-            </ButtonBase>
-          </Grid>
-          <Grid item xs={12} sm container>
-            <Grid item xs container direction="column" spacing={2}>
-              <Grid item xs>
-                <Typography gutterBottom variant="subtitle1">
-                  Standard license
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  Full resolution 1920x1080 • JPEG
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  ID: 1030114
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography variant="body2" style={{ cursor: 'pointer' }}>
-                  Remove
-                </Typography>
+      <Grid container>
+        <Grid item xs={12}>
+          <Grid container>
+          <Paper className={classes.paper}>
+            <Grid item xs={8}>
+              <Grid container>
+                <Grid item xs={6}>
+                  <Typography variant="h6">Review - 1</Typography>
+                </Grid>
+                <Grid itemxs={6}>
+                  <Rating />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="body1" gutterBottom className={classes.typography}>
+                    {description}
+                  </Typography>
+                </Grid>
               </Grid>
             </Grid>
-            <Grid item>
-              <Typography variant="subtitle1">$19.00</Typography>
+            <Grid item xs={4}>
+            <Grid container style={{justifyContent: "center"}}>
+                <Grid item xs={12} style={{flex: "inherit"}} >
+                  <Skeleton
+                    animation="wave"
+                    variant="circle"
+                    width={40}
+                    height={40}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container justifyContent="center">
+                  <Grid item xs={2}>
+                  <IconButton
+                    color="primary"
+                    aria-label="Like"
+                    component="span"
+                  >
+                    <ThumbUp />
+                  </IconButton>
+                </Grid>
+
+                <Grid item xs={2}>
+                  <IconButton
+                    color="primary"
+                    aria-label="Dislike"
+                    component="span"
+                  >
+                    <ThumbDown />
+                  </IconButton>
+                </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
+          </Paper>
           </Grid>
         </Grid>
-      </Paper>
+      </Grid>
     </div>
   );
 }
