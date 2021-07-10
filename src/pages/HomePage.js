@@ -8,6 +8,8 @@ import Footer from '../components/Footer';
 import Phone from '../static/img/j7.jpg';
 import Rating from '@material-ui/lab/Rating';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import AppleStore from '../static/img/getAppleStore.svg';
+import PlayStore from '../static/img/getPlayStore.png';
 
 const useStyles = makeStyles( theme => ({
     headSection:{
@@ -69,6 +71,34 @@ const useStyles = makeStyles( theme => ({
     },
     divClassName:{
         padding: theme.spacing(1)
+    },
+    getAppImageSection:{
+        [ theme.breakpoints.down("xs")]:{
+            width:"90%",
+            position: "absolute",
+            display: "flex",
+            justifyContent:"center",
+            opacity:0.3,
+            "& img":{
+                height:150,
+                zIndex:-5,
+            }
+        }
+    },
+    getOurAppImages:{
+        marginTop: theme.spacing(1),
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        "& img":{
+            width:150,
+            height: 50,
+            margin:10,
+            zIndex:5,
+        }
+    },
+    getAppPaperBox:{
+        padding: `${theme.spacing(0)}px ${theme.spacing(2)}px ${theme.spacing(2)}px ${theme.spacing(2)}px`
     }
 }))
 
@@ -212,6 +242,28 @@ export default function HomePage() {
 
             {/* End Trending section */}
 
+            {/* Start get our app */}
+            <Controls.Paper boxClassName={classes.getAppPaperBox}>
+                <Grid container style={{padding:10}}>
+                    <Grid item xs={12} sm={8} >
+                        <Typography variant="h4" component="div">
+                            Get Our Android and Iso App
+                        </Typography>
+                        <Typography variant="subtitle1" component="div" style={{marginTop:30}}>
+                            Now Our Mobile app available.
+                        </Typography>
+                        <div className={classes.getOurAppImages}>
+                            <img src={AppleStore}  />
+                            <img src={PlayStore}   />
+                        </div>
+                    </Grid>
+                    <Grid item xs={12} sm={4} className={classes.getAppImageSection}>
+                        <img src={Phone} />
+                    </Grid>
+                </Grid>
+            </Controls.Paper>
+
+            {/* End get our app */}
             <Footer></Footer>
         </div>
     )

@@ -15,7 +15,7 @@ const convertToDefaultEventPara = (name, value) => ({
 export default function Checkbox(props) {
 
     const classes = useStyles();
-    const {name, label,value, onChange, className=null, ...others} = props;
+    const {name, label,value, onChange=(t) => {return}, className=null, ...others} = props;
 
     return (
         <FormControl className={className}>
