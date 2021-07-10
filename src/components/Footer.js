@@ -11,6 +11,7 @@ const useStyles = makeStyles( theme => ({
         backgroundColor: theme.palette.primary.main,
         color: "white",
         minHeight: 80,
+        zIndex: theme.zIndex.drawer+1
     },
     footerContactDetails:{
         [theme.breakpoints.down("sm")]:{
@@ -58,7 +59,7 @@ export default function Footer() {
     const classes = useStyles();
 
     return (
-        <Grid container alignItems="center"  className={classes.footer}>
+        <Grid container alignItems="center" id="footer"  className={classes.footer}>
             <Grid item xs={12} md={4} className={classes.footerItemSection}>
                 <p>Copyrights all reserved by Reviewia</p>
             </Grid>

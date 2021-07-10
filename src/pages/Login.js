@@ -15,7 +15,10 @@ import {validateUserName, validatePassword, validateEmail} from '../components/V
 const useStyles = makeStyles( theme => ({
 
     wrapper:{
-        padding: theme.spacing(5)
+        padding: theme.spacing(0),
+        [ theme.breakpoints.up("md")]:{
+            padding: theme.spacing(5)
+        }
     },
 
     paper: {
@@ -262,9 +265,10 @@ export default function Login() {
 
     return (
         <Grid container>
-            <Grid item xs={5}>
+            <Grid item xs={1} sm></Grid>
+            <Grid item xs={0} md={5}>
             </Grid>
-            <Grid item xs={7} className={classes.wrapper}>
+            <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
                 <Controls.Paper className={classes.paper} divClassName={classes.paperDiv}>
                     <Grid container alignItems="center">
                         <Grid item xs={6} style={selected===0 ? {backgroundColor:"#236CC7"}: {boxShadow:"0px 2px 2px 1px rgba(0,0,0,0.21)",}}>
@@ -310,6 +314,7 @@ export default function Login() {
                     </Grid>
                 </Controls.Paper>
             </Grid>
+            <Grid item xs={1} sm></Grid>
         </Grid>
     )
 }

@@ -27,8 +27,12 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 const useStyles = makeStyles((theme) => ({
 
+  appBar:{
+    zIndex: theme.zIndex.drawer + 1,
+  },
+
   getHeaderPadding:{
-    minHeight: theme.mixins.toolbar.minHeight
+    padding:theme.mixins.toolbar.minHeight/2
   },
 
   getPadding: {
@@ -154,7 +158,7 @@ export default function Header() {
   return (
     <>
       <div className={classes.getHeaderPadding}></div>
-      <AppBar>
+      <AppBar className={classes.appBar} id="header">
         <Toolbar>
           <div style={{ width: 50, height: 50, backgroundColor: "grey" }}></div>
           <div className={classes.getPadding}></div>
