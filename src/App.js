@@ -1,4 +1,4 @@
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import './App.css';
 import UserForm from './pages/UserForm';
 
@@ -15,6 +15,7 @@ const theme = createMuiTheme({
 function App() {
     return (
         <ThemeProvider theme={theme}>
+            <CssBaseline />
             <div className="App">
                 <UserForm/>
             </div>
