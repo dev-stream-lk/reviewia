@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   IconButton,
@@ -81,6 +81,12 @@ const useStyles = makeStyles((theme) => ({
             paddingTop:0,
             paddingBottom:0
         }
+    },
+    isMobileIcon:{
+      padding:20,
+      [ theme.breakpoints.up("md")]:{
+        display:"none"
+      }
     }
 }));
 
@@ -117,15 +123,18 @@ const GenerateList = (props) => {
   );
 };
 
-export default function Header() {
+export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("xm"));
+  const {isMobile, handleIsMobile} = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
+
+  useEffect(() => {
+  }, [handleIsMobile])
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -160,77 +169,58 @@ export default function Header() {
       <div className={classes.getHeaderPadding}></div>
       <AppBar className={classes.appBar} id="header">
         <Toolbar>
+        <div className={classes.isMobileIcon}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={() => handleIsMobile(true)}
+              size="small"
+            >
+              <MenuIcon />
+            </IconButton>
+          </div>
           <div style={{ width: 50, height: 50, backgroundColor: "grey" }}></div>
           <div className={classes.getPadding}></div>
-          {isMobile ? (
-            <>
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleMenu}
-                size="small"
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-              autoFocus="false"
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 100,
-                  horizontal: -100,
-                }}
-                keepMounted
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-              </Menu>
-            </>
-          ) : (
-            <>
-              <div className={classes.navbar}>
-                <Controls.ActionButton textColor="white">
-                  Home
-                </Controls.ActionButton>
-                <Controls.ActionButton textColor="white" onClick={handleCategory}>
-                  Reviews <ArrowForwardIosIcon style={{fontSize:15, marginLeft:10, transition:"0.5s", ...openCategoty? {transform:"rotateZ(90deg)"}:{}}} />
-                </Controls.ActionButton>
-                <Menu
-                  id="categoryMenu"
-                  className={classes.categoryMenu}
-                  anchorEl={categoryAnchorEl}
-                  open={openCategoty}
-                  onClick={handleCategoryClose}
-                >
-                  <Grid container>
-                    <Grid item xs={6} style={{ borderRight: "2px solid gray"}}>
-                      <Typography align="center" variant="h6" component="div">
-                        Product
-                      </Typography>
-                      <GenerateList list={[1, 2, 3,4,5,6,7,8,9,10,11,12,13]}  />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography align="center" variant="h6" component="div">
-                        Services
-                      </Typography>
-                      <GenerateList list={[1, 2, 3]} />
-                    </Grid>
-                  </Grid>
-                  <Grid container justify="center" className={classes.closeIcon}>
-                      <IconButton onClick={ () => setCategoryAnchorEl(null)}>
-                          <HighlightOffIcon fontSize="large" color="secondary" />
-                      </IconButton>
-                  </Grid>
-                </Menu>
-              </div>
-              <IconButton color="inherit">
-                <AccountCircle />
-              </IconButton>
-            </>
-          )}
+          
+          <div className={classes.navbar}>
+            <Controls.ActionButton textColor="white">
+              Home
+            </Controls.ActionButton>
+            <Controls.ActionButton textColor="white" onClick={handleCategory}>
+              Reviews <ArrowForwardIosIcon style={{fontSize:15, marginLeft:10, transition:"0.5s", ...openCategoty? {transform:"rotateZ(90deg)"}:{}}} />
+            </Controls.ActionButton>
+            <Menu
+              id="categoryMenu"
+              className={classes.categoryMenu}
+              anchorEl={categoryAnchorEl}
+              open={openCategoty}
+              onClick={handleCategoryClose}
+            >
+              <Grid container>
+                <Grid item xs={6} style={{ borderRight: "2px solid gray"}}>
+                  <Typography align="center" variant="h6" component="div">
+                    Product
+                  </Typography>
+                  <GenerateList list={[1, 2, 3,4,5,6,7,8,9,10,11,12,13]}  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography align="center" variant="h6" component="div">
+                    Services
+                  </Typography>
+                  <GenerateList list={[1, 2, 3]} />
+                </Grid>
+              </Grid>
+              <Grid container justify="center" className={classes.closeIcon}>
+                  <IconButton onClick={ () => setCategoryAnchorEl(null)}>
+                      <HighlightOffIcon fontSize="large" color="secondary" />
+                  </IconButton>
+              </Grid>
+            </Menu>
+          </div>
+          <IconButton color="inherit">
+            <AccountCircle />
+          </IconButton>
         </Toolbar>
       </AppBar>
     </>
