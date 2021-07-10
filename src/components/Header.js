@@ -169,17 +169,20 @@ export default function Header(props) {
       <div className={classes.getHeaderPadding}></div>
       <AppBar className={classes.appBar} id="header">
         <Toolbar>
-        <div className={classes.isMobileIcon}>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={() => handleIsMobile(true)}
-              size="small"
-            >
-              <MenuIcon />
-            </IconButton>
-          </div>
+        {handleIsMobile ? (
+            <div className={classes.isMobileIcon}>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={() => handleIsMobile(true)}
+                size="small"
+              >
+                <MenuIcon />
+              </IconButton>
+            </div>
+          ):null
+        }
           <div style={{ width: 50, height: 50, backgroundColor: "grey" }}></div>
           <div className={classes.getPadding}></div>
           

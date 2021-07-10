@@ -4,19 +4,20 @@ import { FormHelperText } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     formControl:{
-        minWidth:200
+        minWidth:200,
+        padding:5
     }
 }) )
 
 export default function Select(props) {
 
     const classes = useStyles();
-    const {name, label, value, onChange, options,error=null, ...others} = props;
+    const {name, label, value, onChange,size="small", className, options,error=null, ...others} = props;
 
 
     return (
         <FormControl
-            variant="outlined" className={classes.formControl}
+            variant="outlined" size={size} className={`${classes.formControl} ${className}`}
             {...(error && {error:true})}
             >
                 <InputLabel>{label}</InputLabel>
