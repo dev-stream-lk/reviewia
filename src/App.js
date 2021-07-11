@@ -18,7 +18,7 @@ function App() {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <div className="App">
-                <AboutUs/>
+                <UserForm />
             </div>
         </ThemeProvider>
     );

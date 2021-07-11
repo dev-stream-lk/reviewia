@@ -8,6 +8,8 @@ import Controls from '../components/Controls';
 import ProductList from './ProductList';
 import ProductView from './ProductView';
 import AddProduct from './AddProduct';
+import AboutUs from './AboutUs';
+import Compare from './Compare';
 
 export default function UserForm() {
 
@@ -24,7 +26,9 @@ export default function UserForm() {
                 {/* <HomePage></HomePage> */}
                 {/* <ProductList isMobile={isMobile} handleIsMobile={handleIsMobile} ></ProductList> */}
                 {/* <ProductView/> */}
-                <AddProduct/>
+                {/* <AddProduct/> */}
+                <AboutUs/>
+                {/* <Compare/> */}
         </Grid>
         
     )
