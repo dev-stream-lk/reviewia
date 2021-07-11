@@ -10,6 +10,7 @@ import ProductView from './ProductView';
 import AddProduct from './AddProduct';
 import AboutUs from './AboutUs';
 import Compare from './Compare';
+import InstantGroup from './InstantGroup'
 
 export default function UserForm() {
 
@@ -27,8 +28,9 @@ export default function UserForm() {
                 {/* <ProductList isMobile={isMobile} handleIsMobile={handleIsMobile} ></ProductList> */}
                 {/* <ProductView/> */}
                 {/* <AddProduct/> */}
-                <AboutUs/>
+                {/* <AboutUs/> */}
                 {/* <Compare/> */}
+                <InstantGroup/>
         </Grid>
         
     )
