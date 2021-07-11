@@ -29,8 +29,9 @@ export default function ActionButton(props) {
         <Button
             className={`${classes.root} ${classes[color]}`}
             onClick={onClick}
-            style={{color:textColor}}
+            color={color}
             {...others}
+            style={{color:`${textColor}`}}
         >
             {children}
         </Button>
