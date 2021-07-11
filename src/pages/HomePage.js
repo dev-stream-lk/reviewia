@@ -63,7 +63,7 @@ const useStyles = makeStyles( theme => ({
         },
     },
     mostViewedCard:{
-        
+        cursor:"pointer"
     },
     boxClassName:{
         width:"100%",
@@ -104,10 +104,11 @@ const useStyles = makeStyles( theme => ({
 
 const MostViewdCard = (props) => {
 
+    const classes = useStyles();
     let {value=4.75} = props;
 
     return (
-        <Controls.Card >
+        <Controls.Card className={classes.mostViewedCard} >
             <CardHeader
                 title="Samsung J7 nxt"
                 subheader="34 Aug, 2021"

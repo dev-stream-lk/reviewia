@@ -1,10 +1,17 @@
-import { FormControl, FormLabel, Grid, makeStyles, Step, StepLabel, Stepper, Typography } from '@material-ui/core';
+import { Box, CardActions, CardContent, CardHeader, CardMedia, FormControl, FormLabel, Grid, makeStyles, Step, StepLabel, Stepper, Typography } from '@material-ui/core';
 import { CallReceived } from '@material-ui/icons';
 import React, { useState } from 'react';
 import Controls from '../components/Controls';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import {useForm , Form} from '../components/useForm';
+import Phone from '../static/img/j7.jpg';
+import Rating from '@material-ui/lab/Rating';
+import AddIcon from '@material-ui/icons/Add';
+import { Skeleton } from '@material-ui/lab';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import CompleteImage from '../static/img/complete.png';
 
 const useStyles = makeStyles( theme => ({
     addProductWrapper:{
@@ -14,7 +21,10 @@ const useStyles = makeStyles( theme => ({
         width:"80%"
     },
     steps:{
-        padding:40
+        padding:theme.spacing(2),
+        [ theme.breakpoints.up("md")]:{
+            padding: theme.spacing(5)
+        }
     },
     stepForms:{
         width:"100%",
@@ -26,11 +36,65 @@ const useStyles = makeStyles( theme => ({
     input:{
         width: `calc(100% - 150px)`,
         padding:5
+    },
+    similarProductCard:{
+        cursor:"pointer"
+    },
+    step2AddImage:{
+        maxWidth:200,
+        maxHeight:200,
+        width:200,
+        height:200,
+        backgroundColor: "#aaa",
+        display:"flex",
+        justifyContent: "center",
+        alignItems:'center',
+    },
+    step2AddImageButton:{
+        width:"100%",
+        height:"100%"
+    },
+    uploadImagePreveiwImage:{
+        maxHeight:100,
+        maxWidth:100
     }
 }));
 
 function getSteps() {
-    return ['Basic Details', 'Upload Images', 'Preview'];
+    return ['Basic Details', 'Upload Images', 'Preview', "Finished"];
+}
+
+
+const SimillarProductCard = (props) => {
+
+    const classes = useStyles();
+    let {value=4.75} = props;
+
+    return (
+        <Controls.Card className={classes.similarProductCard} >
+            <CardHeader
+                title="Samsung J7 nxt"
+                subheader="34 Aug, 2021"
+            >
+            </CardHeader>
+            <CardMedia title="Samsung Galaxy j7 Nxt">
+                <img src={Phone} />
+            </CardMedia>
+            <CardContent>
+                <Rating
+                    name="phone"
+                    value={value}
+                    precision={0.25}
+                    getLabelText={(val) => `${val} Heart${val !== 1 ? 's' : ''}`}
+                    readOnly
+                />
+                <Box>{value}</Box>
+            </CardContent>
+            <CardActions>
+
+            </CardActions>
+        </Controls.Card>
+    )
 }
 
 const Step1 = (props) => {
@@ -87,14 +151,45 @@ const Step1 = (props) => {
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Controls.Paper>
-                                
+                                <Grid container>
+                                    <Grid container alignItems="center" >
+                                        <FormLabel className={classes.formLabel}>Description</FormLabel>
+                                        <Controls.Input className={classes.input} multiline rows={10} size="small" name="titile" ></Controls.Input>
+                                    </Grid>
+                                    <Grid container justifyContent="flex-end">
+                                        <Controls.Button text="Next" onClick={handleNext}>
+                                            Next <ArrowForwardIosIcon />
+                                        </Controls.Button>
+                                    </Grid>
+                                </Grid>
                             </Controls.Paper>
                         </Grid>
                     </Grid>
                 </Form>
             </Grid>
-            <Controls.Button text="Next" onClick={handleNext}>
-            </Controls.Button>
+            <Grid item xs={12}>
+                <Controls.Paper>
+                    <Grid container spacing={2}>
+                        <Grid container justify="center">
+                            <Typography variant="h4" component="div">
+                                Similar Products/Services
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6} sm={4} lg={3}>
+                            <SimillarProductCard/>                            
+                        </Grid>
+                        <Grid item xs={6} sm={4} lg={3}>
+                            <SimillarProductCard/>                            
+                        </Grid>
+                        <Grid item xs={6} sm={4} lg={3}>
+                            <SimillarProductCard/>                            
+                        </Grid>
+                        <Grid item xs={6} sm={4} lg={3}>
+                            <SimillarProductCard/>                            
+                        </Grid>
+                    </Grid>
+                </Controls.Paper>
+            </Grid>
         </Grid>
         </>
     )
@@ -102,51 +197,264 @@ const Step1 = (props) => {
 
 }
 
-export default function AddProduct() {
+const DummyImage = (props) => {
+
+    return (
+        <>
+        <Controls.Card style={{paddingTop:10}}>
+            <CardMedia>
+                <Grid container justifyContent="center">
+                    <Skeleton width={100} variant="rect" height={100} style={{display:'flex', alignItems:"center", justifyContent:"center"}} >Image</Skeleton>
+                </Grid>
+            </CardMedia>
+            <CardContent>
+                <Grid container justifyContent="center">
+                    <Skeleton style={{marginTop:10}} width={100}  variant="rect" >
+                        Title
+                    </Skeleton>
+                </Grid>
+                <Grid container justifyContent="center">
+                    <p>
+                        <Skeleton width={100} variant="rect" > Desctiption </Skeleton>
+                    </p>
+                </Grid>
+            </CardContent>
+        </Controls.Card>
+        </>
+    )
+}
+
+const ImageCard = (props) => {
 
     const classes = useStyles();
+    const {cardData} = props;
+
+    return (
+        <Controls.Card style={{paddingTop:10}}>
+            <CardMedia>
+                <Grid container justifyContent="center">
+                    <img src={cardData.image} className={classes.uploadImagePreveiwImage} />
+                </Grid>
+            </CardMedia>
+
+            <CardContent>
+                <Typography variant="subtitle1">
+                    {cardData.title}
+                </Typography>
+                <Grid container justifyContent="center">
+                    <p>
+                        {cardData.description}
+                    </p>
+                </Grid>
+            </CardContent>
+        </Controls.Card>
+    )
+}
+
+
+const Step2 = (props) => {
+
+
+    const classes = useStyles();
+    const { handleNext, handleBack} = props;
+
+    return (
+        <>
+            <Grid container className={classes.steps}>
+                <Grid item xs={12}>
+                    <Grid container>
+                        <Grid item xs={12} md={6}>
+                            <Controls.Paper>
+                                <Typography variant="h6" style={{marginBottom:20}}>You should add at least one photo before publishing your post.</Typography>
+                                <Grid container>
+                                    <Grid item xs={12} sm={6}>
+                                        <Grid container justifyContent="center">
+                                            <div className={classes.step2AddImage}>
+                                                <Controls.Button  className={classes.step2AddImageButton} variant="default" text="+ Add Photo" />
+                                            </div>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <Grid container>
+                                            <Controls.Input placeholder="Alternative text" />
+                                        </Grid>
+                                        <Grid container>
+                                            <Controls.Input multiline rows={5} placeholder="Short Description" />
+                                        </Grid>
+                                        <Grid container justifyContent="flex-end" >
+                                            <Controls.Button  >
+                                                <AddIcon/> Add
+                                            </Controls.Button>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Controls.Paper>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Controls.Paper>
+                                <Typography variant="h6">Preview</Typography>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={4}>
+                                            <ImageCard cardData={{image:Phone, title:"Front Side", description:"Grey color front side."}}/>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                            <ImageCard cardData={{image:Phone, title:"Back side", description:"Grey color back side."}}/>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                            <DummyImage />
+                                    </Grid>
+                                </Grid>
+                                <Grid container style={{marginTop:16}} justifyContent="flex-end">
+                                    <Controls.Button style={{marginRight:10}} onClick={handleBack}>
+                                        <ArrowBackIosIcon /> Back
+                                    </Controls.Button>
+                                    <Controls.Button onClick={handleNext}>
+                                        Next <ArrowForwardIosIcon />
+                                    </Controls.Button>
+                                </Grid>
+                            </Controls.Paper>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </>
+    )
+}
+
+const Step3 = (props) => {
+
+    const classes = useStyles();
+    const {handleNext, handleBack} = props;
+
+
+    return (
+        <>
+            <Grid container>
+                <Grid item xs={12}>
+                    <Controls.Paper>
+                        <Typography style={{marginTop:20, marginBottom:20}} variant="h4">Preview Your Post</Typography>
+                        <Grid container>
+                            <Grid item xs={12}>
+                                <Grid container justifyContent="center">
+                                    <Grid item xs={12} sm={10} md={8}>
+                                        <Controls.Paper>
+                                            <Typography variant="h6">Basic Information</Typography>
+                                            <Grid container>
+                                                <Grid container>
+                                                    <Grid item xs={12}>
+                                                        <Grid container>
+                                                            <Grid container alignItems="center" >
+                                                                <FormLabel className={classes.formLabel}>Title</FormLabel>
+                                                                <Controls.Input className={classes.input} size="small" name="titile" ></Controls.Input>
+                                                            </Grid>
+                                                            <Grid container alignItems="center">
+                                                                <FormLabel className={classes.formLabel}>Type</FormLabel>
+                                                                <Controls.Select size="small" inputProps={{size:"small", background:"red"}} className={classes.input} options={[{id:1,title:"Product"}, {id:2,title:"Service"}]} />
+                                                            </Grid>
+
+                                                            <Grid container alignItems="center">
+                                                                <FormLabel className={classes.formLabel}>Category</FormLabel>
+                                                                <Controls.Select className={classes.input} options={[{id:1,title:"Product"}, {id:2,title:"Service"}]} />
+                                                            </Grid>
+                                                            <Grid container alignItems="center">
+                                                                <FormLabel className={classes.formLabel}>Product Year</FormLabel>
+                                                                <Controls.Input className={classes.input} type="date" />
+                                                            </Grid>
+                                                            <Grid container alignItems="center">
+                                                                <FormLabel className={classes.formLabel}>Brand</FormLabel>
+                                                                <Controls.Input className={classes.input} size="small" />
+                                                            </Grid>
+                                                            <Grid container alignItems="center" >
+                                                                <FormLabel className={classes.formLabel}>Description</FormLabel>
+                                                                <Controls.Input className={classes.input} multiline rows={10} size="small" name="titile" ></Controls.Input>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </Controls.Paper>
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={10} md={8}>
+                                        <Controls.Paper>
+                                            <Typography variant="h6">
+                                                Post Images
+                                            </Typography>
+                                                <Controls.Paper>
+                                                    <Grid container spacing={2}>
+                                                        <Grid item xs={4}>
+                                                                <ImageCard cardData={{image:Phone, title:"Front Side", description:"Grey color front side."}}/>
+                                                        </Grid>
+
+                                                        <Grid item xs={4}>
+                                                                <ImageCard cardData={{image:Phone, title:"Back side", description:"Grey color back side."}}/>
+                                                        </Grid>
+
+                                                        <Grid item xs={4}>
+
+                                                            <DummyImage/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Controls.Paper>   
+                                        </Controls.Paper>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={10}>
+                                        <Grid container>
+                                            <Grid xs={12}>
+                                                <Controls.Paper>
+                                                    <Typography variant="h6" >
+                                                        Agreement Section
+                                                    </Typography>
+                                                    <Grid container>
+                                                        <div style={{display:"flex", alignItems:"center", marginTop:10}}>
+                                                            <Controls.Checkbox/> 
+                                                            <Typography align="left" variant="subtitle2" >You will not be allowed to edit or delete a product or service post once it is submitted.</Typography>
+                                                        </div>
+                                                    </Grid>
+                                                    <Grid container>
+                                                        <div style={{display:"flex", alignItems:"center", marginTop:10}}>
+                                                            <Controls.Checkbox/>
+                                                            <Typography align="left" variant="subtitle2">You will agree to follow the <a href="">Terms & Conditions </a> and refrain from adding any sort of inapprpriate, plagarized or invalid details.</Typography>
+                                                        </div>
+                                                    </Grid>
+                                                    <Grid container justifyContent="flex-end" style={{ marginTop:20}}>
+                                                        <Controls.Button style={{marginRight:10}} onClick={handleBack}>
+                                                            <ArrowBackIosIcon /> Back
+                                                        </Controls.Button>
+                                                        <Controls.Button onClick={handleNext}>
+                                                            Finish <ArrowForwardIosIcon />
+                                                        </Controls.Button>
+                                                    </Grid>
+                                                </Controls.Paper>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Controls.Paper>
+                </Grid>
+            </Grid>
+        </>
+    )
+}
+
+export default function AddProduct() {
+    const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
-    const [skipped, setSkipped] = React.useState(new Set());
     const steps = getSteps();
-
-    const isStepSkipped = (step) => {
-        return skipped.has(step);
-    };
-
-    const isStepOptional = (step) => {
-        return step === 1;
-    };
     
-
     const handleNext = () => {
-        let newSkipped = skipped;
-        if (isStepSkipped(activeStep)) {
-          newSkipped = new Set(newSkipped.values());
-          newSkipped.delete(activeStep);
-        }
     
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped(newSkipped);
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
-
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-        // You probably want to guard against something like this,
-        // it should never occur unless someone's actively trying to break something.
-        throw new Error("You can't skip a step that isn't optional.");
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-            const newSkipped = new Set(prevSkipped.values());
-            newSkipped.add(activeStep);
-            return newSkipped;
-        });
-    }
 
 
     return (
@@ -163,16 +471,10 @@ export default function AddProduct() {
                                 const stepProps = {};
                                 const labelProps = {};
 
-                                if (isStepOptional(index)) {
-                                    labelProps.optional = <Typography variant="caption">Optional</Typography>;
-                                }
-                                if (isStepSkipped(index)) {
-                                stepProps.completed = false;
-                                }
 
                                 return (
-                                    <Step key={index} {...stepProps}>
-                                      <StepLabel {...labelProps}>{label}</StepLabel>
+                                    <Step key={index}>
+                                      <StepLabel>{label}</StepLabel>
                                     </Step>
                                   );                                
                             })}
@@ -192,11 +494,7 @@ export default function AddProduct() {
                     { activeStep === 1 ? 
                         (
                             <>
-                                <Typography>Step -02</Typography>
-                                <Controls.Button text="Back" onClick={handleBack}>
-                                </Controls.Button>
-                                <Controls.Button text="Next" onClick={handleNext}>
-                                </Controls.Button>
+                                <Step2 handleNext={handleNext} handleBack={handleBack} />
                             </>
                         ):
                         null
@@ -205,9 +503,26 @@ export default function AddProduct() {
                     { activeStep === 2 ? 
                         (
                             <>
-                                <Typography>Step -03</Typography>
-                                <Controls.Button text="Finish" onClick={handleNext}>
-                                </Controls.Button>
+                                <Step3 handleNext={handleNext} handleBack={handleBack} />
+                            </>
+                        ):
+                        null
+                    }
+
+                    { activeStep === 3 ? 
+                        (
+                            <>
+                                <Grid container justifyContent="center" style={{ marginBottom:30}}>
+                                    <Grid item xs={6}>
+                                        <img src={CompleteImage} style={{width:100, height:100}} />
+                                        <Typography variant="h4">
+                                            Post Published Successfully.
+                                        </Typography>
+                                        <Controls.Button style={{marginTop:20}}>
+                                            View Your Post
+                                        </Controls.Button>
+                                    </Grid>
+                                </Grid>
                             </>
                         ):
                         null

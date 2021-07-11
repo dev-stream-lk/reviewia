@@ -3,6 +3,7 @@ import React from 'react';
 
 const useStyles = makeStyles( theme => ({
     root:{
+        width:"100%",
         padding:5,
         "& .MuiOutlinedInput-notchedOutline":{
             boxShadow:"0px 0px 5px 1px rgba(0,0,0,0.21)",
