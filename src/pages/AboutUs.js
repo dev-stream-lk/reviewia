@@ -36,16 +36,11 @@ const AboutUs = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant="body1" gutterBottom>
-                    body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                    elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                    rerum inventore consectetur, neque doloribus, cupiditate
-                    numquam dignissimos laborum fugiat deleniti? Eum quasi
-                    quidem quibusdam.
-                    body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                    elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                    rerum inventore consectetur, neque doloribus, cupiditate
-                    numquam dignissimos laborum fugiat deleniti? Eum quasi
-                    quidem quibusdam.
+                  Behind every review is an experience that matters.
+                  Read reviews. Write reviews. Share experiences.
+                  Receive the best recommendations.
+                  Get the product or service you desire with feedback you need from people like you.
+                  Choose confidently with Reviewia.
                   </Typography>
                 </Grid>
               </Grid>
@@ -55,7 +50,7 @@ const AboutUs = () => {
       </Grid>
     </Grid>
   </Container>
-      <div style={{position:"fixed",bottom:0, left:0, right:0}}>
+      <div style={{position:"fixed",bottom:0, left:0, right:0, marginBottom:10}}>
         <Footer/>
       </div>
       
