@@ -1,5 +1,6 @@
 import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import './App.css';
+import AboutUs from './pages/AboutUs';
 import UserForm from './pages/UserForm';
 
 const theme = createMuiTheme({
@@ -17,7 +18,7 @@ function App() {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <div className="App">
-                <UserForm/>
+                <AboutUs/>
             </div>
         </ThemeProvider>
     );
