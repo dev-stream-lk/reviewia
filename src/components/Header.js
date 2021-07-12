@@ -24,7 +24,8 @@ import { useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
+import { logout } from "../services/auth";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -127,10 +128,15 @@ const GenerateList = (props) => {
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const { isMobile, handleIsMobile } = props;
+  const { isMobile, handleIsMobile, userData, setUserData } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   let isLogin = false;
+  console.log(userData)
+
+  useEffect( ()=>{
+    setUserData(props.userData);
+  },[props])
 
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
@@ -169,6 +175,10 @@ export default function Header(props) {
     )
       setCategoryAnchorEl(null);
   };
+  const history = useHistory();
+  const handleLogout = () =>{
+    logout(setUserData, history)
+  }
 
   return (
     <>
@@ -236,22 +246,22 @@ export default function Header(props) {
               </Grid>
             </Menu>
           </div>
-          {isLogin ? 
+          {userData.isLoggedIn ? 
             (
-              <IconButton color="inherit">
+              <IconButton color="inherit" onClick={handleLogout } >
                 <AccountCircle />
               </IconButton>
             )
             :
             (
               <div>
-                <Link to={{pathname: "/login", state:{ register:0 }}}>
+                <Link to={{pathname: "/login", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
                   <Controls.Button style={{marginRight:10}}>
                     Login
                   </Controls.Button>
                 </Link>
-                <Link to={{pathname: "/login", state:{ register:1 }}}>
-                    <Controls.Button>
+                <Link to={{pathname: "/login", state:{ register:1 }}} style={{textDecoration:"none"}} underline="none" >
+                    <Controls.Button >
                       SignUp
                     </Controls.Button>
                   </Link>

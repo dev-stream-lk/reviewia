@@ -1,5 +1,5 @@
 import { Grid, ListItemText, makeStyles, Typography, List, Link as MuiLink, ListItem, CardActions, CardHeader, CardMedia, CardContent, Box } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Controls from '../components/Controls';
 import Header from '../components/Header';
 import HeadImage from '../static/img/homepage_head.svg';
@@ -165,13 +165,18 @@ const PopularcategoryItem = (props) => {
     )
 }
 
-export default function HomePage() {
+export default function HomePage(props) {
 
     const classes = useStyles();
+    const {userData, setUserData} = props;
+    console.log(userData)
+    useEffect(() => {
+        
+    }, [userData])
 
     return (
         <div>
-            <Header></Header>
+            <Header userData={userData} setUserData={setUserData}></Header>
             {/* Start Head section */}
             <div>
                 <Grid container className={classes.headSection}>

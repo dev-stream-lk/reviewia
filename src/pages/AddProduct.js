@@ -1,6 +1,6 @@
 import { Box, CardActions, CardContent, CardHeader, CardMedia, FormControl, FormLabel, Grid, makeStyles, Step, StepLabel, Stepper, Typography } from '@material-ui/core';
 import { CallReceived } from '@material-ui/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Controls from '../components/Controls';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -12,6 +12,7 @@ import { Skeleton } from '@material-ui/lab';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import CompleteImage from '../static/img/complete.png';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles( theme => ({
     addProductWrapper:{
@@ -442,10 +443,20 @@ const Step3 = (props) => {
     )
 }
 
-export default function AddProduct() {
+export default function AddProduct(props) {
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const steps = getSteps();
+    const {userData, setUserData} = props;
+    const history = useHistory();
+
+    useEffect( ()=>{
+        if(userData){
+            if(userData.isLoggedIn == false){
+                history.push("/login")
+            }
+        }
+    },[userData])
     
     const handleNext = () => {
     
@@ -459,7 +470,7 @@ export default function AddProduct() {
 
     return (
         <>
-            <Header></Header>
+            <Header userData={userData} setUserData={setUserData} ></Header>
             <Grid container alignItems="flex-start" className={`${classes.addProductWrapper} content`}>
                 <Grid container alignItems="flex-start" justifyContent="center">
                     <Typography variant="h4" component="div">
