@@ -1,5 +1,5 @@
 import { Grid, makeStyles, Paper } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Controls from '../components/Controls';
 import {useForm, Form} from '../components/useForm';
 import EmailIcon from '@material-ui/icons/Email';
@@ -10,8 +10,9 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import PersonIcon from '@material-ui/icons/Person';
-import {validateUserName, validatePassword, validateEmail} from '../components/Validators'
-import { useLocation, useParams } from 'react-router-dom';
+import {validateUserName, validatePassword, validateEmail, validateName} from '../components/Validators'
+import { useHistory, useLocation, useParams } from 'react-router-dom';
+import {login,register} from '../services/auth';
 
 const useStyles = makeStyles( theme => ({
 
@@ -40,13 +41,16 @@ const useStyles = makeStyles( theme => ({
     }
 }))
 
-const SignIN = () => {
+const SignIN = (props) => {
 
     const classes = useStyles();
+    const {userData, setUserData} = props;
     const  [disableSubmit, setDisabledSubmit] = useState(true);
+    const history = useHistory();
+
 
     const initialValues = {
-        username:"",
+        email:"",
         password:"",
         rememberMe:false
     }
@@ -54,8 +58,8 @@ const SignIN = () => {
     const validate = (fieldValues= values) => {
         let temp = {}
         
-        if('username' in fieldValues)
-            temp.username = validateUserName(fieldValues.username);
+        if('email' in fieldValues)
+            temp.email = validateEmail(fieldValues.email);
         if('password' in fieldValues)
             temp.password = validatePassword(fieldValues.password);
     
@@ -73,19 +77,35 @@ const SignIN = () => {
     }
     const { values, setValues, handleInputChange, errors, setErrors } = useForm(initialValues, true, validate);
 
+    const  handleOnSubmit = async (e) => {
+        e.preventDefault();
+
+        const result = await login({
+            email: values.email,
+            password:values.password
+        }, setUserData, history)
+
+        if(result){
+            setUserData( { ...userData,isLoggedIn:true })
+            history.push("/")
+        }
+        console.log(result)
+
+    }
+
 
     return (
-        <Form>
+        <Form onSubmit={handleOnSubmit} >
             <Grid container>
                 <Controls.Input
-                    name="username"
-                    placeholder="Username"
+                    name="email"
+                    placeholder="Email Address"
                     startAdornment={<EmailIcon/>}
                     fullWidth={true}
                     size="medium"
-                    value={values.username}
+                    value={values.email}
                     onChange={handleInputChange}
-                    error={errors.username}
+                    error={errors.email}
                 />
                 <Controls.Input
                     name="password"
@@ -128,13 +148,17 @@ const SignIN = () => {
     )
 }
 
-const SignUp =() => {
+const SignUp =(props) => {
 
     const classes = useStyles();
     const  [disableSubmit, setDisabledSubmit] = useState(true);
+    const {userData, setUserData} = props;
+
+    console.log(userData)
 
     const initialValues = {
-        username:"",
+        firstName:"",
+        lastName:"",
         email:"",
         password:"",
         cpassword:"",
@@ -144,8 +168,10 @@ const SignUp =() => {
     const validate = (fieldValues= values) => {
         let temp = {}
         
-        if('username' in fieldValues)
-            temp.username = validateUserName(fieldValues.username);
+        if('firstName' in fieldValues)
+            temp.firstName = validateName(fieldValues.firstName);
+        if('lastName' in fieldValues)
+            temp.lastName = validateName(fieldValues.lastName);
         if('email' in fieldValues)
             temp.email = validateEmail(fieldValues.email);
         if('password' in fieldValues)
@@ -153,7 +179,7 @@ const SignUp =() => {
         if('cpassword' in fieldValues)
             temp.cpassword = validatePassword(fieldValues.cpassword);
         
-        
+
         setErrors({
             ...errors,
             ...temp
@@ -170,11 +196,26 @@ const SignUp =() => {
 
     const { values, setValues, handleInputChange, errors, setErrors } = useForm(initialValues,true,validate);
 
+    var history = useHistory();
+
     const onSubmit = (e) => {
         e.preventDefault();
 
         if( validate()){
-            console.log("valid")
+            let res = register({
+                firstName: values.firstName,
+                lastName: values.lastName,
+                email:values.email,
+                password: values.password
+            })
+            if(res){
+                history.push({
+                    pathname: "/login",
+                    state:{
+                        register:0
+                    }
+                })
+            }
         }else{
             console.log("invalid")
         }
@@ -184,20 +225,29 @@ const SignUp =() => {
         <Form onSubmit={onSubmit}>
             <Grid container>
                 <Controls.Input
-                    name="username"
-                    placeholder="Username"
+                    name="firstName"
+                    placeholder="First Name"
                     startAdornment={<PersonIcon/>}
                     fullWidth={true}
                     size="medium"
-                    value={values.username}
+                    value={values.firstName}
                     onChange={handleInputChange}
-                    error={errors.username}
+                    error={errors.firstName}
+                />
+                <Controls.Input
+                    name="lastName"
+                    placeholder="Last Name"
+                    startAdornment={<PersonIcon/>}
+                    fullWidth={true}
+                    size="medium"
+                    value={values.lastName}
+                    onChange={handleInputChange}
+                    error={errors.lastName}
                 />
                 <Controls.Input
                     name="email"
                     placeholder="Email"
                     startAdornment={<EmailIcon/>}
-                    endAdornment={<VisibilityOffIcon/>}
                     fullWidth={true}
                     size="medium"
                     value={values.email}
@@ -261,10 +311,23 @@ const SignUp =() => {
 
 export default function Login(props) {
 
+    const history = useHistory()
     const location = useLocation();
-    const {register} = location.state;
-    console.log(register)
-    const [selected, setSelected] = useState(register | 0);
+    const {userData, setUserData} = props;
+    var register = 0;
+    if( location.state){
+        register = location.state.register;
+    }
+    
+    useEffect(() => {
+        if(userData){
+            if(userData.isLoggedIn == true){
+                history.push("/")
+            }
+        }
+    },[userData])
+
+    const [selected, setSelected] = useState(register);
     const classes = useStyles();
 
     return (
@@ -300,11 +363,11 @@ export default function Login(props) {
                     </Grid>
                     { selected===0 ?
                         (
-                            <SignIN/>
+                            <SignIN userData={userData} setUserData={setUserData} />
                         )
                         :
                         (
-                            <SignUp/>
+                            <SignUp userData={userData} setUserData={setUserData} />
                         )
                     }
                    

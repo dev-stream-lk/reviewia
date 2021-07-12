@@ -222,7 +222,7 @@ const ProductCard = (props) => {
 export default function ProductList(props) {
 
     const classes = useStyles();
-    const {isMobile, handleIsMobile} = props;
+    const {isMobile, handleIsMobile, userData, setUserData} = props;
     const [productSearch, setProductSearch] = useState("");
 
     useEffect(() => {
@@ -230,7 +230,7 @@ export default function ProductList(props) {
 
     return (
         <>
-        <Header isMobile={isMobile} handleIsMobile={handleIsMobile}></Header>
+        <Header isMobile={isMobile} handleIsMobile={handleIsMobile} userData={userData} setUserData={setUserData} ></Header>
 
             <Grid container className={`${classes.wrapper} content`}>
                 {/* Start Drawer */}
