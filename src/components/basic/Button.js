@@ -16,7 +16,7 @@ const useStyles = makeStyles( theme => ({
 export default function Button(props) {
 
     const classes = useStyles();
-    const {text="Button", variant="contained", color="primary",className="", size="medium", ...others} = props;
+    const {text="Button", children="", variant="contained", color="primary",className="", size="medium", ...others} = props;
 
     return (
         <MuiButton
@@ -26,7 +26,7 @@ export default function Button(props) {
             {...others}
             className={`${classes.muiButton} ${className}`}
         >
-            {text}
+            {children ? children: text}
         </MuiButton>
     )
 }

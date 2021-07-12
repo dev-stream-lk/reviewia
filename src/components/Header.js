@@ -22,8 +22,9 @@ import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import Controls from "../components/Controls";
 import { useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -96,31 +97,28 @@ const GenerateList = (props) => {
   const { list, ...others } = props;
 
   return (
-    <div className={classes.accordination} {...others}>
-      {list.map((item, i) => (
-        <Accordion key={i}>
-          <AccordionSummary
-            className={classes.accordinationSummary}
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Accordion 1</Typography>
-          </AccordionSummary>
-          <AccordionDetails className={classes.accordinationDetails}>
-            <List dense={true}>
-              {list.map((item, j) => (
-                <ListItem key={j}>
-                  <ListItemText
-                    primary="Single-line item"
-                    secondary="Secondary text"
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+    <div className={classes.accordination}  {...others}>
+        {list.map((item, i) => (
+            <Accordion key={i}>
+                <AccordionSummary
+                 className={classes.accordinationSummary}
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                >
+                <Typography>Accordion 1</Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.accordinationDetails}>
+                    <List dense={true}>
+                        {list.map((item, j) => (
+                            <ListItem key={j} to="/products/1" component={Link} >
+                              <ListItemText primary="Single-line item" secondary="Secondary text" />
+                            </ListItem>
+                        ))}
+                    </List>
+                </AccordionDetails>
+            </Accordion>
+        ))}
     </div>
   );
 };
@@ -131,6 +129,7 @@ export default function Header(props) {
   const { isMobile, handleIsMobile } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  let isLogin = false;
 
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
@@ -192,8 +191,8 @@ export default function Header(props) {
           <div className={classes.getPadding}></div>
 
           <div className={classes.navbar}>
-            <Controls.ActionButton textColor="white">
-              Home
+            <Controls.ActionButton textColor="white" component={Link} to="/">
+               Home
             </Controls.ActionButton>
             <Controls.ActionButton textColor="white" onClick={handleCategory}>
               Reviews{" "}
@@ -229,17 +228,36 @@ export default function Header(props) {
                   <GenerateList list={[1, 2, 3]} />
                 </Grid>
               </Grid>
-              <Grid container justify="center" className={classes.closeIcon}>
-                <IconButton onClick={() => setCategoryAnchorEl(null)}>
-                  <HighlightOffIcon fontSize="large" color="secondary" />
-                </IconButton>
+              <Grid container justifyContent="center" className={classes.closeIcon}>
+                  <IconButton onClick={ () => setCategoryAnchorEl(null)}>
+                      <HighlightOffIcon fontSize="large" color="secondary" />
+                  </IconButton>
               </Grid>
             </Menu>
           </div>
-
-          <IconButton color="inherit">
-            <AccountCircle />
-          </IconButton>
+          {isLogin ? 
+            (
+              <IconButton color="inherit">
+                <AccountCircle />
+              </IconButton>
+            )
+            :
+            (
+              <div>
+                <Link to={{pathname: "/login", state:{ register:0 }}}>
+                  <Controls.Button style={{marginRight:10}}>
+                    Login
+                  </Controls.Button>
+                </Link>
+                <Link to={{pathname: "/login", state:{ register:1 }}}>
+                    <Controls.Button>
+                      SignUp
+                    </Controls.Button>
+                  </Link>
+              </div>
+            )
+          }          
+          
         </Toolbar>
       </AppBar>
     </>

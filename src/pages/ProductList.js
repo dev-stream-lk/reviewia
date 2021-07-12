@@ -11,6 +11,8 @@ import { useForm ,Form } from '../components/useForm';
 import Phone from '../static/img/j7.jpg';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
+import {Link} from 'react-router-dom';
+import AddIcon from '@material-ui/icons/Add';
 
 const drawerWidth = 280;
 
@@ -271,7 +273,7 @@ export default function ProductList(props) {
                 {/* Start ProductList */}
 
                 <div className={classes.productListSection}>
-                    <Grid container justify="center">
+                    <Grid container justifyContent="center">
                         <Controls.Input
                             endAdornment={<SearchIcon/>}
                             className={classes.productListSearch}
@@ -281,11 +283,18 @@ export default function ProductList(props) {
                         >
                         </Controls.Input>
                     </Grid>
+                    <Grid container style={{paddingRight:50}} justifyContent="flex-end">
+                        <Link to={{pathname:"/product/add"}}>
+                            <Controls.Button>
+                                <AddIcon/> Add New
+                            </Controls.Button>
+                        </Link>
+                    </Grid>
                     <Controls.Paper>
                         <Grid container spacing={2}>
                             { [1,2,3,4,5].map( (i,index) => (
                                 <Grid key={index} item xs={12} md={6}>
-                                    <ProductCard/>
+                                    <Link style={{textDecoration:"none"}} to={`/product/view/${i}`}><ProductCard/></Link>
                                 </Grid>
                             ) ) }
                         </Grid>

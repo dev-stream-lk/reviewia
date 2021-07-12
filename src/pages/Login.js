@@ -11,6 +11,7 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import PersonIcon from '@material-ui/icons/Person';
 import {validateUserName, validatePassword, validateEmail} from '../components/Validators'
+import { useLocation, useParams } from 'react-router-dom';
 
 const useStyles = makeStyles( theme => ({
 
@@ -114,12 +115,12 @@ const SignIN = () => {
                         Forgot Password?
                     </p>
                 </Grid>
-                <Grid container justify="center" style={{marginTop:20}}>
+                <Grid container justifyContent="center" style={{marginTop:20}}>
                     <Controls.Button
                         type="submit"
                         text="Sign In"
                         className={disableSubmit ? classes.disabledSubmit: classes.activeSubmit}
-                        {...disableSubmit ? {disabled:"disabled"}: {}}
+                        {...disableSubmit ? {disabled:true}: {}}
                     />
                 </Grid>
             </Grid>
@@ -243,12 +244,12 @@ const SignUp =() => {
                         Forgot Password?
                     </p>
                 </Grid>
-                <Grid container justify="center" style={{marginTop:20}}>
+                <Grid container justifyContent="center" style={{marginTop:20}}>
                     <Controls.Button
                         type="submit"
                         text="Sign Up"
                         className={disableSubmit ? classes.disabledSubmit: classes.activeSubmit}
-                        {...disableSubmit ? {disabled:"disabled"}: {}}
+                        {...disableSubmit ? {disabled:true}: {}}
                     />
                 </Grid>
             </Grid>
@@ -258,15 +259,18 @@ const SignUp =() => {
 }
 
 
-export default function Login() {
+export default function Login(props) {
 
-    const [selected, setSelected] = useState(0);
+    const location = useLocation();
+    const {register} = location.state;
+    console.log(register)
+    const [selected, setSelected] = useState(register | 0);
     const classes = useStyles();
 
     return (
         <Grid container>
             <Grid item xs={1} sm></Grid>
-            <Grid item xs={0} md={5}>
+            <Grid item xs={false} md={5}>
             </Grid>
             <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
                 <Controls.Paper className={classes.paper} divClassName={classes.paperDiv}>
@@ -304,10 +308,10 @@ export default function Login() {
                         )
                     }
                    
-                    <Grid container justify="center" style={{ marginTop:"10px"}}>
+                    <Grid container justifyContent="center" style={{ marginTop:"10px"}}>
                         <span>------- Or register with --------</span>
                     </Grid>
-                    <Grid container justify="center" style={{ marginTop:"10px"}}>
+                    <Grid container justifyContent="center" style={{ marginTop:"10px"}}>
                         <FacebookIcon/>
                         <TwitterIcon/>
                         <LinkedInIcon/>
