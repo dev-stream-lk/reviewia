@@ -3,13 +3,7 @@ import React, { useState } from "react";
 import Controls from "../components/Controls";
 import { useForm, Form } from "../components/useForm";
 import EmailIcon from "@material-ui/icons/Email";
-import LockIcon from "@material-ui/icons/Lock";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import { Typography } from "@material-ui/core";
-import FacebookIcon from "@material-ui/icons/Facebook";
-import TwitterIcon from "@material-ui/icons/Twitter";
-import LinkedInIcon from "@material-ui/icons/LinkedIn";
-import PersonIcon from "@material-ui/icons/Person";
 import {
   validateUserName,
   validatePassword,
@@ -46,39 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SignIN = () => {
   const classes = useStyles();
-  const [disableSubmit, setDisabledSubmit] = useState(true);
 
-  const initialValues = {
-    username: "",
-    password: "",
-    rememberMe: false,
-  };
-
-  const validate = (fieldValues = values) => {
-    let temp = {};
-
-    if ("username" in fieldValues)
-      temp.username = validateUserName(fieldValues.username);
-    if ("password" in fieldValues)
-      temp.password = validatePassword(fieldValues.password);
-
-    setErrors({
-      ...errors,
-      ...temp,
-    });
-    let isValid = Object.values(temp).every((x) => x == "");
-    if (isValid) {
-      setDisabledSubmit(false);
-    } else {
-      setDisabledSubmit(true);
-    }
-    return isValid;
-  };
-  const { values, setValues, handleInputChange, errors, setErrors } = useForm(
-    initialValues,
-    true,
-    validate
-  );
 
   return (
     <Form>
@@ -89,170 +51,14 @@ const SignIN = () => {
           startAdornment={<EmailIcon />}
           fullWidth={true}
           size="medium"
-          value={values.username}
-          onChange={handleInputChange}
-          error={errors.username}
-        />
-        <Controls.Input
-          name="password"
-          placeholder="Password"
-          startAdornment={<LockIcon />}
-          endAdornment={<VisibilityOffIcon />}
-          fullWidth={true}
-          size="medium"
-          type="password"
-          onChange={handleInputChange}
-          value={values.password}
-          error={errors.password}
         />
       </Grid>
       <Grid container alignItems="center">
-        <Grid item xs={12} sm={6}>
-          <Controls.Checkbox
-            name="rememberMe"
-            label="Remember Me"
-            color="primary"
-            value={values.rememberMe}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <p>Forgot Password?</p>
-        </Grid>
         <Grid container justify="center" style={{ marginTop: 20 }}>
           <Controls.Button
             type="submit"
-            text="Sign In"
-            className={
-              disableSubmit ? classes.disabledSubmit : classes.activeSubmit
-            }
-            {...(disableSubmit ? { disabled: "disabled" } : {})}
-          />
-        </Grid>
-      </Grid>
-    </Form>
-  );
-};
-
-const SignUp = () => {
-  const classes = useStyles();
-  const [disableSubmit, setDisabledSubmit] = useState(true);
-
-  const initialValues = {
-    username: "",
-    email: "",
-    password: "",
-    cpassword: "",
-    rememberMe: false,
-  };
-
-  const validate = (fieldValues = values) => {
-    let temp = {};
-
-    if ("username" in fieldValues)
-      temp.username = validateUserName(fieldValues.username);
-    if ("email" in fieldValues) temp.email = validateEmail(fieldValues.email);
-    if ("password" in fieldValues)
-      temp.password = validatePassword(fieldValues.password);
-    if ("cpassword" in fieldValues)
-      temp.cpassword = validatePassword(fieldValues.cpassword);
-
-    setErrors({
-      ...errors,
-      ...temp,
-    });
-    let isValid = Object.values(temp).every((x) => x == "");
-    if (isValid) {
-      setDisabledSubmit(false);
-    } else {
-      setDisabledSubmit(true);
-    }
-    return isValid;
-  };
-
-  const { values, setValues, handleInputChange, errors, setErrors } = useForm(
-    initialValues,
-    true,
-    validate
-  );
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-
-    if (validate()) {
-      console.log("valid");
-    } else {
-      console.log("invalid");
-    }
-  };
-
-  return (
-    <Form onSubmit={onSubmit}>
-      <Grid container>
-        <Controls.Input
-          name="username"
-          placeholder="Username"
-          startAdornment={<PersonIcon />}
-          fullWidth={true}
-          size="medium"
-          value={values.username}
-          onChange={handleInputChange}
-          error={errors.username}
-        />
-        <Controls.Input
-          name="email"
-          placeholder="Email"
-          startAdornment={<EmailIcon />}
-          endAdornment={<VisibilityOffIcon />}
-          fullWidth={true}
-          size="medium"
-          value={values.email}
-          onChange={handleInputChange}
-          error={errors.email}
-        />
-        <Controls.Input
-          name="password"
-          placeholder="Password"
-          startAdornment={<LockIcon />}
-          endAdornment={<VisibilityOffIcon />}
-          fullWidth={true}
-          size="medium"
-          type="password"
-          value={values.password}
-          onChange={handleInputChange}
-          error={errors.password}
-        />
-        <Controls.Input
-          name="cpassword"
-          placeholder="Confirm Password"
-          startAdornment={<LockIcon />}
-          endAdornment={<VisibilityOffIcon />}
-          fullWidth={true}
-          size="medium"
-          type="password"
-          value={values.cpassword}
-          onChange={handleInputChange}
-          error={errors.cpassword}
-        />
-      </Grid>
-      <Grid container alignItems="center">
-        <Grid item xs={12} sm={6}>
-          <Controls.Checkbox
-            name="rememberMe"
-            label="Remember Me"
-            color="primary"
-            value={values.rememberMe}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid container justify="center" style={{ marginTop: 20 }}>
-          <Controls.Button
-            type="submit"
-            text="Sign Up"
-            className={
-              disableSubmit ? classes.disabledSubmit : classes.activeSubmit
-            }
-            {...(disableSubmit ? { disabled: "disabled" } : {})}
+            text="SEND RESET LINK"
+            style={{ backgroundColor: "#236CC7" }}
           />
         </Grid>
       </Grid>
@@ -277,12 +83,23 @@ export default function PasswordRecovery() {
             <Grid
               item
               xs={12}
-              style={
-                { backgroundColor: "#236CC7" },
-                { boxShadow: "0px 2px 2px 1px rgba(0,0,0,0.21)" }
-              }
+              style={{
+                backgroundColor: "#236CC7",
+                boxShadow: "0px 2px 2px 1px rgba(0,0,0,0.21)",
+                minHeight: 50,
+              }}
             >
-              Forgot Password?
+              <Typography
+                variant="h6"
+                align="center"
+                style={{
+                  marginTop: "10px",
+                  fontWeight: 600,
+                  color:"white"
+                }}
+              >
+                Forgot Password?
+              </Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography
@@ -301,15 +118,10 @@ export default function PasswordRecovery() {
               </Typography>
             </Grid>
           </Grid>
-          {selected === 0 ? <SignIN /> : <SignUp />}
+          <SignIN />
 
           <Grid container justify="center" style={{ marginTop: "10px" }}>
-            <span>------- Or register with --------</span>
-          </Grid>
-          <Grid container justify="center" style={{ marginTop: "10px" }}>
-            <FacebookIcon />
-            <TwitterIcon />
-            <LinkedInIcon />
+            <span>Back to Sign In</span>
           </Grid>
         </Controls.Paper>
       </Grid>
