@@ -14,26 +14,25 @@ import {
   ListItemText,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
+  Link,
 } from "@material-ui/core";
-import { AccountCircle} from "@material-ui/icons";
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { AccountCircle } from "@material-ui/icons";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import Controls from "../components/Controls";
 import { useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import {Link} from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
-
-  appBar:{
+  appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
 
-  getHeaderPadding:{
-    padding:theme.mixins.toolbar.minHeight/2
+  getHeaderPadding: {
+    padding: theme.mixins.toolbar.minHeight / 2,
   },
 
   getPadding: {
@@ -43,57 +42,57 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(10),
   },
   categoryMenu: {
-    morgin:0,
-    padding:0,
-    width:"100% !important",
-    "& .MuiPopover-paper":{
-        top: `${theme.mixins.toolbar.minHeight+8}px !important`,
-        width: "100% !important",
-        maxHeight: "85vh"
+    morgin: 0,
+    padding: 0,
+    width: "100% !important",
+    "& .MuiPopover-paper": {
+      top: `${theme.mixins.toolbar.minHeight + 8}px !important`,
+      width: "100% !important",
+      maxHeight: "85vh",
     },
     "& .MuiPaper-rounded": {
       borderRadius: 0,
     },
   },
-  closeIcon:{
-      paddingTop: theme.spacing(5)
+  closeIcon: {
+    paddingTop: theme.spacing(5),
   },
-  accordination:{
-    padding: "10px !important" ,
-    "& .MuiAccordion-root:before":{
-        backgroundColor:"white"
+  accordination: {
+    padding: "10px !important",
+    "& .MuiAccordion-root:before": {
+      backgroundColor: "white",
     },
+  },
+  accordinationSummary: {
+    "& .MuiAccordionSummary-content, &.MuiAccordionSummary-root, & .MuiButtonBase-root":
+      {
+        marginTop: "0px !important",
+        marginBottom: "0px !important",
+        paddingTop: "0px !important",
+        paddingBottom: "0px !important",
+        minHeight: "30px",
+        border: 0,
+      },
+  },
+  accordinationDetails: {
+    "&.MuiAccordionDetails-root": {
+      paddingTop: "0px !important",
     },
-    accordinationSummary:{
-        "& .MuiAccordionSummary-content, &.MuiAccordionSummary-root, & .MuiButtonBase-root":{
-            marginTop:"0px !important",
-            marginBottom:"0px !important",
-            paddingTop:"0px !important",
-            paddingBottom:"0px !important",
-            minHeight:"30px",
-            border:0
-        }
+    "& .MuiListItem-dense": {
+      paddingTop: 0,
+      paddingBottom: 0,
     },
-    accordinationDetails:{
-        "&.MuiAccordionDetails-root":{
-            paddingTop:"0px !important"
-        },
-        "& .MuiListItem-dense":{
-            paddingTop:0,
-            paddingBottom:0
-        }
+  },
+  isMobileIcon: {
+    padding: 20,
+    [theme.breakpoints.up("md")]: {
+      display: "none",
     },
-    isMobileIcon:{
-      padding:20,
-      [ theme.breakpoints.up("md")]:{
-        display:"none"
-      }
-    }
+  },
 }));
 
 const GenerateList = (props) => {
-
-    const classes = useStyles()
+  const classes = useStyles();
 
   const { list, ...others } = props;
 
@@ -127,7 +126,7 @@ const GenerateList = (props) => {
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const {isMobile, handleIsMobile} = props;
+  const { isMobile, handleIsMobile } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   let isLogin = false;
@@ -135,8 +134,7 @@ export default function Header(props) {
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
 
-  useEffect(() => {
-  }, [handleIsMobile])
+  useEffect(() => {}, [handleIsMobile]);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -153,17 +151,22 @@ export default function Header(props) {
   function isDescendant(parent, child) {
     var node = child.parentNode;
     while (node != null) {
-        if (node === parent) {
-            return true;
-        }
-        node = node.parentNode;
+      if (node === parent) {
+        return true;
+      }
+      node = node.parentNode;
     }
     return false;
-}
+  }
 
   const handleCategoryClose = (e) => {
-    if( !isDescendant(document.querySelector("#categoryMenu .MuiPaper-root"), e.target))   
-        setCategoryAnchorEl(null);
+    if (
+      !isDescendant(
+        document.querySelector("#categoryMenu .MuiPaper-root"),
+        e.target
+      )
+    )
+      setCategoryAnchorEl(null);
   };
 
   return (
@@ -171,7 +174,7 @@ export default function Header(props) {
       <div className={classes.getHeaderPadding}></div>
       <AppBar className={classes.appBar} id="header">
         <Toolbar>
-        {handleIsMobile ? (
+          {handleIsMobile ? (
             <div className={classes.isMobileIcon}>
               <IconButton
                 edge="start"
@@ -183,17 +186,24 @@ export default function Header(props) {
                 <MenuIcon />
               </IconButton>
             </div>
-          ):null
-        }
+          ) : null}
           <div style={{ width: 50, height: 50, backgroundColor: "grey" }}></div>
           <div className={classes.getPadding}></div>
-          
+
           <div className={classes.navbar}>
             <Controls.ActionButton textColor="white" component={Link} to="/">
                Home
             </Controls.ActionButton>
             <Controls.ActionButton textColor="white" onClick={handleCategory}>
-              Reviews <ArrowForwardIosIcon style={{fontSize:15, marginLeft:10, transition:"0.5s", ...openCategoty? {transform:"rotateZ(90deg)"}:{}}} />
+              Reviews{" "}
+              <ArrowForwardIosIcon
+                style={{
+                  fontSize: 15,
+                  marginLeft: 10,
+                  transition: "0.5s",
+                  ...(openCategoty ? { transform: "rotateZ(90deg)" } : {}),
+                }}
+              />
             </Controls.ActionButton>
             <Menu
               id="categoryMenu"
@@ -203,11 +213,13 @@ export default function Header(props) {
               onClick={handleCategoryClose}
             >
               <Grid container>
-                <Grid item xs={6} style={{ borderRight: "2px solid gray"}}>
+                <Grid item xs={6} style={{ borderRight: "2px solid gray" }}>
                   <Typography align="center" variant="h6" component="div">
                     Product
                   </Typography>
-                  <GenerateList list={[1, 2, 3,4,5,6,7,8,9,10,11,12,13]}  />
+                  <GenerateList
+                    list={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]}
+                  />
                 </Grid>
                 <Grid item xs={6}>
                   <Typography align="center" variant="h6" component="div">

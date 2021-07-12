@@ -1,3 +1,4 @@
+
 import { Grid} from '@material-ui/core';
 import React, {useState} from 'react';
 import Header from '../components/Header';
@@ -13,25 +14,20 @@ import Compare from './Compare';
 import InstantGroup from './InstantGroup'
 
 export default function UserForm() {
+  const [isMobile, setIsMobile] = useState(false);
 
-    const [isMobile, setIsMobile] = useState(false);
+  const handleIsMobile = (state) => {
+    setIsMobile(state);
+  };
 
-    const handleIsMobile = (state) => {
-        setIsMobile(state);
-    }
-
-    return (
-        <Grid container>
-                {/* <Header></Header> */}
-                {/* <Login></Login> */}
-                {/* <HomePage></HomePage> */}
-                {/* <ProductList isMobile={isMobile} handleIsMobile={handleIsMobile} ></ProductList> */}
-                {/* <ProductView/> */}
-                {/* <AddProduct/> */}
-                {/* <AboutUs/> */}
-                {/* <Compare/> */}
-                <InstantGroup/>
-        </Grid>
-        
-    )
+  return (
+    <Grid container>
+      {/* <Header></Header> */}
+      {/* <Login></Login> */}
+      {/* <HomePage></HomePage> */}
+      {/* <ProductList isMobile={isMobile} handleIsMobile={handleIsMobile} ></ProductList> */}
+      {/* <ProductView/> */}
+      
+    </Grid>
+  );
 }
