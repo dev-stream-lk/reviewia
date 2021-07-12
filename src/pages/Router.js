@@ -27,8 +27,8 @@ export default function Router() {
             path="/product/instantGroup"
             component={InstantGroup}
           ></Route>
-          <Route exact path="/Profile" component={Profile}></Route>
-          <Route exact path="/Profile" component={PasswordRecovery}></Route>
+          <Route exact path="/profile" component={Profile}></Route>
+          <Route exact path="/passwordRecovery" component={PasswordRecovery}></Route>
         </Switch>
       </BrowserRouter>
     );

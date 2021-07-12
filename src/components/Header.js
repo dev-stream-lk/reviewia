@@ -15,7 +15,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Link,
+  Link as MuiLink,
 } from "@material-ui/core";
 import { AccountCircle } from "@material-ui/icons";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
@@ -24,6 +24,7 @@ import { useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import {Link} from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
