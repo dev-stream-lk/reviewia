@@ -108,13 +108,13 @@ const GenerateList = (props) => {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
                 >
-                <Typography>Accordion 1</Typography>
+                <Typography>Category {item}</Typography>
                 </AccordionSummary>
                 <AccordionDetails className={classes.accordinationDetails}>
                     <List dense={true}>
                         {list.map((item, j) => (
                             <ListItem key={j} to="/products/1" component={Link} >
-                              <ListItemText primary="Single-line item" secondary="Secondary text" />
+                              <ListItemText primary={`SubCategory-${item}`} secondary="Secondary text" />
                             </ListItem>
                         ))}
                     </List>
@@ -198,7 +198,10 @@ export default function Header(props) {
               </IconButton>
             </div>
           ) : null}
-          <div style={{ width: 50, height: 50, backgroundColor: "grey" }}></div>
+          {/* <div style={{ width: 50, height: 50, backgroundColor: "grey" }}></div> */}
+          {/* <Link to={{pathname:"/"}}> */}
+            <Typography to={{pathname:"/"}} component={Link}  variant="caption" style={{fontSize:20, fontWeight:'bold', textDecoration:"none", color:"white"}}>Reviewia</Typography>
+          {/* </Link> */}
           <div className={classes.getPadding}></div>
 
           <div className={classes.navbar}>
@@ -236,7 +239,7 @@ export default function Header(props) {
                   <Typography align="center" variant="h6" component="div">
                     Services
                   </Typography>
-                  <GenerateList list={[1, 2, 3]} />
+                  <GenerateList list={[1, 2, 3,4,5,6,7,8]} />
                 </Grid>
               </Grid>
               <Grid container justifyContent="center" className={classes.closeIcon}>

@@ -9,6 +9,7 @@ import CompareSharp from "@material-ui/icons/CompareSharp";
 import GroupAddSharp from "@material-ui/icons/GroupAddSharp";
 import Rating from "@material-ui/lab/Rating";
 import { Skeleton } from "@material-ui/lab";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -23,12 +24,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductView = () => {
+const ProductView = (props) => {
   const classes = useStyles();
+  const {userData, setUserData} = props;
 
   return (
     <div>
-      <Header />
+      <Header  userData={userData} setUserData={setUserData} />
       <div className={classes.mainDiv}>
         <Grid container className={classes.productContainer}>
           {/* LHS */}
@@ -58,22 +60,26 @@ const ProductView = () => {
                 </IconButton>
               </Tooltip>
               <Tooltip title="Compare" aria-label="add" arrow>
-              <IconButton
-                  color="primary"
-                  aria-label="Add to favourite"
-                  component="span"
-                >
-                  <CompareSharp />
-                </IconButton>
+              <Link to={{pathname:"/product/compare"}} >
+                <IconButton
+                    color="primary"
+                    aria-label="Add to favourite"
+                    component="span"
+                  >
+                    <CompareSharp />
+                  </IconButton>
+                </Link>
               </Tooltip>
               <Tooltip title="Create Instant Group" aria-label="add" arrow>
-              <IconButton
-                  color="primary"
-                  aria-label="Add to favourite"
-                  component="span"
-                >
-                  <GroupAddSharp />
-                </IconButton>
+              <Link to={{pathname:"/product/instantGroup"}}>
+                <IconButton
+                    color="primary"
+                    aria-label="Add to favourite"
+                    component="span"
+                  >
+                    <GroupAddSharp />
+                  </IconButton>
+                </Link>
               </Tooltip>
               </Grid>
               <Grid item xs={9} direction="column">
