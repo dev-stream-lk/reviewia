@@ -268,8 +268,8 @@ export default function HomePage(props) {
                             Now Our Mobile app available.
                         </Typography>
                         <div className={classes.getOurAppImages}>
-                            <img src={AppleStore}  />
-                            <img src={PlayStore}   />
+                            <img style={{cursor:"pointer"}} src={AppleStore}  />
+                            <img style={{cursor:"pointer"}} src={PlayStore}   />
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={4} className={classes.getAppImageSection}>

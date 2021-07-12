@@ -1,18 +1,20 @@
-import { Grid, makeStyles, Paper } from '@material-ui/core';
+import { Checkbox, Grid, makeStyles, Paper } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import Controls from '../components/Controls';
 import {useForm, Form} from '../components/useForm';
 import EmailIcon from '@material-ui/icons/Email';
 import LockIcon from '@material-ui/icons/Lock';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import { Typography } from '@material-ui/core';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import PersonIcon from '@material-ui/icons/Person';
 import {validateUserName, validatePassword, validateEmail, validateName} from '../components/Validators'
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import {login,register} from '../services/auth';
+import MainImage from '../static/img/login_img.svg';
 
 const useStyles = makeStyles( theme => ({
 
@@ -38,6 +40,12 @@ const useStyles = makeStyles( theme => ({
         backgroundColor:"#236CC7 !important",
         width:250,
         minHeight:50,
+    },
+    loginImage:{
+        display:"none",
+        [theme.breakpoints.up("md")]:{
+            display:"inherit"
+        }
     }
 }))
 
@@ -47,6 +55,7 @@ const SignIN = (props) => {
     const {userData, setUserData} = props;
     const  [disableSubmit, setDisabledSubmit] = useState(true);
     const history = useHistory();
+    const [visibility, setVisibility] = useState(false);
 
 
     const initialValues = {
@@ -111,10 +120,15 @@ const SignIN = (props) => {
                     name="password"
                     placeholder="Password"
                     startAdornment={<LockIcon/>}
-                    endAdornment={<VisibilityOffIcon/>}
+                    endAdornment={ visibility ?
+                         <VisibilityIcon style={{cursor:"pointer"}} onClick={()=>setVisibility(false)} />
+                         :
+                         <VisibilityOffIcon style={{cursor:"pointer"}} onClick={()=>setVisibility(true)} />
+
+                    }
                     fullWidth={true}
                     size="medium"
-                    type="password"
+                    type= { visibility ? "text":"password"}
                     onChange={handleInputChange}
                     value={values.password}
                     error={errors.password}
@@ -131,9 +145,9 @@ const SignIN = (props) => {
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <p>
+                    <Link to={{pathname:"/passwordRecovery"}} underline="none" style={{textDecoration:"none"}} >
                         Forgot Password?
-                    </p>
+                    </Link>
                 </Grid>
                 <Grid container justifyContent="center" style={{marginTop:20}}>
                     <Controls.Button
@@ -153,8 +167,7 @@ const SignUp =(props) => {
     const classes = useStyles();
     const  [disableSubmit, setDisabledSubmit] = useState(true);
     const {userData, setUserData} = props;
-
-    console.log(userData)
+    const [visibility, setVisibility] = useState(false);
 
     const initialValues = {
         firstName:"",
@@ -258,10 +271,14 @@ const SignUp =(props) => {
                     name="password"
                     placeholder="Password"
                     startAdornment={<LockIcon/>}
-                    endAdornment={<VisibilityOffIcon/>}
+                    endAdornment={ visibility?
+                         <VisibilityIcon onClick={()=> setVisibility(false)} style={{cursor:"pointer"}} />
+                         :
+                         <VisibilityOffIcon onClick={()=> setVisibility(true)} style={{cursor:"pointer"}} />
+                    }
                     fullWidth={true}
                     size="medium"
-                    type="password"
+                    type= {visibility? "text":"password"}
                     value={values.password}
                     onChange={handleInputChange}
                     error={errors.password}
@@ -270,29 +287,34 @@ const SignUp =(props) => {
                     name="cpassword"
                     placeholder="Confirm Password"
                     startAdornment={<LockIcon/>}
-                    endAdornment={<VisibilityOffIcon/>}
-                    fullWidth={true}
-                    size="medium"
-                    type="password"
+                    endAdornment={ visibility?
+                        <VisibilityIcon onClick={()=> setVisibility(false)} style={{cursor:"pointer"}} />
+                        :
+                        <VisibilityOffIcon onClick={()=> setVisibility(true)} style={{cursor:"pointer"}} />
+                   }
+                   fullWidth={true}
+                   size="medium"
+                   type= {visibility? "text":"password"}
                     value={values.cpassword}
                     onChange={handleInputChange}
                     error={errors.cpassword}
                 />
             </Grid>
             <Grid container alignItems="center">
-                <Grid item xs={12} sm={6}>
-                    <Controls.Checkbox 
-                        name="rememberMe"
-                        label="Remember Me"
-                        color="primary"
-                        value={values.rememberMe}
-                        onChange={handleInputChange}
-                    />
+                <Grid item xs={12}>
+                    <div style={{display:"flex", alignItems:"center", justifyContent:"flex-start"}}>
+                        <Checkbox
+                            name="rememberMe"
+                            color="primary"
+                            value={values.rememberMe}
+                            onChange={handleInputChange}
+                        />
+                        <Typography variant="subtitle1">
+                            I read and agree to terms & conditions
+                        </Typography>
+                    </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <p>
-                        Forgot Password?
-                    </p>
                 </Grid>
                 <Grid container justifyContent="center" style={{marginTop:20}}>
                     <Controls.Button
@@ -333,7 +355,10 @@ export default function Login(props) {
     return (
         <Grid container>
             <Grid item xs={1} sm></Grid>
-            <Grid item xs={false} md={5}>
+            <Grid item xs={false} className={classes.loginImage}  md={5}>
+                <Grid container justifyContent="center">
+                    <img style={{marginTop:150}} src={MainImage} />
+                </Grid>
             </Grid>
             <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
                 <Controls.Paper className={classes.paper} divClassName={classes.paperDiv}>
