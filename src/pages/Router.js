@@ -10,6 +10,7 @@ import ProductView from './ProductView';
 import AddProduct from './AddProduct';
 import Profile from "./Profile";
 import PasswordRecovery from "./PasswordRecovery";
+import TermsOfService from "./TermsOfService";
 
 import {getCookie} from '../services/auth';
 
