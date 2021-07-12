@@ -170,7 +170,7 @@ const Step1 = (props) => {
             <Grid item xs={12}>
                 <Controls.Paper>
                     <Grid container spacing={2}>
-                        <Grid container justify="center">
+                        <Grid container justifyContent="center">
                             <Typography variant="h4" component="div">
                                 Similar Products/Services
                             </Typography>
@@ -270,7 +270,7 @@ const Step2 = (props) => {
                                     <Grid item xs={12} sm={6}>
                                         <Grid container justifyContent="center">
                                             <div className={classes.step2AddImage}>
-                                                <Controls.Button  className={classes.step2AddImageButton} variant="default" text="+ Add Photo" />
+                                                <Controls.Button  className={classes.step2AddImageButton} variant="text" text="+ Add a Photo" />
                                             </div>
                                         </Grid>
                                     </Grid>
@@ -403,7 +403,7 @@ const Step3 = (props) => {
 
                                     <Grid item xs={12} md={10}>
                                         <Grid container>
-                                            <Grid xs={12}>
+                                            <Grid item xs={12}>
                                                 <Controls.Paper>
                                                     <Typography variant="h6" >
                                                         Agreement Section

@@ -23,6 +23,7 @@ import { useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import {Link} from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -111,8 +112,8 @@ const GenerateList = (props) => {
                 <AccordionDetails className={classes.accordinationDetails}>
                     <List dense={true}>
                         {list.map((item, j) => (
-                            <ListItem key={j}>
-                            <ListItemText primary="Single-line item" secondary="Secondary text" />
+                            <ListItem key={j} to="/products/1" component={Link} >
+                              <ListItemText primary="Single-line item" secondary="Secondary text" />
                             </ListItem>
                         ))}
                     </List>
@@ -129,6 +130,7 @@ export default function Header(props) {
   const {isMobile, handleIsMobile} = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  let isLogin = false;
 
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
@@ -187,8 +189,8 @@ export default function Header(props) {
           <div className={classes.getPadding}></div>
           
           <div className={classes.navbar}>
-            <Controls.ActionButton textColor="white">
-              Home
+            <Controls.ActionButton textColor="white" component={Link} to="/">
+               Home
             </Controls.ActionButton>
             <Controls.ActionButton textColor="white" onClick={handleCategory}>
               Reviews <ArrowForwardIosIcon style={{fontSize:15, marginLeft:10, transition:"0.5s", ...openCategoty? {transform:"rotateZ(90deg)"}:{}}} />
@@ -214,16 +216,36 @@ export default function Header(props) {
                   <GenerateList list={[1, 2, 3]} />
                 </Grid>
               </Grid>
-              <Grid container justify="center" className={classes.closeIcon}>
+              <Grid container justifyContent="center" className={classes.closeIcon}>
                   <IconButton onClick={ () => setCategoryAnchorEl(null)}>
                       <HighlightOffIcon fontSize="large" color="secondary" />
                   </IconButton>
               </Grid>
             </Menu>
           </div>
-          <IconButton color="inherit">
-            <AccountCircle />
-          </IconButton>
+          {isLogin ? 
+            (
+              <IconButton color="inherit">
+                <AccountCircle />
+              </IconButton>
+            )
+            :
+            (
+              <div>
+                <Link to={{pathname: "/login", state:{ register:0 }}}>
+                  <Controls.Button style={{marginRight:10}}>
+                    Login
+                  </Controls.Button>
+                </Link>
+                <Link to={{pathname: "/login", state:{ register:1 }}}>
+                    <Controls.Button>
+                      SignUp
+                    </Controls.Button>
+                  </Link>
+              </div>
+            )
+          }          
+          
         </Toolbar>
       </AppBar>
     </>

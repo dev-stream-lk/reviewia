@@ -1,4 +1,4 @@
-import { Grid, ListItemText, makeStyles, Typography, List, Link, ListItem, CardActions, CardHeader, CardMedia, CardContent, Box } from '@material-ui/core';
+import { Grid, ListItemText, makeStyles, Typography, List, Link as MuiLink, ListItem, CardActions, CardHeader, CardMedia, CardContent, Box } from '@material-ui/core';
 import React from 'react';
 import Controls from '../components/Controls';
 import Header from '../components/Header';
@@ -10,6 +10,7 @@ import Rating from '@material-ui/lab/Rating';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import AppleStore from '../static/img/getAppleStore.svg';
 import PlayStore from '../static/img/getPlayStore.png';
+import {Link} from 'react-router-dom'
 
 const useStyles = makeStyles( theme => ({
     headSection:{
@@ -57,20 +58,26 @@ const useStyles = makeStyles( theme => ({
     },
 
     PopularCategoryLink:{
+        border:"none",
+        width:"100%",
+        textDecoration:"none",
+        textAlign:"left",
+        paddingLeft:30,
+        cursor: "pointer",
         "&.MuiLink-button":{
             textAlign:"left",
             paddingLeft: theme.spacing(2)
         },
     },
     mostViewedCard:{
-        cursor:"pointer"
+        cursor:"pointer",
     },
     boxClassName:{
         width:"100%",
         margin:0,
     },
     divClassName:{
-        padding: theme.spacing(1)
+        padding: theme.spacing(1),
     },
     getAppImageSection:{
         [ theme.breakpoints.down("xs")]:{
@@ -142,16 +149,18 @@ const PopularcategoryItem = (props) => {
 
     return (
         <Controls.Paper boxClassName={classes.boxClassName} divClassName={classes.divClassName}>
-            <Link href={href} className={classes.PopularCategoryLink}  {...others} component="button" underline="none" style={{width:"100%"}}>
-                <ListItemText
-                    primary={primary}
-                    secondary="34553 posts"
-                    secondaryTypographyProps = {{
-                        style:{marginLeft:30}
-                    }}
-                />
-                <ArrowForwardIcon style={{position:"absolute",top:10, right:10}} />
-            </Link>
+            <Grid container justifyContent="flex-start">
+                <MuiLink to="/products/1" className={classes.PopularCategoryLink} underline="none" component={Link} {...others}>
+                    <ListItemText
+                        primary={primary}
+                        secondary="34553 posts"
+                        secondaryTypographyProps = {{
+                            style:{marginLeft:30}
+                        }}
+                    />
+                    <ArrowForwardIcon style={{position:"absolute",top:30, right:30}} />
+                </MuiLink>
+            </Grid>
         </Controls.Paper>   
     )
 }
@@ -166,7 +175,7 @@ export default function HomePage() {
             {/* Start Head section */}
             <div>
                 <Grid container className={classes.headSection}>
-                    <Grid container justify="center" alignItems="center" >
+                    <Grid container justifyContent="center" alignItems="center" >
                         <Grid item xs={12} md={6} lg={7}>
                             <Typography variant="h2" component="div" className={classes.headHeader}>
                                 We are here to Help you
@@ -179,7 +188,7 @@ export default function HomePage() {
                             <img src={HeadImage} />
                         </Grid>
                     </Grid>
-                    <Grid container justify="center">
+                    <Grid container justifyContent="center">
                         <Controls.Input
                             endAdornment={<SearchIcon/>}
                             fullWidth={true}
@@ -218,22 +227,22 @@ export default function HomePage() {
                 <Grid item xs={12} md={8}>
                     <Controls.Paper>
                         <Grid container spacing={2}>
-                            <Grid container justify="center">
+                            <Grid container justifyContent="center">
                                 <Typography variant="h4" component="div">
                                     Most Viewed
                                 </Typography>
                             </Grid>
                             <Grid item xs={6} sm={4} lg={3}>
-                                <MostViewdCard/>                            
+                                <Link to="/product/view/1" style={{textDecoration:"none"}} > <MostViewdCard/></Link>
                             </Grid>
                             <Grid item xs={6} sm={4} lg={3}>
-                                <MostViewdCard/>                            
+                                <Link to="/product/view/2" style={{textDecoration:"none"}} > <MostViewdCard/></Link>
                             </Grid>
                             <Grid item xs={6} sm={4} lg={3}>
-                                <MostViewdCard/>                            
+                                <Link to="/product/view/3" style={{textDecoration:"none"}} > <MostViewdCard/></Link>
                             </Grid>
                             <Grid item xs={6} sm={4} lg={3}>
-                                <MostViewdCard/>                            
+                                <Link to="/product/view/4" style={{textDecoration:"none"}} > <MostViewdCard/></Link>
                             </Grid>
                         </Grid>
                     </Controls.Paper>

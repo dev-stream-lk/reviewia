@@ -1,10 +1,12 @@
-import { Grid, Link, makeStyles, useTheme } from '@material-ui/core';
+import { Button, Grid,Link as MuiLink, makeStyles, useTheme } from '@material-ui/core';
+import {Link} from 'react-router-dom';
 import React from 'react';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import EmailIcon from '@material-ui/icons/Email';
 import PhoneAndroidIcon from '@material-ui/icons/PhoneAndroid';
+import Controls from './Controls';
 
 const useStyles = makeStyles( theme => ({
     footer:{
@@ -33,6 +35,7 @@ const useStyles = makeStyles( theme => ({
     footerLink:{
         color:"white",
         cursor:"pointer",
+        display:"block"
     },
     socialLinks:{
         marginRight:theme.spacing(5),
@@ -80,8 +83,8 @@ export default function Footer() {
 
                     </Grid>
                     <Grid item className={classes.footerLinkSection} xs={12} sm={6} md={4} align="left">
-                        <Link className={classes.footerLink}  href="/" component="div">About</Link>
-                        <Link className={classes.footerLink} >Contact US</Link>
+                        <MuiLink className={classes.footerLink} component={Link}  to="/about">About</MuiLink>
+                        <MuiLink className={classes.footerLink} >Contact US</MuiLink>
                     </Grid>
                     <Grid item className={classes.socialLinks}>
                         <FacebookIcon/>
