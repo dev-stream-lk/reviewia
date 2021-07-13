@@ -6,12 +6,11 @@ import EmailIcon from "@material-ui/icons/Email";
 import { Typography } from "@material-ui/core";
 import Footer from '../components/Footer';
 import {
-  validateUserName,
-  validatePassword,
   validateEmail,
 } from "../components/Validators";
 import MainImage from '../static/img/login_img.svg';
 import { Link } from "react-router-dom";
+import { passwordRecovery } from '../services/auth'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -47,19 +46,59 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const SignIN = () => {
+const RecoveryForm = (props) => {
   const classes = useStyles();
+  const {userData, setUserData} = props;
+  const initialState = {
+    email:""
+  }
 
+  const validate = (fieldValues= values) => {
+    let temp = {}
+    
+    if('email' in fieldValues)
+        temp.email = validateEmail(fieldValues.email);
+
+    setErrors({
+        ...errors,
+        ...temp
+    })
+    let isValid = Object.values(temp).every(x=> x=="");
+    return isValid
+}
+
+  const {
+    values,
+    setValues,
+    handleInputChange,
+    errors,
+    setErrors
+  } = useForm(initialState, true, validate);
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const result = await passwordRecovery({
+      email: values.email,
+    })
+    if(result){
+        setUserData( { ...userData,isLoggedIn:true })
+    }
+  }
 
   return (
     <Form>
       <Grid container>
         <Controls.Input
-          name="username"
-          placeholder="Username"
+          name="email"
+          placeholder="Email"
           startAdornment={<EmailIcon />}
           fullWidth={true}
           size="medium"
+          value={values.email}
+          error={errors.email}
+          onChange={handleInputChange}
         />
       </Grid>
       <Grid container alignItems="center">
@@ -132,7 +171,7 @@ export default function PasswordRecovery() {
               </Typography>
             </Grid>
           </Grid>
-          <SignIN />
+          <RecoveryForm />
 
           <Grid container justify="center" style={{ marginTop: "10px" }}>
             <span>Back to <Link to={{pathname:"/login"}}> Sign In</Link></span>

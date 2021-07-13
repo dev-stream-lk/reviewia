@@ -132,7 +132,6 @@ export default function Header(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   let isLogin = false;
-  console.log(userData)
 
   useEffect( ()=>{
     setUserData(props.userData);
@@ -251,9 +250,23 @@ export default function Header(props) {
           </div>
           {userData.isLoggedIn ? 
             (
-              <IconButton color="inherit" onClick={handleLogout } >
-                <AccountCircle />
-              </IconButton>
+              <>
+                <IconButton color="inherit" onClick={ handleMenu } >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="categoryMenu"
+                  className={classes.Menu}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  style={{position:"absolute", top:40}}
+                >
+                  <MenuItem component={Link} to="/profile" >Profile</MenuItem>
+                  <MenuItem>Favorite list</MenuItem>
+                  <MenuItem onClick={handleLogout} >Logout</MenuItem>
+                </Menu>
+              </>
             )
             :
             (
