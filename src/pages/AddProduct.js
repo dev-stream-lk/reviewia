@@ -13,6 +13,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import CompleteImage from '../static/img/complete.png';
 import { useHistory } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 const useStyles = makeStyles( theme => ({
     addProductWrapper:{
@@ -348,28 +349,70 @@ const Step3 = (props) => {
                                                         <Grid container>
                                                             <Grid container alignItems="center" >
                                                                 <FormLabel className={classes.formLabel}>Title</FormLabel>
-                                                                <Controls.Input className={classes.input} size="small" name="titile" ></Controls.Input>
+                                                                <Typography>Samsung galaxy J7 Nxt</Typography>
                                                             </Grid>
                                                             <Grid container alignItems="center">
                                                                 <FormLabel className={classes.formLabel}>Type</FormLabel>
-                                                                <Controls.Select size="small" inputProps={{size:"small", background:"red"}} className={classes.input} options={[{id:1,title:"Product"}, {id:2,title:"Service"}]} />
+                                                                <Typography>Product</Typography>
                                                             </Grid>
 
                                                             <Grid container alignItems="center">
                                                                 <FormLabel className={classes.formLabel}>Category</FormLabel>
-                                                                <Controls.Select className={classes.input} options={[{id:1,title:"Product"}, {id:2,title:"Service"}]} />
+                                                                <Typography>Samsung galaxy J7 Electronics</Typography>
                                                             </Grid>
                                                             <Grid container alignItems="center">
                                                                 <FormLabel className={classes.formLabel}>Product Year</FormLabel>
-                                                                <Controls.Input className={classes.input} type="date" />
+                                                                <Typography>14/07/2021</Typography>
                                                             </Grid>
                                                             <Grid container alignItems="center">
                                                                 <FormLabel className={classes.formLabel}>Brand</FormLabel>
-                                                                <Controls.Input className={classes.input} size="small" />
+                                                                <Typography>Samsung</Typography>
                                                             </Grid>
                                                             <Grid container alignItems="center" >
                                                                 <FormLabel className={classes.formLabel}>Description</FormLabel>
-                                                                <Controls.Input className={classes.input} multiline rows={10} size="small" name="titile" ></Controls.Input>
+                                                                <Controls.Input className={classes.input} multiline rows={10} size="small" name="titile" 
+                                                                    value="
+                                                                    NETWORK	Technology	GSM / HSPA / LTE
+                                                                    LAUNCH	Announced	2017, July
+                                                                    Status	Available. Released 2017, July
+                                                                    BODY	Dimensions	152.4 x 78.6 x 7.6 mm (6.00 x 3.09 x 0.30 in)
+                                                                    Weight	170 g (6.00 oz)
+                                                                    Build	Glass front, plastic back, plastic frame
+                                                                    SIM	Dual SIM (Micro-SIM, dual stand-by)
+                                                                    DISPLAY	Type	Super AMOLED
+                                                                    Size	5.5 inches, 83.4 cm2 (~69.6% screen-to-body ratio)
+                                                                    Resolution	720 x 1280 pixels, 16:9 ratio (~267 ppi density)
+                                                                    PLATFORM	OS	Android 7.0 (Nougat), upgradable to Android 9.0 (Pie), One UI
+                                                                    Chipset	Exynos 7870 Octa (14 nm)
+                                                                    CPU	Octa-core 1.6 GHz Cortex-A53
+                                                                    GPU	Mali-T830 MP1
+                                                                    MEMORY	Card slot	microSDXC (dedicated slot)
+                                                                    Internal	16GB 2GB RAM, 32GB 3GB RAM
+                                                                         eMMC 5.1
+                                                                    MAIN CAMERA	Single	13 MP, f/1.9, 28mm (wide), AF
+                                                                    Features	LED flash, panorama
+                                                                    Video	1080p@30fps
+                                                                    SELFIE CAMERA	Single	5 MP, f/2.2, 23mm (wide)
+                                                                    Features	LED flash
+                                                                    Video	
+                                                                    SOUND	Loudspeaker	Yes
+                                                                    3.5mm jack	Yes
+                                                                    COMMS	WLAN	Wi-Fi 802.11 b/g/n, Wi-Fi Direct, hotspot
+                                                                    Bluetooth	4.1, A2DP, LE
+                                                                    GPS	Yes, with A-GPS, GLONASS
+                                                                    NFC	No
+                                                                    Radio	FM radio, RDS, recording
+                                                                    USB	microUSB 2.0
+                                                                    FEATURES	Sensors	Accelerometer, proximity
+                                                                         ANT+
+                                                                    BATTERY	Type	Li-Ion 3000 mAh, removable
+                                                                    MISC	Colors	Black, Gold
+                                                                    Models	SM-J701F, SM-J701F, SM-J701M, SM-J701MT
+                                                                    SAR	0.61 W/kg (head)    
+                                                                    SAR EU	0.52 W/kg (head)     1.39 W/kg (body)    
+                                                                    "
+                                                                >
+                                                                </Controls.Input>
                                                             </Grid>
                                                         </Grid>
                                                     </Grid>
@@ -529,9 +572,11 @@ export default function AddProduct(props) {
                                         <Typography variant="h4">
                                             Post Published Successfully.
                                         </Typography>
-                                        <Controls.Button style={{marginTop:20}}>
-                                            View Your Post
-                                        </Controls.Button>
+                                        <Link to={{pathname:"/product/view/1"}} style={{textDecoration:"none"}}>
+                                            <Controls.Button style={{marginTop:20}}>
+                                                View Your Post
+                                            </Controls.Button>
+                                        </Link>
                                     </Grid>
                                 </Grid>
                             </>

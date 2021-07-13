@@ -56,6 +56,7 @@ const SignIN = (props) => {
     const  [disableSubmit, setDisabledSubmit] = useState(true);
     const history = useHistory();
     const [visibility, setVisibility] = useState(false);
+    const [showError, setShowError] = useState("");
 
 
     const initialValues = {
@@ -69,8 +70,6 @@ const SignIN = (props) => {
         
         if('email' in fieldValues)
             temp.email = validateEmail(fieldValues.email);
-        if('password' in fieldValues)
-            temp.password = validatePassword(fieldValues.password);
     
         setErrors({
             ...errors,
@@ -96,7 +95,10 @@ const SignIN = (props) => {
 
         if(result){
             setUserData( { ...userData,isLoggedIn:true })
+            setShowError("")
             history.push("/")
+        }else{
+            setShowError("Invalid email or password")
         }
 
     }
@@ -104,6 +106,11 @@ const SignIN = (props) => {
 
     return (
         <Form onSubmit={handleOnSubmit} >
+            { showError ? (
+                <Grid container>
+                    <Typography align="left" variant="caption" style={{color:'red', fontSize:16, fontWeight:"bold", paddingLeft:40}}>{showError}</Typography>
+                </Grid>
+            ):null}
             <Grid container>
                 <Controls.Input
                     name="email"
@@ -130,7 +137,6 @@ const SignIN = (props) => {
                     type= { visibility ? "text":"password"}
                     onChange={handleInputChange}
                     value={values.password}
-                    error={errors.password}
                 />
             </Grid>
             <Grid container alignItems="center">

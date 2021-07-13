@@ -12,22 +12,21 @@ import Profile from "./Profile";
 import PasswordRecovery from "./PasswordRecovery";
 import TermsOfService from "./TermsOfService";
 
-import { getCookie } from "../services/auth";
+import {getCookie} from '../services/auth';
+import DashBoard from './DashBoard';
 
 var initialUserData = {
-  email: "",
-  role: "",
-  token: "",
-  isLoggedIn: false,
-};
+    email: "",
+    role: "admin",
+    token:"",
+    isLoggedIn:false
+}
 
 export default function Router() {
   const [userData, setUserData] = useState({
     ...initialUserData,
     isLoggedIn: getCookie("isLoggedIn") == "true" ? true : false,
   });
-
-  useEffect(() => {}, [userData]);
 
   return (
     <BrowserRouter>
@@ -76,6 +75,7 @@ export default function Router() {
             setUserData={setUserData}
           />{" "}
         </Route>
+        <Route exact path="/dashboard"> <DashBoard userData={userData} setUserData={setUserData} /> </Route>
       </Switch>
     </BrowserRouter>
   );

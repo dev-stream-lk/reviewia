@@ -19,7 +19,7 @@ const drawerWidth = 280;
 const useStyles = makeStyles( theme => ({
     wrapper:{
         minHeight: "50vh",
-        marginTop: theme.spacing(5)
+        marginTop: theme.spacing(5),
     },
     filterTypo:{
         width: "100%",
@@ -166,7 +166,8 @@ const FiltersMenu = (props) => {
 const ProductCard = (props) => {
 
     const classes = useStyles();
-    const [rating, setRating] = useState(props.rating | 2);
+    // const [rating, setRating] = useState(props.rating | (4.5));
+    const [rating, setRating] = useState(4.5);
 
     return (
         <Controls.Card className={classes.productListcard}>
@@ -284,7 +285,7 @@ export default function ProductList(props) {
                         </Controls.Input>
                     </Grid>
                     <Grid container style={{paddingRight:50}} justifyContent="flex-end">
-                        <Link to={{pathname:"/product/add"}}>
+                        <Link to={{pathname:"/product/add"}} style={{textDecoration:"none"}} >
                             <Controls.Button>
                                 <AddIcon/> Add New
                             </Controls.Button>
@@ -302,7 +303,7 @@ export default function ProductList(props) {
                 </div>
                 {/* End ProductList */}
             </Grid>
-        <Footer></Footer>
+        <Footer ></Footer>
         </>
     )
 }
