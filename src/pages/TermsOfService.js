@@ -5,6 +5,7 @@ import { useForm, Form } from "../components/useForm";
 import EmailIcon from "@material-ui/icons/Email";
 import { Typography } from "@material-ui/core";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+import MainImage from "../static/img/login_img.svg";
 import {
   validateUserName,
   validatePassword,
@@ -36,6 +37,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#236CC7 !important",
     width: 250,
     minHeight: 50,
+  },
+  loginImage: {
+    [theme.breakpoints.up("md")]: {
+      display: "inherit",
+    },
   },
 }));
 
@@ -165,7 +171,11 @@ export default function TermsOfService() {
   return (
     <Grid container>
       <Grid item xs={1} sm></Grid>
-      <Grid item xs={0} md={5}></Grid>
+      <Grid item xs={false} className={classes.loginImage} md={5}>
+        <Grid container justifyContent="center">
+          <img style={{ marginTop: 150 }} src={MainImage} />
+        </Grid>
+      </Grid>
       <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
         <Controls.Paper
           className={classes.paper}
@@ -222,7 +232,6 @@ export default function TermsOfService() {
             </Grid>
           </Grid>
           <ButtonSet />
-
         </Controls.Paper>
       </Grid>
       <Grid item xs={1} sm></Grid>
