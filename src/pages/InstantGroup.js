@@ -171,13 +171,14 @@ const Message = (props)=> {
 }
 
 
-export default function InstantGroup() {
+export default function InstantGroup(props) {
 
     const classes = useStyles();
+    const {userData, setUserData} = props;
 
     return (
         <>
-        <Header/>
+        <Header userData={userData} setUserData={setUserData} />
         
         <Grid container className={"content"} >
             <Grid item xs={12} style={{marginTop:50}}>

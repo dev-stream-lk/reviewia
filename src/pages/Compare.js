@@ -74,13 +74,14 @@ const SimillarProductCard = (props) => {
 }
 
 
-export default function Compare() {
+export default function Compare(props) {
 
     const classes = useStyles();
+    const {userData, setUserData} = props;
 
     return (
         <>
-            <Header/>
+            <Header userData={userData} setUserData={setUserData} />
 
             <Grid container className={"content"}>
                 <Grid item xs={12} style={{marginTop:20}}>

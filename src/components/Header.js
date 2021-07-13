@@ -24,7 +24,8 @@ import { useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
+import { logout } from "../services/auth";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -107,13 +108,13 @@ const GenerateList = (props) => {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
                 >
-                <Typography>Accordion 1</Typography>
+                <Typography>Category {item}</Typography>
                 </AccordionSummary>
                 <AccordionDetails className={classes.accordinationDetails}>
                     <List dense={true}>
                         {list.map((item, j) => (
                             <ListItem key={j} to="/products/1" component={Link} >
-                              <ListItemText primary="Single-line item" secondary="Secondary text" />
+                              <ListItemText primary={`SubCategory-${item}`} secondary="Secondary text" />
                             </ListItem>
                         ))}
                     </List>
@@ -127,10 +128,14 @@ const GenerateList = (props) => {
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const { isMobile, handleIsMobile } = props;
+  const { isMobile, handleIsMobile, userData, setUserData } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   let isLogin = false;
+
+  useEffect( ()=>{
+    setUserData(props.userData);
+  },[props])
 
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
@@ -169,6 +174,10 @@ export default function Header(props) {
     )
       setCategoryAnchorEl(null);
   };
+  const history = useHistory();
+  const handleLogout = () =>{
+    logout(setUserData, history)
+  }
 
   return (
     <>
@@ -188,7 +197,10 @@ export default function Header(props) {
               </IconButton>
             </div>
           ) : null}
-          <div style={{ width: 50, height: 50, backgroundColor: "grey" }}></div>
+          {/* <div style={{ width: 50, height: 50, backgroundColor: "grey" }}></div> */}
+          {/* <Link to={{pathname:"/"}}> */}
+            <Typography to={{pathname:"/"}} component={Link}  variant="caption" style={{fontSize:20, fontWeight:'bold', textDecoration:"none", color:"white"}}>Reviewia</Typography>
+          {/* </Link> */}
           <div className={classes.getPadding}></div>
 
           <div className={classes.navbar}>
@@ -226,7 +238,7 @@ export default function Header(props) {
                   <Typography align="center" variant="h6" component="div">
                     Services
                   </Typography>
-                  <GenerateList list={[1, 2, 3]} />
+                  <GenerateList list={[1, 2, 3,4,5,6,7,8]} />
                 </Grid>
               </Grid>
               <Grid container justifyContent="center" className={classes.closeIcon}>
@@ -236,22 +248,36 @@ export default function Header(props) {
               </Grid>
             </Menu>
           </div>
-          {isLogin ? 
+          {userData.isLoggedIn ? 
             (
-              <IconButton color="inherit">
-                <AccountCircle />
-              </IconButton>
+              <>
+                <IconButton color="inherit" onClick={ handleMenu } >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="categoryMenu"
+                  className={classes.Menu}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  style={{position:"absolute", top:40}}
+                >
+                  <MenuItem component={Link} to="/profile" >Profile</MenuItem>
+                  <MenuItem>Favorite list</MenuItem>
+                  <MenuItem onClick={handleLogout} >Logout</MenuItem>
+                </Menu>
+              </>
             )
             :
             (
               <div>
-                <Link to={{pathname: "/login", state:{ register:0 }}}>
+                <Link to={{pathname: "/login", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
                   <Controls.Button style={{marginRight:10}}>
                     Login
                   </Controls.Button>
                 </Link>
-                <Link to={{pathname: "/login", state:{ register:1 }}}>
-                    <Controls.Button>
+                <Link to={{pathname: "/login", state:{ register:1 }}} style={{textDecoration:"none"}} underline="none" >
+                    <Controls.Button >
                       SignUp
                     </Controls.Button>
                   </Link>

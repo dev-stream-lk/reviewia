@@ -58,13 +58,14 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const Profile = () => {
+const Profile = (props) => {
   const classes = useStyles();
   const [active, setActive] = useState("GroupList");
+  const { userData, setUserData} = props;
 
   return (
     <div>
-      <Header />
+      <Header userData={userData} setUserData={setUserData} />
       <div className={classes.mainDiv}>
         <Grid container className={classes.productContainer}>
           {/* LHS */}

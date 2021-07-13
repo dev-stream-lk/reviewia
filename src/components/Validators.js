@@ -9,19 +9,34 @@ const validateUserName = (username) => {
     return error
 }
 
+const validateName = (name) => {
+    name = name.trim()
+    let error = "";
+
+    if( name.length === 0){
+        return "A required field"
+    }else if(/[0-9]/.test(name)){
+        return "Cannot contain numbers"
+    }else if(/[!@#$%^&*]/.test(name)){
+        return "Cannot contain symbols"
+    }
+    return error
+}
+
 const validatePassword = (password) => {
     password = password.trim()
     let error = "";
-    if( password.length < 8){
-        return "Password must cantain at least 8 characters."
-    }else if(!/[a-z]/.test(password)){
-        return "Lowercase letter";
+    
+    if(!/[a-z]/.test(password)){
+        return "Should include minimum 01 lowercase";
     }else if(!/[A-Z]/.test(password)){
-        return "Uppercase letter";
+        return "Should include minimum 01 uppercase";
     }else if(!/[0-9]/.test(password)){
-        return "Number";
+        return "Should include minimum 01 number";
     }else if(!/[!@#$%^&*]/.test(password)){
-        return "Symbol";
+        return "Should include minimum 01 symbol";
+    }else if( password.length < 8){
+        return "Password must cantain at least 8 characters."
     }
     return error
 }
@@ -30,13 +45,18 @@ const validateEmail = (email) => {
 
     email = email.trim();
     let pattern = /.*@.*\..*/
-    if(!pattern.test(email) ){
-        return "invalid email";
+
+    if( email.length === 0 ){
+        return "A required field";
+    }else if(!pattern.test(email) ){
+        return "Not a valid email type";
     }
+    return ""
 }
 
 export {
     validateUserName,
     validatePassword,
-    validateEmail
+    validateEmail,
+    validateName
 }
