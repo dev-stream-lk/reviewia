@@ -187,7 +187,7 @@ export default function HomePage(props) {
                                 We are here to Help you
                             </Typography>
                             <Typography variant="h6" component="div" className={classes.headSubHeader}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ut nunc sit amet tortor tincidunt sagittis. Aliquam commodo tristique dolor ut laoreet. Sed consectetur blandit tempor.
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur, neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti?
                             </Typography>
                         </Grid>
                         <Grid item xs={12} md={6} lg={5} className={classes.headImage}>

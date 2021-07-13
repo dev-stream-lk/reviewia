@@ -46,6 +46,9 @@ const useStyles = makeStyles( theme => ({
         [theme.breakpoints.up("md")]:{
             display:"inherit"
         }
+    },
+    title:{
+        color: `${theme.palette.primary.main} !important`
     }
 }))
 
@@ -361,8 +364,9 @@ export default function Login(props) {
         <Grid container>
             <Grid item xs={1} sm></Grid>
             <Grid item xs={false} className={classes.loginImage}  md={5}>
-                <Grid container justifyContent="center">
-                    <img style={{marginTop:150}} src={MainImage} />
+                <Grid container justifyContent="center" style={{flexDirection:"column"}}>
+                    <Typography variant="h3" align="center" className={classes.title} >Reviewia</Typography>
+                    <img  src={MainImage} />
                 </Grid>
             </Grid>
             <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>

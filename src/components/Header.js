@@ -229,7 +229,7 @@ export default function Header(props) {
             { userData.isLoggedIn ? 
               (
                 <Controls.ActionButton textColor="white" component={Link} to={{pathname:"/product/add"}}>
-                  <AddIcon/> Add New
+                  <AddIcon/> New Post
                 </Controls.ActionButton>
               ):null
             }
