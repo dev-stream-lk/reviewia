@@ -9,6 +9,9 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { useForm ,Form } from '../components/useForm';
 import Phone from '../static/img/j7.jpg';
+import IphoneX from '../static/img/iphonex.png';
+import F21 from '../static/img/f21.jpg';
+import P30 from '../static/img/p30.png';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import {Link} from 'react-router-dom';
@@ -168,13 +171,14 @@ const ProductCard = (props) => {
     const classes = useStyles();
     // const [rating, setRating] = useState(props.rating | (4.5));
     const [rating, setRating] = useState(4.5);
+    const {title="", image=Phone} = props;
 
     return (
         <Controls.Card className={classes.productListcard}>
             <Grid container>
                 <Grid item xs={4}>
                     <CardMedia title="Samsung j7 nxt">
-                        <img src={Phone} className={classes.productListItemImage} />
+                        <img src={image} className={classes.productListItemImage} />
                     </CardMedia>
                 </Grid>
                 <Grid container item xs={8}>
@@ -191,7 +195,7 @@ const ProductCard = (props) => {
                                 <MoreVertIcon />
                             </IconButton>
                             }
-                            title="Galaxy j7 nxt"
+                            title={title}
                             subheader="September 14, 2016"
                         />
                     </Grid>
@@ -293,9 +297,9 @@ export default function ProductList(props) {
                     </Grid>
                     <Controls.Paper>
                         <Grid container spacing={2}>
-                            { [1,2,3,4,5].map( (i,index) => (
+                            { [{title:"Samsung galaxy J7 Nxt",image:Phone}, {title:"Apple iphone X pro", image:IphoneX}, {title:"Oppo F21",image:F21}, {title:"Huawei P30 Pro", image:P30}, {title:"Samsung galaxy J7 Nxt",image:Phone}].map( (item,index) => (
                                 <Grid key={index} item xs={12} md={6}>
-                                    <Link style={{textDecoration:"none"}} to={`/product/view/${i}`}><ProductCard/></Link>
+                                    <Link style={{textDecoration:"none"}} to={`/product/view/${index+1}`}><ProductCard {...item} /></Link>
                                 </Grid>
                             ) ) }
                         </Grid>

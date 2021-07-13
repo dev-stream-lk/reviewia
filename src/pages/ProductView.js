@@ -10,6 +10,7 @@ import GroupAddSharp from "@material-ui/icons/GroupAddSharp";
 import Rating from "@material-ui/lab/Rating";
 import { Skeleton } from "@material-ui/lab";
 import { Link } from "react-router-dom";
+import Phone from '../static/img/j7.jpg';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -41,13 +42,18 @@ const ProductView = (props) => {
                 xs={12}
                 style={{ display: "flex", justifyContent: "center" }}
               >
-                <Skeleton width={400} height={400} />
+              <img style={{maxWidth:200, maxHeight:200}} src={Phone} />
               </Grid>
               <Grid item xs={12} style={{ textAlign: "center" }}>
-                <Rating />
+                <Rating 
+                  value={4.5}
+                  name="byRating"
+                  precision={0.25}
+                  readOnly
+                />
               </Grid>
               <Grid item xs={12} style={{ textAlign: "center" }}>
-                <Typography variant="h5">4.7</Typography>
+                <Typography variant="h5">4.5</Typography>
               </Grid>
               <Grid item xs={12} style={{ textAlign: "center" }}>
               <Tooltip title="Add to Favourites" aria-label="add" arrow>

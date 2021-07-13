@@ -49,7 +49,12 @@ export default function Review({description}) {
                   <Typography variant="h6">Review - 1</Typography>
                 </Grid>
                 <Grid itemxs={6}>
-                  <Rating />
+                  <Rating 
+                    value={3.6}
+                    name="byRating"
+                    precision={0.25}
+                    readOnly
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant="body1" gutterBottom className={classes.typography}>
