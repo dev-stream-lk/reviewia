@@ -98,7 +98,6 @@ const SignIN = (props) => {
             setUserData( { ...userData,isLoggedIn:true })
             history.push("/")
         }
-        console.log(result)
 
     }
 

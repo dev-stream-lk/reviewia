@@ -89,7 +89,27 @@ const logout = (setUserData,history) => {
     history.push("/login")
 }
 
-const passwordRecovery = () => {
+const passwordRecovery = ({email}) => {
+
+  const requestOptions = {
+    method:"POST",
+    headers:{
+      'Content-Type':"application/json"
+    },
+    body: JSON.stringify({
+      email
+    })
+  }
+  return fetch('http://127.0.0.1:8080/api/reset', requestOptions )
+    .then( res => {
+        if(res.ok){
+            setCookie("isLoggedIn", true,7 )
+            return true;
+        }
+        return false;
+        
+    })
+    .catch( err=> console.error(err));
 
 }
 
