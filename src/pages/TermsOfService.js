@@ -5,6 +5,7 @@ import { useForm, Form } from "../components/useForm";
 import EmailIcon from "@material-ui/icons/Email";
 import { Typography } from "@material-ui/core";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+import MainImage from "../static/img/login_img.svg";
 import {
   validateUserName,
   validatePassword,
@@ -37,10 +38,16 @@ const useStyles = makeStyles((theme) => ({
     width: 250,
     minHeight: 50,
   },
+  loginImage: {
+    [theme.breakpoints.up("md")]: {
+      display: "inherit",
+    },
+  },
 }));
 
 const ButtonSet = () => {
   const classes = useStyles();
+  const [selected, setSelected] = useState(0);
 
   return (
     <Form>
@@ -78,18 +85,32 @@ const ButtonSet = () => {
           style={{ marginTop: 20 }}
         >
           <Controls.Button
-            type="submit"
             text="Decline"
+            onClick={() => setSelected(0)}
             style={{
-              backgroundColor: "#236CC7",
+              width: "20%",
+              height: "100%",
+              ...(selected === 0
+                ? { color: "white", backgroundColor: "#236CC7" }
+                : { color: "#236CC7", backgroundColor: "white" }),
             }}
+            // style={{
+            //   backgroundColor: "#236CC7",
+            // }}
           />
           <Controls.Button
-            type="submit"
             text="Accept"
+            onClick={() => setSelected(1)}
             style={{
-              backgroundColor: "#236CC7",
+              width: "20%",
+              height: "100%",
+              ...(selected === 1
+                ? { color: "white", backgroundColor: "#236CC7" }
+                : { color: "#236CC7", backgroundColor: "white" }),
             }}
+            // style={{
+            //   backgroundColor: "#236CC7",
+            // }}
           />
         </Grid>
       </Grid>
@@ -150,7 +171,11 @@ export default function TermsOfService() {
   return (
     <Grid container>
       <Grid item xs={1} sm></Grid>
-      <Grid item xs={0} md={5}></Grid>
+      <Grid item xs={false} className={classes.loginImage} md={5}>
+        <Grid container justifyContent="center">
+          <img style={{ marginTop: 150 }} src={MainImage} />
+        </Grid>
+      </Grid>
       <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
         <Controls.Paper
           className={classes.paper}
@@ -207,7 +232,6 @@ export default function TermsOfService() {
             </Grid>
           </Grid>
           <ButtonSet />
-
         </Controls.Paper>
       </Grid>
       <Grid item xs={1} sm></Grid>
