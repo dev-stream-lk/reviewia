@@ -315,7 +315,7 @@ const SignUp =(props) => {
                             onChange={handleInputChange}
                         />
                         <Typography variant="subtitle1">
-                            I read and agree to terms & conditions
+                            I read and agree to <Link to={{pathname:"/termsOfService"}} > terms & conditions</Link>
                         </Typography>
                     </div>
                 </Grid>

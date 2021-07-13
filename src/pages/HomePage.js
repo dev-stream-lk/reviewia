@@ -6,6 +6,9 @@ import HeadImage from '../static/img/homepage_head.svg';
 import SearchIcon from '@material-ui/icons/Search';
 import Footer from '../components/Footer';
 import Phone from '../static/img/j7.jpg';
+import IphoneX from '../static/img/iphonex.png';
+import F21 from '../static/img/f21.jpg';
+import P30 from '../static/img/p30.png';
 import Rating from '@material-ui/lab/Rating';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import AppleStore from '../static/img/getAppleStore.svg';
@@ -112,17 +115,17 @@ const useStyles = makeStyles( theme => ({
 const MostViewdCard = (props) => {
 
     const classes = useStyles();
-    let {value=4.5} = props;
+    let {title="",image=Phone,value=4.5} = props;
 
     return (
         <Controls.Card className={classes.mostViewedCard} >
             <CardHeader
-                title="Samsung J7 nxt"
+                title={title}
                 subheader="34 Aug, 2021"
             >
             </CardHeader>
             <CardMedia title="Samsung Galaxy j7 Nxt">
-                <img src={Phone} />
+                <img style={{maxWidth:200, maxHeight:200}} src={image} />
             </CardMedia>
             <CardContent>
                 <Rating
@@ -238,16 +241,16 @@ export default function HomePage(props) {
                                 </Typography>
                             </Grid>
                             <Grid item xs={6} sm={4} lg={3}>
-                                <Link to="/product/view/1" style={{textDecoration:"none"}} > <MostViewdCard/></Link>
+                                <Link to="/product/view/1" style={{textDecoration:"none"}} > <MostViewdCard image={Phone} title="Samsung galaxy J7 Nxt" /></Link>
                             </Grid>
                             <Grid item xs={6} sm={4} lg={3}>
-                                <Link to="/product/view/2" style={{textDecoration:"none"}} > <MostViewdCard/></Link>
+                                <Link to="/product/view/2" style={{textDecoration:"none"}} > <MostViewdCard image={IphoneX} title="Apple iphone x pro" /></Link>
                             </Grid>
                             <Grid item xs={6} sm={4} lg={3}>
-                                <Link to="/product/view/3" style={{textDecoration:"none"}} > <MostViewdCard/></Link>
+                                <Link to="/product/view/3" style={{textDecoration:"none"}} > <MostViewdCard image={F21} title="Oppo f21(64Gb)" /></Link>
                             </Grid>
                             <Grid item xs={6} sm={4} lg={3}>
-                                <Link to="/product/view/4" style={{textDecoration:"none"}} > <MostViewdCard/></Link>
+                                <Link to="/product/view/4" style={{textDecoration:"none"}} > <MostViewdCard image={P30} title="Huawei p30 Pro" /></Link>
                             </Grid>
                         </Grid>
                     </Controls.Paper>

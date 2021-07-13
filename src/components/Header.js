@@ -26,6 +26,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import {Link, useHistory} from 'react-router-dom';
 import { logout } from "../services/auth";
+import AddIcon from '@material-ui/icons/Add';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -225,6 +226,14 @@ export default function Header(props) {
                 }}
               />
             </Controls.ActionButton>
+            { userData.isLoggedIn ? 
+              (
+                <Controls.ActionButton textColor="white" component={Link} to={{pathname:"/product/add"}}>
+                  <AddIcon/> Add New
+                </Controls.ActionButton>
+              ):null
+            }
+            
             <Menu
               id="categoryMenu"
               className={classes.categoryMenu}

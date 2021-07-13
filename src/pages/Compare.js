@@ -6,7 +6,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Phone from '../static/img/j7.jpg';
 import SearchIcon from '@material-ui/icons/Search';
-
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const useStyles = makeStyles( theme => ({
 
@@ -102,12 +102,16 @@ export default function Compare(props) {
                                     <Grid item xs={4}>
                                         <Controls.Input endAdornment={<SearchIcon/>} placeholder="Search similar product">
                                         </Controls.Input>
-                                        <SimillarProductCard/>
+                                        <div style={{display:"flex", justifyContent:"center"}}>
+                                            <Skeleton width={"80%"} height={300} style={{marginTop:50}} variant="rect" />
+                                        </div>
                                     </Grid>
                                     <Grid item xs={4}>
                                         <Controls.Input endAdornment={<SearchIcon/>} placeholder="Search similar product">
                                         </Controls.Input>
-                                        <SimillarProductCard/>
+                                        <div style={{display:"flex", justifyContent:"center"}}>
+                                            <Skeleton width={"80%"} height={300} style={{marginTop:50}} variant="rect" />
+                                        </div>
                                     </Grid>
                                 </Grid>
                             </div>
@@ -123,10 +127,10 @@ export default function Compare(props) {
                                         Samsung
                                     </Grid>
                                     <Grid item xs={4}>
-                                        Huawei
+                                        
                                     </Grid>
                                     <Grid item xs={4}>
-                                        Samsung
+                                        
                                     </Grid>
                                 </Grid>
                             </div>
@@ -142,10 +146,10 @@ export default function Compare(props) {
                                         2017
                                     </Grid>
                                     <Grid item xs={4}>
-                                        2017
+                                        
                                     </Grid>
                                     <Grid item xs={4}>
-                                        2018
+                                        
                                     </Grid>
                                 </Grid>
                             </div>
@@ -161,10 +165,10 @@ export default function Compare(props) {
                                         27455
                                     </Grid>
                                     <Grid item xs={4}>
-                                        43754
+                                        
                                     </Grid>
                                     <Grid item xs={4}>
-                                        10,277
+                                        
                                     </Grid>
                                 </Grid>
                             </div>
