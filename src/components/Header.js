@@ -97,6 +97,13 @@ const GenerateList = (props) => {
   const classes = useStyles();
 
   const { list, ...others } = props;
+  const sublist= [
+    "Mobile Phones",
+    "Laptops",
+    "Tvs",
+    "Kitchen Products",
+    "Others"
+  ]
 
   return (
     <div className={classes.accordination}  {...others}>
@@ -108,13 +115,13 @@ const GenerateList = (props) => {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
                 >
-                <Typography>Category {item}</Typography>
+                <Typography>{item}</Typography>
                 </AccordionSummary>
                 <AccordionDetails className={classes.accordinationDetails}>
                     <List dense={true}>
-                        {list.map((item, j) => (
+                        {sublist.map((item, j) => (
                             <ListItem key={j} to="/products/1" component={Link} >
-                              <ListItemText primary={`SubCategory-${item}`} secondary="Secondary text" />
+                              <ListItemText primary={item} secondary="3245 Posts" />
                             </ListItem>
                         ))}
                     </List>
@@ -231,14 +238,35 @@ export default function Header(props) {
                     Product
                   </Typography>
                   <GenerateList
-                    list={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]}
+                    list={[
+                      "Electronics",
+                      "Vehicles",
+                      "Home Garden",
+                      "Fashion & Beauty",
+                      "Sport",
+                      "Agriculture",
+                      "Education",
+                      "Instrument",
+                      "Animal Materials",
+                      "Others"
+
+                    ]}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <Typography align="center" variant="h6" component="div">
                     Services
                   </Typography>
-                  <GenerateList list={[1, 2, 3,4,5,6,7,8]} />
+                  <GenerateList list={[
+                    "Courier Services",
+                    "Banking",
+                    "Telecommunication",
+                    "Health Services",
+                    "Education Services",
+                    "Travel Services",
+                    "Entertainment",
+                    "Other services"
+                  ]} />
                 </Grid>
               </Grid>
               <Grid container justifyContent="center" className={classes.closeIcon}>
@@ -262,8 +290,14 @@ export default function Header(props) {
                   onClose={handleClose}
                   style={{position:"absolute", top:40}}
                 >
+                  {userData.role == "admin" ? 
+                    (
+                      <MenuItem component={Link} to="/dashboard" >Dashboard</MenuItem>    
+                    ):null
+                  }
                   <MenuItem component={Link} to="/profile" >Profile</MenuItem>
                   <MenuItem>Favorite list</MenuItem>
+                  <MenuItem>Instant Groups</MenuItem>
                   <MenuItem onClick={handleLogout} >Logout</MenuItem>
                 </Menu>
               </>

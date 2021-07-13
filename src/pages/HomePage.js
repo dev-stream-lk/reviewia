@@ -1,5 +1,5 @@
 import { Grid, ListItemText, makeStyles, Typography, List, Link as MuiLink, ListItem, CardActions, CardHeader, CardMedia, CardContent, Box } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Controls from '../components/Controls';
 import Header from '../components/Header';
 import HeadImage from '../static/img/homepage_head.svg';
@@ -112,7 +112,7 @@ const useStyles = makeStyles( theme => ({
 const MostViewdCard = (props) => {
 
     const classes = useStyles();
-    let {value=4.75} = props;
+    let {value=4.5} = props;
 
     return (
         <Controls.Card className={classes.mostViewedCard} >
@@ -169,10 +169,8 @@ export default function HomePage(props) {
 
     const classes = useStyles();
     const {userData, setUserData} = props;
-    console.log(userData)
-    useEffect(() => {
-        
-    }, [userData])
+    
+    const [search, setSearch] = useState("");
 
     return (
         <div>
@@ -200,6 +198,8 @@ export default function HomePage(props) {
                             size="medium"
                             className={classes.headSearchInput}
                             placeholder="What are you looking for..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
                         >
                         </Controls.Input>
                     </Grid>

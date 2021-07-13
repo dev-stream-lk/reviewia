@@ -1,11 +1,12 @@
 import { Box, CardActions, CardContent, CardHeader, CardMedia, FormLabel, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Controls from '../components/Controls';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Phone from '../static/img/j7.jpg';
 import SendIcon from '@material-ui/icons/Send';
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles( theme => ({
@@ -175,6 +176,15 @@ export default function InstantGroup(props) {
 
     const classes = useStyles();
     const {userData, setUserData} = props;
+    const history = useHistory();
+
+    useEffect( ()=>{
+        if(userData){
+            if(userData.isLoggedIn == false){
+                history.push("/login")
+            }
+        }
+    },[userData])
 
     return (
         <>

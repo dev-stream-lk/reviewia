@@ -13,10 +13,11 @@ import PasswordRecovery from "./PasswordRecovery";
 import TermsOfService from "./TermsOfService";
 
 import {getCookie} from '../services/auth';
+import DashBoard from './DashBoard';
 
 var initialUserData = {
     email: "",
-    role: "",
+    role: "admin",
     token:"",
     isLoggedIn:false
 }
@@ -45,6 +46,7 @@ export default function Router() {
           > <InstantGroup userData={userData} setUserData={setUserData} /> </Route>
           <Route exact path="/profile"><Profile userData={userData} setUserData={setUserData} /></Route>
           <Route exact path="/passwordRecovery"> <PasswordRecovery userData={userData} setUserData={setUserData} /> </Route>
+          <Route exact path="/dashboard"> <DashBoard userData={userData} setUserData={setUserData} /> </Route>
         </Switch>
       </BrowserRouter>
     );
