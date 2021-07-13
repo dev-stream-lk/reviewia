@@ -11,12 +11,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AboutUs = () => {
+const AboutUs = (props ) => {
   const classes = useStyles();
+  const { userData, setUserData} = props;
 
   return (
     <>
-      <Header />
+      <Header userData={userData} setUserData={setUserData} />
       <Grid container>
         <Grid item xs={12}>
           <Controls.Paper>
