@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ButtonSet = () => {
   const classes = useStyles();
+  const [selected, setSelected] = useState(0);
 
   return (
     <Form>
@@ -78,18 +79,32 @@ const ButtonSet = () => {
           style={{ marginTop: 20 }}
         >
           <Controls.Button
-            type="submit"
             text="Decline"
+            onClick={() => setSelected(0)}
             style={{
-              backgroundColor: "#236CC7",
+              width: "20%",
+              height: "100%",
+              ...(selected === 0
+                ? { color: "white", backgroundColor: "#236CC7" }
+                : { color: "#236CC7", backgroundColor: "white" }),
             }}
+            // style={{
+            //   backgroundColor: "#236CC7",
+            // }}
           />
           <Controls.Button
-            type="submit"
             text="Accept"
+            onClick={() => setSelected(1)}
             style={{
-              backgroundColor: "#236CC7",
+              width: "20%",
+              height: "100%",
+              ...(selected === 1
+                ? { color: "white", backgroundColor: "#236CC7" }
+                : { color: "#236CC7", backgroundColor: "white" }),
             }}
+            // style={{
+            //   backgroundColor: "#236CC7",
+            // }}
           />
         </Grid>
       </Grid>
