@@ -15,8 +15,9 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import Controls from "../components/Controls";
-import ProductCategory from "../components/productCategory"
+import ProductCategory from "../components/productCategory";
 import ServiceCategory from "../components/serviceCategory";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,7 +45,6 @@ export default function AddCaregory() {
   const classes = useStyles();
   var flag = 0;
   const [selected, setSelected] = useState(flag);
-  
 
   return (
     <Grid container spacing={3}>
@@ -92,14 +92,72 @@ export default function AddCaregory() {
               </Controls.ActionButton>
             </Grid>
             <Grid item xs={12}>
-              <Typography
-                variant="h6"
-                align="left"
-                style={{ marginTop: "20px", marginLeft: 40, fontWeight: 600 }}
-                component="div"
-              >
-                {selected === 0 ? "Products" : "Service"}
-              </Typography>
+              {selected === 0 ? (
+                <Grid container alignItems="center">
+                  <Grid item xs={6}>
+                    <Typography
+                      variant="h6"
+                      align="left"
+                      style={{
+                        marginTop: "20px",
+                        marginLeft: 40,
+                        fontWeight: 600,
+                      }}
+                      component="div"
+                    >
+                      Product
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      style={{
+                        marginTop: "20px",
+                        marginLeft: 40,
+                      }}
+                      className={classes.button}
+                      startIcon={<AddCircleOutlineIcon />}
+                    >
+                      New
+                    </Button>
+                  </Grid>
+                </Grid>
+              ) : (
+                <Grid container alignItems="center">
+                  <Grid item xs={6}>
+                    <Typography
+                      variant="h6"
+                      align="left"
+                      style={{
+                        marginTop: "20px",
+                        marginLeft: 40,
+                        fontWeight: 600,
+                      }}
+                      component="div"
+                    >
+                      Service
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      style={{
+                        marginTop: "20px",
+                        marginLeft: 40,
+                      }}
+                      className={classes.button}
+                      startIcon={<AddCircleOutlineIcon />}
+                    >
+                      New
+                    </Button>
+                  </Grid>
+                </Grid>
+              )}
+
               <Grid>
                 {selected === 0 ? <ProductCategory /> : <ServiceCategory />}
               </Grid>
@@ -108,7 +166,9 @@ export default function AddCaregory() {
         </Controls.Paper>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Controls.Paper className={classes.paper}>xs=12 sm=6</Controls.Paper>
+        <Controls.Paper className={classes.paper}>
+          Sub Categories
+        </Controls.Paper>
       </Grid>
     </Grid>
   );
