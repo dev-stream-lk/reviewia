@@ -57,7 +57,7 @@ export default function BlockedUsers() {
                 ...(selected === 0 ? { color: "white" } : { color: "black" }),
               }}
             >
-              Reperted Users
+              Reported Users
             </Controls.ActionButton>
           </Grid>
           <Grid
