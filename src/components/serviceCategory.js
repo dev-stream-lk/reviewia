@@ -5,6 +5,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  TextField,
   Button,
   IconButton,
   Tooltip,
@@ -19,6 +20,8 @@ import Controls from "../components/Controls";
 export default function ServiceCategory() {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
+  const [searchItem, setSearch] = useState("");
+
   const handleListItemClick = (event, index) => {
     //call the function to gain sub classes..using index as id.
     setSelectedIndex(index);
@@ -32,16 +35,41 @@ export default function ServiceCategory() {
   ]);
 
   return (
-    <List component="nav" aria-label="secondary mailbox folder">
-      {services.map((service) => (
-        <ListItem
-          button
-          selected={selectedIndex === service["id"]}
-          onClick={(event) => handleListItemClick(event, service["id"])}
-        >
-          <ListItemText primary={service.title} />
-        </ListItem>
-      ))}
-    </List>
+    <Grid>
+      <form noValidate autoComplete="off">
+        <Grid item xs={6}>
+          <TextField
+            id="standard-basic"
+            label="Search..."
+            onChange={(event) => {
+              setSearch(event.target.value);
+            }}
+          />
+        </Grid>
+      </form>
+      <List component="nav" aria-label="secondary mailbox folder">
+        {services
+          .filter((val) => {
+            if (searchItem == "") {
+              return val;
+            } else if (
+              val.title
+                .toLocaleLowerCase()
+                .includes(searchItem.toLocaleLowerCase())
+            ) {
+              return val;
+            }
+          })
+          .map((service) => (
+            <ListItem
+              button
+              selected={selectedIndex === service["id"]}
+              onClick={(event) => handleListItemClick(event, service["id"])}
+            >
+              <ListItemText primary={service.title} />
+            </ListItem>
+          ))}
+      </List>
+    </Grid>
   );
 }
