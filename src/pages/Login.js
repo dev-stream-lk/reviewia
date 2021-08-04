@@ -202,7 +202,7 @@ const SignUp =(props) => {
         
 
         setErrors({
-            ...errors,
+            ...errors, 
             ...temp
         })
         let isValid = Object.values(temp).every(x=> x=="");

@@ -14,6 +14,7 @@ import Header from "../components/Header";
 import ReportedBannedPost from "../components/comp_reportedPostList";
 import ReportedHiddenReview from "../components/comp_reportHiddenReview";
 import BlockedUsers from "../components/comp_blockedUsers";
+import AddCaregory from "../components/comp_addCategory";
 
 const drawerWidth = 280;
 
@@ -140,7 +141,7 @@ export default function DashBoard(props) {
           <Grid container>
             <Grid item xs={12}>
               <Controls.Paper className={classes.dashboardContentPaper}>
-                {selected === 1 ? <Typography>Add Category</Typography> : null}
+                {selected === 1 ? <AddCaregory/> : null}
 
                 {selected === 2 ? <ReportedBannedPost /> : null}
 
