@@ -33,7 +33,7 @@ export function useForm(initialValues,validateOnChange=false, validate = null) {
 
     const [values, setValues] = useState(initialValues);
     const [errors, setErrors] = useState({});
-    const handleInputChange = e => {
+    const handleInputChange =  e => {
         const {name,value} = e.target;
         setValues({
             ...values,

@@ -12,7 +12,7 @@ import Profile from "./Profile";
 import PasswordRecovery from "./PasswordRecovery";
 import TermsOfService from "./TermsOfService";
 
-import {getCookie} from '../services/auth';
+import {getCookie} from '../services/cookies';
 import DashBoard from './DashBoard';
 
 var initialUserData = {

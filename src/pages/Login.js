@@ -11,10 +11,11 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import PersonIcon from '@material-ui/icons/Person';
-import {validateUserName, validatePassword, validateEmail, validateName} from '../components/Validators'
+import {validateUserName, validatePassword, validateEmail, validateName, requiredField} from '../components/Validators'
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import {login,register} from '../services/auth';
 import MainImage from '../static/img/login_img.svg';
+import {getCookie, getCookies, setCookie, setCookies} from '../services/cookies';
 
 const useStyles = makeStyles( theme => ({
 
@@ -73,17 +74,23 @@ const SignIN = (props) => {
         
         if('email' in fieldValues)
             temp.email = validateEmail(fieldValues.email);
+        if('password' in fieldValues)
+            temp.password = requiredField(fieldValues.password);
     
         setErrors({
             ...errors,
             ...temp
         })
         let isValid = Object.values(temp).every(x=> x=="");
-        if(isValid){
-            setDisabledSubmit(false)
-        }else{
-            setDisabledSubmit(true)
+        let len = Object.getOwnPropertyNames(fieldValues).length;
+        if(len != 1 || !('rememberMe' in  fieldValues)){
+            if(isValid){
+                setDisabledSubmit(false);
+            }else{
+                setDisabledSubmit(true)
+            }
         }
+        
         return isValid
     }
     const { values, setValues, handleInputChange, errors, setErrors } = useForm(initialValues, true, validate);
@@ -91,6 +98,11 @@ const SignIN = (props) => {
     const  handleOnSubmit = async (e) => {
         e.preventDefault();
 
+        if(values.rememberMe){
+            setCookie('email', values.email,30);
+            setCookie('password', values.password,30);
+        }
+        
         const result = await login({
             email: values.email,
             password:values.password
@@ -105,6 +117,14 @@ const SignIN = (props) => {
         }
 
     }
+
+    useEffect( () => {
+        let email = getCookie("email");
+        let password = getCookie("password");
+        if( email ){
+            setValues( {...values, email, password});
+        }
+    },[]);
 
 
     return (
@@ -140,6 +160,7 @@ const SignIN = (props) => {
                     type= { visibility ? "text":"password"}
                     onChange={handleInputChange}
                     value={values.password}
+                    error={errors.password}
                 />
             </Grid>
             <Grid container alignItems="center">
@@ -148,7 +169,7 @@ const SignIN = (props) => {
                         name="rememberMe"
                         label="Remember Me"
                         color="primary"
-                        value={values.rememberMe}
+                        checked={values.rememberMe}
                         onChange={handleInputChange}
                     />
                 </Grid>
@@ -183,12 +204,11 @@ const SignUp =(props) => {
         email:"",
         password:"",
         cpassword:"",
-        rememberMe:false
+        termsAgree:false
     }
 
     const validate = (fieldValues= values) => {
         let temp = {}
-        
         if('firstName' in fieldValues)
             temp.firstName = validateName(fieldValues.firstName);
         if('lastName' in fieldValues)
@@ -198,24 +218,39 @@ const SignUp =(props) => {
         if('password' in fieldValues)
             temp.password = validatePassword(fieldValues.password);
         if('cpassword' in fieldValues)
-            temp.cpassword = validatePassword(fieldValues.cpassword);
-        
+            temp.cpassword = validatePassword(fieldValues.cpassword, values.password);
+        if('termsAgree' in fieldValues)
+            temp.termsAgree = fieldValues.termsAgree == true? "" : "You must agree to term and conditions.";
 
         setErrors({
             ...errors, 
             ...temp
         })
         let isValid = Object.values(temp).every(x=> x=="");
-        if(isValid){
-            setDisabledSubmit(false)
+        let len = Object.getOwnPropertyNames(fieldValues).length;
+
+        if( !('termsAgree' in fieldValues)){
+            if(isValid && values.termsAgree == true ){
+                setDisabledSubmit(false)
+            }else{
+                setDisabledSubmit(true)
+            }
         }else{
-            setDisabledSubmit(true)
+
+            let t = {...errors};
+            delete t.termsAgree
+            if(isValid &&  Object.values(t).every(x=> x=="")){
+                setDisabledSubmit(false)
+            }else{
+                setDisabledSubmit(true)
+            }
         }
         return isValid
     }
 
 
     const { values, setValues, handleInputChange, errors, setErrors } = useForm(initialValues,true,validate);
+
 
     var history = useHistory();
 
@@ -311,15 +346,15 @@ const SignUp =(props) => {
             <Grid container alignItems="center">
                 <Grid item xs={12}>
                     <div style={{display:"flex", alignItems:"center", justifyContent:"flex-start"}}>
-                        <Checkbox
-                            name="rememberMe"
+                        <Controls.Checkbox
+                            name="termsAgree"
                             color="primary"
-                            value={values.rememberMe}
+                            checked={values.termsAgree}
                             onChange={handleInputChange}
-                        />
-                        <Typography variant="subtitle1">
+                            label={<Typography variant="subtitle1">
                             I read and agree to <Link to={{pathname:"/termsOfService"}} > terms & conditions</Link>
-                        </Typography>
+                        </Typography>}
+                        />
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
