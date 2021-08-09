@@ -12,11 +12,18 @@ import {
   CardHeader,
   Avatar,
   CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import Controls from "../components/Controls";
 import ProductCategory from "../components/productCategory";
 import ServiceCategory from "../components/serviceCategory";
+import SubCategory from "../components/comp_subCategory"
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,10 +53,88 @@ export default function AddCaregory() {
   var flag = 0;
   const [selected, setSelected] = useState(flag);
 
+  const [openProduct, setOpenProduct] = useState(false);
+  const [openService, setOpenService] = useState(false);
+
+  const handleClickOpen = () => {
+    
+    if (selected === 0) {
+      setOpenProduct(true);
+    } else {
+      setOpenService(true);
+    }
+    
+  };
+
+  const handleClose = () => {
+    setOpenProduct(false);
+    setOpenService(false);
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={6}>
         <Controls.Paper className={classes.paper}>
+          {/* product add popup */}
+          <Dialog
+            open={openProduct}
+            onClose={handleClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">
+              New Product Category
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>Add Your Product.</DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Category"
+                type="text"
+                fullWidth
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleClose} color="primary">
+                add
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Service add popup */}
+          <Dialog
+            open={openService}
+            onClose={handleClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">
+              New Service Category
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>Add Your Service.</DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Category"
+                type="text"
+                fullWidth
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleClose} color="primary">
+                Subscribe
+              </Button>
+            </DialogActions>
+          </Dialog>
+
           <Grid container alignItems="center">
             <Grid
               item
@@ -119,6 +204,7 @@ export default function AddCaregory() {
                       }}
                       className={classes.button}
                       startIcon={<AddCircleOutlineIcon />}
+                      onClick={handleClickOpen}
                     >
                       New
                     </Button>
@@ -151,6 +237,7 @@ export default function AddCaregory() {
                       }}
                       className={classes.button}
                       startIcon={<AddCircleOutlineIcon />}
+                      onClick={handleClickOpen}
                     >
                       New
                     </Button>
@@ -167,7 +254,7 @@ export default function AddCaregory() {
       </Grid>
       <Grid item xs={12} sm={6}>
         <Controls.Paper className={classes.paper}>
-          Sub Categories
+          <SubCategory />
         </Controls.Paper>
       </Grid>
     </Grid>
