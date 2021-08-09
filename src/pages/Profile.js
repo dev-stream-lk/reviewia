@@ -112,7 +112,7 @@ const Profile = (props) => {
                   aria-label="contained primary button group"
                 >
                   <Button onClick={() => setActive("ProductList")}>
-                    My Products
+                    My Posts
                   </Button>
                   <Button onClick={() => setActive("GroupList")}>
                     My Groups

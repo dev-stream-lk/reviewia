@@ -23,7 +23,7 @@ const validateName = (name) => {
     return error
 }
 
-const validatePassword = (password) => {
+const validatePassword = (password, password2) => {
     password = password.trim()
     let error = "";
     
@@ -37,6 +37,8 @@ const validatePassword = (password) => {
         return "Should include minimum 01 symbol";
     }else if( password.length < 8){
         return "Password must cantain at least 8 characters."
+    }else if( password !== password2){
+        return "Password didn't match."
     }
     return error
 }
@@ -54,9 +56,19 @@ const validateEmail = (email) => {
     return ""
 }
 
+const requiredField = ( field ) => {
+    field = field.trim();
+
+    if(field.length === 0){
+        return "A required field.";
+    }
+    return "";
+}
+
 export {
     validateUserName,
     validatePassword,
     validateEmail,
-    validateName
+    validateName,
+    requiredField
 }
