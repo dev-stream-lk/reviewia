@@ -2,8 +2,7 @@ import {getCookie, setCookie, checkCookie} from './cookies';
 import HOST from '../config/config';
 
 
-const register = (data) => {
-
+const register = (data, callback) => {
     const {firstName, lastName, email, password} = data;
     
     const requestOptions = {
@@ -20,10 +19,10 @@ const register = (data) => {
     }
 
     fetch(HOST+'registration', requestOptions)
-    .then( res => { console.log(res)})
+    .then( res => { 
+        callback(res)
+    })
     .catch( err => console.error(err));
-    return true;
-
 }
 
 
