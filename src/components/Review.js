@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -8,6 +8,7 @@ import ThumbDown from "@material-ui/icons/ThumbDownAltOutlined";
 import { Rating, Skeleton } from "@material-ui/lab";
 import { IconButton } from "@material-ui/core";
 import ReportIcon from '@material-ui/icons/Report';
+import Controls from './Controls';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,11 +36,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Review({ description }) {
+export default function Review({ description,setReportReviewId, reviewId }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root}>      
       <Grid container>
         <Grid item xs={12}>
           <Grid container>
@@ -82,6 +83,7 @@ export default function Review({ description }) {
                           color="secondary"
                           aria-label="report"
                           component="span"
+                          onClick={() => setReportReviewId(reviewId)}
                         >
                           <ReportIcon />
                         </IconButton>
