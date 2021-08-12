@@ -1,4 +1,4 @@
-import { DialogTitle, makeStyles } from '@material-ui/core';
+import { DialogActions, DialogTitle, makeStyles } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import { DialogContent } from '@material-ui/core';
 import { Dialog } from '@material-ui/core';
@@ -21,7 +21,7 @@ const useStyles = makeStyles( theme => ({
 export default function Popup(props) {
 
     const classes = useStyles();
-    const {title, children, openPopup, setOpenPopup} = props;
+    const {title, children, openPopup, setOpenPopup, actions} = props;
 
     return (
         <Dialog open={openPopup} classes={{ paper: classes.dialog}}>
@@ -30,17 +30,22 @@ export default function Popup(props) {
                     <Typography variant="h6" component="div" style={{flexGrow:1}}>
                         {title}
                     </Typography>
-                    <Controls.ActionButton
+                    <Controls.Button
                         color="secondary"
+                        variant="outlined"
                         onClick={ () => setOpenPopup(false)}
                     >
                         <CloseIcon></CloseIcon>
-                    </Controls.ActionButton>
+                    </Controls.Button>
                 </div>
             </DialogTitle>
             <DialogContent dividers>
                 {children}
             </DialogContent>
+
+            <DialogActions>
+                {actions}
+            </DialogActions>
         </Dialog>
     )
 }

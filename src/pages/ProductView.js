@@ -1,5 +1,5 @@
-import {  Grid, makeStyles, Typography, Button, IconButton, Tooltip, } from "@material-ui/core";
-import React from "react";
+import {  Grid, makeStyles, Typography, Button, IconButton, Tooltip, FormLabel, } from "@material-ui/core";
+import React, { useState } from "react";
 import Controls from "../components/Controls";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -11,31 +11,146 @@ import Rating from "@material-ui/lab/Rating";
 import { Skeleton } from "@material-ui/lab";
 import { Link } from "react-router-dom";
 import Phone from '../static/img/j7.jpg';
+import {useForm, Form} from '../components/useForm';
+import {requiredField} from '../components/Validators';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
-    margin: theme.spacing(5),
+    margin: `${theme.spacing(5)}px 0px ${theme.spacing(5)}px 0px`,
+    [theme.breakpoints.up('sm')]:{
+      margin: theme.spacing(5)
+    },
+    [theme.breakpoints.up('md')]:{
+      margin: `${theme.spacing(5)}px ${theme.spacing(1)}px ${theme.spacing(5)}px ${theme.spacing(1)}px`,
+    }
   },
   reviewContainer: {
     margin: theme.spacing(2),
     padding: theme.spacing(2),
   },
+  rhs:{
+    marginTop:50,
+    [theme.breakpoints.up("md")]:{
+      margin:0
+    }
+  },
   productContainer: {
     textAlign: "start",
   },
+
+  writeReviewForm:{
+    width:500
+  }
 }));
+
+
+const WriteReview = (props) => {
+
+  const classes = useStyles();
+  const {open, setOpen} = props;
+
+  const initialValues = {
+    review:"",
+    rating:2.5
+  };
+
+  const validate = (fieldValue= values) => {
+    const temp = {};
+    if('review' in fieldValue)
+      temp.review = requiredField(fieldValue.review);
+
+    setErrors({
+      ...errors,
+      ...temp
+    })
+    
+    const isValid = Object.values(temp).every(x => x=="");
+
+    return isValid;
+  }
+
+  const {
+    values,
+    setValues,
+    errors,
+    setErrors,
+    handleInputChange
+  } = useForm(initialValues,false,validate);
+
+  const onSubmit = () => {
+    // if(validate){
+
+    // }
+    console.log("sddsd")
+  }
+
+  const Actions= () => {
+
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+          color="secondary"
+          style={{marginRight:10}}
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          onClick={()=>onSubmit()}
+        >
+          Save
+        </Controls.Button>
+      </Grid>
+    )
+  }
+
+  return (
+      <>
+          <Controls.Popup title="Write Review" openPopup={open} setOpenPopup={setOpen} actions={<Actions/>}>
+            <Form className={classes.writeReviewForm} >
+              <Controls.Input
+                name="review"
+                label="Review"
+                value={values.review}
+                error={errors.review}
+                onChange={handleInputChange}
+                multiline
+                maxRows={6}
+                required={true}
+              />
+              <Grid container  alignItems="center" style={{marginTop:20}}>
+                <FormLabel style={{paddingRight:50}} >Rating</FormLabel>
+                <Rating 
+                  value={values.rating}
+                  onChange={(e,value) => handleInputChange({target:{name:e.target.name,value: value}})}
+                  name="rating"
+                  precision={0.25}
+                />
+                <span style={{paddingLeft:10}}>
+                  ({values.rating})
+                </span>
+              </Grid>
+              
+            </Form>
+          </Controls.Popup>
+      </>
+  )
+}
+
 
 const ProductView = (props) => {
   const classes = useStyles();
   const {userData, setUserData} = props;
+  const [open,setOpen] = useState(false);
 
   return (
     <div>
       <Header  userData={userData} setUserData={setUserData} />
       <div className={classes.mainDiv}>
         <Grid container className={classes.productContainer}>
+          <WriteReview open={open} setOpen={setOpen} />
           {/* LHS */}
-          <Grid item xs={12} sm={5}>
+          <Grid item xs={12} md={5}>
             <Grid container justify="center">
               <Grid
                 item
@@ -97,13 +212,13 @@ const ProductView = (props) => {
           </Grid>
 
           {/* RHS */}
-          <Grid item xs={12} sm={7}>
+          <Grid item xs={12} md={7} className={classes.rhs} >
             <Grid container style={{ textAlign: "center" }}>
               <Grid item xs={6}>
                 <Typography variant="h5">Product Name</Typography>
               </Grid>
               <Grid item xs={6}>
-                <Button variant="outlined">Write a review</Button>
+                <Controls.Button onClick={()=>setOpen(true)} variant="outlined">Write a review</Controls.Button>
               </Grid>
               <Grid item xs={12}>
                 <Controls.Paper className={useStyles.paper}>

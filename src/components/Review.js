@@ -7,20 +7,21 @@ import ThumbUp from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbDown from "@material-ui/icons/ThumbDownAltOutlined";
 import { Rating, Skeleton } from "@material-ui/lab";
 import { IconButton } from "@material-ui/core";
+import ReportIcon from '@material-ui/icons/Report';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  typography : {
-    textAlign: "start"
+  typography: {
+    textAlign: "start",
   },
   paper: {
     height: 250,
     width: "100%",
-    display: 'flex',
+    display: "flex",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
   image: {
     width: 128,
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Review({description}) {
+export default function Review({ description }) {
   const classes = useStyles();
 
   return (
@@ -42,63 +43,73 @@ export default function Review({description}) {
       <Grid container>
         <Grid item xs={12}>
           <Grid container>
-          <Paper className={classes.paper}>
-            <Grid item xs={8}>
-              <Grid container>
-                <Grid item xs={6}>
-                  <Typography variant="h6">Review - 1</Typography>
-                </Grid>
-                <Grid itemxs={6}>
-                  <Rating 
+            <Paper className={classes.paper}>
+              <Grid item xs={12}>
+                <Grid
+                  container
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Skeleton
+                      animation="wave"
+                      variant="circle"
+                      width={40}
+                      height={40}
+                      style={{ margin: 10 }}
+                    />
+                    <span variant="h6">Review - 1</span>
+                  </div>
+                  <Rating
                     value={3.6}
                     name="byRating"
                     precision={0.25}
                     readOnly
                   />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="body1" gutterBottom className={classes.typography}>
-                    {description}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={4}>
-            <Grid container style={{justifyContent: "center"}}>
-                <Grid item xs={12} style={{flex: "inherit"}} >
-                  <Skeleton
-                    animation="wave"
-                    variant="circle"
-                    width={40}
-                    height={40}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container justifyContent="center">
-                  <Grid item xs={2}>
-                  <IconButton
-                    color="primary"
-                    aria-label="Like"
-                    component="span"
-                  >
-                    <ThumbUp />
-                  </IconButton>
-                </Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="body1"
+                      gutterBottom
+                      className={classes.typography}
+                    >
+                      {description}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Grid container justifyContent="flex-end">
+                    <Grid item xs={2}>
+                        <IconButton
+                          color="secondary"
+                          aria-label="report"
+                          component="span"
+                        >
+                          <ReportIcon />
+                        </IconButton>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <IconButton
+                          color="primary"
+                          aria-label="Like"
+                          component="span"
+                        >
+                          <ThumbUp />
+                        </IconButton>
+                      </Grid>
 
-                <Grid item xs={2}>
-                  <IconButton
-                    color="primary"
-                    aria-label="Dislike"
-                    component="span"
-                  >
-                    <ThumbDown />
-                  </IconButton>
-                </Grid>
+                      <Grid item xs={2}>
+                        <IconButton
+                          color="primary"
+                          aria-label="Dislike"
+                          component="span"
+                        >
+                          <ThumbDown />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-          </Paper>
+            </Paper>
           </Grid>
         </Grid>
       </Grid>
