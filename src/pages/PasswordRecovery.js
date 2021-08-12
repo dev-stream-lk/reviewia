@@ -9,7 +9,8 @@ import {
   validateEmail,
 } from "../components/Validators";
 import MainImage from '../static/img/login_img.svg';
-import { Link } from "react-router-dom";
+import { Link as RouterLink} from "react-router-dom";
+import {Link} from '@material-ui/core'
 import { passwordRecovery } from '../services/auth'
 
 const useStyles = makeStyles((theme) => ({
@@ -178,7 +179,7 @@ export default function PasswordRecovery() {
           <RecoveryForm />
 
           <Grid container justify="center" style={{ marginTop: "10px" }}>
-            <span>Back to <Link to={{pathname:"/login"}}> Sign In</Link></span>
+            <span>Back to <Link component={RouterLink} to={{pathname:"/login"}} underline="hover" > Sign In</Link></span>
           </Grid>
         </Controls.Paper>
       </Grid>

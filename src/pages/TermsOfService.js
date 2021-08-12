@@ -1,16 +1,11 @@
-import { Grid, makeStyles, Paper } from "@material-ui/core";
+import { Grid, Link, makeStyles, Paper } from "@material-ui/core";
 import React, { useState } from "react";
 import Controls from "../components/Controls";
 import { useForm, Form } from "../components/useForm";
-import EmailIcon from "@material-ui/icons/Email";
 import { Typography } from "@material-ui/core";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import MainImage from "../static/img/login_img.svg";
-import {
-  validateUserName,
-  validatePassword,
-  validateEmail,
-} from "../components/Validators";
+import {Link as RouterLink} from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -20,12 +15,21 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
+  siteName:{
+    marginTop: theme.spacing(5),
+    [theme.breakpoints.up('md')]:{
+      display:"none",
+    }
+  },
   paper: {
-    marginTop: theme.spacing(10),
+    marginTop: theme.spacing(2),
+    [ theme.breakpoints.up('md')]:{
+      marginTop: theme.spacing(2),
+    }
   },
   paperDiv: {
     padding: `${theme.spacing(0)}px ${theme.spacing(0)}px ${theme.spacing(
-      4
+      2
     )}px ${theme.spacing(0)}px !important`,
   },
   disabledSubmit: {
@@ -39,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 50,
   },
   loginImage: {
+    display:"none",
     [theme.breakpoints.up("md")]: {
       display: "inherit",
     },
@@ -48,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 }
 }));
 
-const ButtonSet = () => {
+const ButtonSet = (props) => {
   const classes = useStyles();
   const [selected, setSelected] = useState(0);
 
@@ -80,7 +85,7 @@ const ButtonSet = () => {
           <Terms />
         </Grid>
       </Grid>
-      <Grid container alignItems="center">
+      {/* <Grid container alignItems="center">
         <Grid
           container
           display="flex"
@@ -89,7 +94,6 @@ const ButtonSet = () => {
         >
           <Controls.Button
             text="Decline"
-            onClick={() => setSelected(0)}
             style={{
               width: "20%",
               height: "100%",
@@ -103,7 +107,6 @@ const ButtonSet = () => {
           />
           <Controls.Button
             text="Accept"
-            onClick={() => setSelected(1)}
             style={{
               width: "20%",
               height: "100%",
@@ -116,7 +119,7 @@ const ButtonSet = () => {
             // }}
           />
         </Grid>
-      </Grid>
+      </Grid> */}
     </Form>
   );
 };
@@ -130,7 +133,7 @@ const Terms =() =>{
         style={{
           // maxHeight: "100vh",
           padding: "30px",
-          height: "30vh",
+          height: "50vh",
           paddingTop: "10px",
         }}
         container
@@ -167,20 +170,23 @@ const Terms =() =>{
 }
 
 export default function TermsOfService() {
+
   const [active, setActive] = useState("Accept");
   const classes = useStyles();
 
 
   return (
-    <Grid container>
-      <Grid item xs={1} sm></Grid>
+    <Grid container justifyContent="center" >
       <Grid item xs={false} className={classes.loginImage} md={5}>
-        <Grid container justifyContent="center" style={{flexDirection:"column"}}>
-          <Typography variant="h3" align="center" className={classes.title}>Reviewia</Typography>
-          <img src={MainImage} />
+        <Grid container justifyContent="center" style={{flexDirection:"column", paddingLeft:40}}>
+          <Link underline="none" variant="h3" align="center" component={RouterLink} to="/" className={classes.title}>Reviewia</Link>
+          <img style={{width:"100%"}} src={MainImage} />
         </Grid>
       </Grid>
-      <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
+      <Grid item xs={12} sm={11} md={7} className={classes.wrapper}>
+        <Grid item className={classes.siteName} >
+        <Link underline="none" variant="h3" align="center" component={RouterLink} to="/" className={classes.title}>Reviewia</Link>
+        </Grid>
         <Controls.Paper
           className={classes.paper}
           divClassName={classes.paperDiv}
@@ -235,10 +241,9 @@ export default function TermsOfService() {
               </Typography>
             </Grid>
           </Grid>
-          <ButtonSet />
+          <ButtonSet/>
         </Controls.Paper>
       </Grid>
-      <Grid item xs={1} sm></Grid>
     </Grid>
   );
 }
