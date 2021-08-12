@@ -1,5 +1,5 @@
 import {  Grid, makeStyles, Typography, Button, IconButton, Tooltip, FormLabel, } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Controls from "../components/Controls";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -40,9 +40,80 @@ const useStyles = makeStyles((theme) => ({
 
   writeReviewForm:{
     width:500
-  }
+  },
+
+  reportPopup:{
+    width:500
+  },
 }));
 
+const ReportReview = (props) => {
+
+  const classes = useStyles();
+  const {openReport, setOpenReport, handleReportClose} = props;
+  const [customFeedback, setCustomFeedback] = useState("");
+  const [ fakeReview, setFakeReview ] = useState(false);
+  const [ notRelavent, setNotRelavent] = useState(false);
+  
+  const handleReport = (e) => {
+    // Todo : api call to backend 
+    setOpenReport(false);
+  }
+
+  const Actions = () => {
+
+    return (
+      <>
+        <Controls.Button
+          onClick={()=> setOpenReport(false)}
+          color="secondary"
+        >
+          Cancel
+        </Controls.Button>
+
+        <Controls.Button
+          onClick={handleReport}
+          >
+          Report
+        </Controls.Button>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Controls.Popup title="Report Review" openPopup={openReport} setOpenPopup={setOpenReport} actions={<Actions/>} >
+
+        <Grid container className={classes.reportPopup}>
+          <Grid item xs={12} sm={6}>
+            <Controls.Checkbox
+              label="Fake Review"
+              checked={fakeReview}
+              onChange={ () => setFakeReview(!fakeReview) }
+            >
+            </Controls.Checkbox>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controls.Checkbox
+              label="Not relavent"
+              checked={notRelavent}
+              onChange={ () => setNotRelavent(!notRelavent) }
+            ></Controls.Checkbox>
+          </Grid>
+        </Grid>
+          <Controls.Input
+            multiline
+            maxRows={5}
+            value={customFeedback}
+            label="Write Your report"
+            onChange={ e => setCustomFeedback(e.target.value) }
+          >
+
+          </Controls.Input>
+      </Controls.Popup>
+    </>
+  )
+}
 
 const WriteReview = (props) => {
 
@@ -142,6 +213,21 @@ const ProductView = (props) => {
   const classes = useStyles();
   const {userData, setUserData} = props;
   const [open,setOpen] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
+  const [reportReviewId, setReportReviewId] = useState(null);
+
+
+  useEffect( ()=>{
+    if(reportReviewId != null){
+      setOpenReport(true);
+    }
+  }, [reportReviewId])
+
+  useEffect(()=>{
+    if(openReport === false){
+      setReportReviewId(null);
+    }
+  },[openReport])
 
   return (
     <div>
@@ -149,6 +235,7 @@ const ProductView = (props) => {
       <div className={classes.mainDiv}>
         <Grid container className={classes.productContainer}>
           <WriteReview open={open} setOpen={setOpen} />
+          <ReportReview reportReviewId={reportReviewId} openReport={openReport} setOpenReport={setOpenReport} />
           {/* LHS */}
           <Grid item xs={12} md={5}>
             <Grid container justify="center">
@@ -238,6 +325,8 @@ const ProductView = (props) => {
                         }}
                       >
                         <Review
+                          setReportReviewId={setReportReviewId}
+                          reviewId={1}
                           description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
                                       elit. Quos blanditiis tenetur unde suscipit, quam beatae
                                       rerum inventore consectetur, neque doloribus, cupiditate
@@ -245,6 +334,8 @@ const ProductView = (props) => {
                                       quidem quibusdam."
                         />
                         <Review
+                          setReportReviewId={setReportReviewId}
+                          reviewId={2}
                           description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
                                       elit. Quos blanditiis tenetur unde suscipit, quam beatae
                                       rerum inventore consectetur, neque doloribus, cupiditate
@@ -252,6 +343,8 @@ const ProductView = (props) => {
                                       quidem quibusdam."
                         />
                         <Review
+                          setReportReviewId={setReportReviewId}
+                          reviewId={3}
                           description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
                                       elit. Quos blanditiis tenetur unde suscipit, quam beatae
                                       rerum inventore consectetur, neque doloribus, cupiditate
@@ -259,6 +352,8 @@ const ProductView = (props) => {
                                       quidem quibusdam."
                         />
                         <Review
+                          setReportReviewId={setReportReviewId}
+                          reviewId={4}
                           description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
                                       elit. Quos blanditiis tenetur unde suscipit, quam beatae
                                       rerum inventore consectetur, neque doloribus, cupiditate
