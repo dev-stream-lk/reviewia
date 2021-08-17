@@ -81,13 +81,29 @@ const SignIN = (props) => {
             ...errors,
             ...temp
         })
-        let isValid = Object.values(temp).every(x=> x=="");
+        let isValid = Object.values({...errors,...temp}).every(x=> x=="");
         let len = Object.getOwnPropertyNames(fieldValues).length;
-        if(len != 1 || !('rememberMe' in  fieldValues)){
+        if(len != 1){
             if(isValid){
                 setDisabledSubmit(false);
             }else{
                 setDisabledSubmit(true)
+            }
+        }else{
+            if(!("rememberMe" in fieldValues)){
+                const temp2 = {};
+                if(!'email' in fieldValues)
+                    temp2.email = validateEmail(fieldValues.email);
+                if(!'password' in fieldValues)
+                    temp2.password = requiredField(fieldValues.password);
+                
+                let isValidAll = Object.values(temp2).every(x=> x=="");
+                if(isValid && isValidAll){
+                    setDisabledSubmit(false);
+                }else{
+                    setDisabledSubmit(true)
+                }
+
             }
         }
         
@@ -123,6 +139,7 @@ const SignIN = (props) => {
         let password = getCookie("password");
         if( email ){
             setValues( {...values, email, password});
+            validate({email,password})
         }
     },[]);
 
@@ -195,8 +212,19 @@ const SignUp =(props) => {
 
     const classes = useStyles();
     const  [disableSubmit, setDisabledSubmit] = useState(true);
-    const {userData, setUserData} = props;
+    const {userData, setUserData, setSelected} = props;
     const [visibility, setVisibility] = useState(false);
+    const history = useHistory();
+    const [error, setError] = useState("");
+
+    const callback = (res) => {
+        console.log(res)
+        if(res.status == 201){
+            setSelected(0);
+        }else{
+            setError("Error..");
+        }
+    }
 
     const initialValues = {
         firstName:"",
@@ -219,40 +247,36 @@ const SignUp =(props) => {
             temp.password = validatePassword(fieldValues.password);
         if('cpassword' in fieldValues)
             temp.cpassword = validatePassword(fieldValues.cpassword, values.password);
-        if('termsAgree' in fieldValues)
+        if('termsAgree' in fieldValues){
             temp.termsAgree = fieldValues.termsAgree == true? "" : "You must agree to term and conditions.";
+            console.log("sdsds")
+        }
 
         setErrors({
             ...errors, 
             ...temp
         })
-        let isValid = Object.values(temp).every(x=> x=="");
+        let isValid = Object.values({...errors,...temp}).every(x=> x=="");
         let len = Object.getOwnPropertyNames(fieldValues).length;
-
-        if( !('termsAgree' in fieldValues)){
-            if(isValid && values.termsAgree == true ){
+        if( len ===1 && 'termsAgree' in fieldValues){
+            let customdata  = {...values};
+            delete customdata.termsAgree;
+            if(isValid && validate(customdata)){
                 setDisabledSubmit(false)
             }else{
                 setDisabledSubmit(true)
             }
         }else{
-
-            let t = {...errors};
-            delete t.termsAgree
-            if(isValid &&  Object.values(t).every(x=> x=="")){
+            if(isValid && values.termsAgree){
                 setDisabledSubmit(false)
             }else{
                 setDisabledSubmit(true)
             }
         }
+        
         return isValid
     }
-
-
     const { values, setValues, handleInputChange, errors, setErrors } = useForm(initialValues,true,validate);
-
-
-    var history = useHistory();
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -263,15 +287,7 @@ const SignUp =(props) => {
                 lastName: values.lastName,
                 email:values.email,
                 password: values.password
-            })
-            if(res){
-                history.push({
-                    pathname: "/login",
-                    state:{
-                        register:0
-                    }
-                })
-            }
+            }, callback)
         }else{
             console.log("invalid")
         }
@@ -279,6 +295,11 @@ const SignUp =(props) => {
 
     return (
         <Form onSubmit={onSubmit}>
+            { error.length ? 
+                (
+                    <span>{error}</span>
+                ): null
+            }
             <Grid container>
                 <Controls.Input
                     name="firstName"
@@ -436,7 +457,7 @@ export default function Login(props) {
                         )
                         :
                         (
-                            <SignUp userData={userData} setUserData={setUserData} />
+                            <SignUp setSelected={setSelected} userData={userData} setUserData={setUserData} />
                         )
                     }
                    

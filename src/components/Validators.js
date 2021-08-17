@@ -23,7 +23,7 @@ const validateName = (name) => {
     return error
 }
 
-const validatePassword = (password, password2) => {
+const validatePassword = (password, password2=null) => {
     password = password.trim()
     let error = "";
     
@@ -37,7 +37,8 @@ const validatePassword = (password, password2) => {
         return "Should include minimum 01 symbol";
     }else if( password.length < 8){
         return "Password must cantain at least 8 characters."
-    }else if( password !== password2){
+    }
+    if( password2 != null && password !== password2){
         return "Password didn't match."
     }
     return error
