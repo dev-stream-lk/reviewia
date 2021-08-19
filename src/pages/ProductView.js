@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import Phone from '../static/img/j7.jpg';
 import {useForm, Form} from '../components/useForm';
 import {requiredField} from '../components/Validators';
+import {UserContext} from '../context/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -211,7 +212,6 @@ const WriteReview = (props) => {
 
 const ProductView = (props) => {
   const classes = useStyles();
-  const {userData, setUserData} = props;
   const [open,setOpen] = useState(false);
   const [openReport, setOpenReport] = useState(false);
   const [reportReviewId, setReportReviewId] = useState(null);
@@ -230,148 +230,151 @@ const ProductView = (props) => {
   },[openReport])
 
   return (
-    <div>
-      <Header  userData={userData} setUserData={setUserData} />
-      <div className={classes.mainDiv}>
-        <Grid container className={classes.productContainer}>
-          <WriteReview open={open} setOpen={setOpen} />
-          <ReportReview reportReviewId={reportReviewId} openReport={openReport} setOpenReport={setOpenReport} />
-          {/* LHS */}
-          <Grid item xs={12} md={5}>
-            <Grid container justify="center">
-              <Grid
-                item
-                xs={12}
-                style={{ display: "flex", justifyContent: "center" }}
-              >
-              <img style={{maxWidth:200, maxHeight:200}} src={Phone} />
-              </Grid>
-              <Grid item xs={12} style={{ textAlign: "center" }}>
-                <Rating 
-                  value={4.5}
-                  name="byRating"
-                  precision={0.25}
-                  readOnly
-                />
-              </Grid>
-              <Grid item xs={12} style={{ textAlign: "center" }}>
-                <Typography variant="h5">4.5</Typography>
-              </Grid>
-              <Grid item xs={12} style={{ textAlign: "center" }}>
-              <Tooltip title="Add to Favourites" aria-label="add" arrow>
-              <IconButton
-                  color="primary"
-                  aria-label="Add to favourite"
-                  component="span"
-                >
-                  <FavoriteBorderSharp />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Compare" aria-label="add" arrow>
-              <Link to={{pathname:"/product/compare"}} >
-                <IconButton
-                    color="primary"
-                    aria-label="Add to favourite"
-                    component="span"
+    <UserContext.Consumer>
+      {({userData, setUserData}) => (
+        <div>
+          <Header  userData={userData} setUserData={setUserData} />
+          <div className={classes.mainDiv}>
+            <Grid container className={classes.productContainer}>
+              <WriteReview open={open} setOpen={setOpen} />
+              <ReportReview reportReviewId={reportReviewId} openReport={openReport} setOpenReport={setOpenReport} />
+              {/* LHS */}
+              <Grid item xs={12} md={5}>
+                <Grid container justify="center">
+                  <Grid
+                    item
+                    xs={12}
+                    style={{ display: "flex", justifyContent: "center" }}
                   >
-                    <CompareSharp />
-                  </IconButton>
-                </Link>
-              </Tooltip>
-              <Tooltip title="Create Instant Group" aria-label="add" arrow>
-              <Link to={{pathname:"/product/instantGroup"}}>
-                <IconButton
-                    color="primary"
-                    aria-label="Add to favourite"
-                    component="span"
-                  >
-                    <GroupAddSharp />
-                  </IconButton>
-                </Link>
-              </Tooltip>
-              </Grid>
-              <Grid item xs={9} direction="column">
-                <Controls.Paper>Brand:</Controls.Paper>
-                <Controls.Paper>Year:</Controls.Paper>
-                <Controls.Paper>Review count:</Controls.Paper>
-              </Grid>
-            </Grid>
-          </Grid>
-
-          {/* RHS */}
-          <Grid item xs={12} md={7} className={classes.rhs} >
-            <Grid container style={{ textAlign: "center" }}>
-              <Grid item xs={6}>
-                <Typography variant="h5">Product Name</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Controls.Button onClick={()=>setOpen(true)} variant="outlined">Write a review</Controls.Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Controls.Paper className={useStyles.paper}>
-                  <Grid container className={classes.reviewContainer}>
-                    <Grid item xs={1}>
-                      <Typography variant="h5">Reviews</Typography>
-                    </Grid>
-                    <Grid container>
-                      <Grid
-                        item
-                        xs={12}
-                        style={{
-                          // maxHeight: "100vh",
-                          height: "75vh",
-                          overflow: "auto",
-                          paddingTop: "10px",
-                        }}
-                      >
-                        <Review
-                          setReportReviewId={setReportReviewId}
-                          reviewId={1}
-                          description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                                      elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                                      rerum inventore consectetur, neque doloribus, cupiditate
-                                      numquam dignissimos laborum fugiat deleniti? Eum quasi
-                                      quidem quibusdam."
-                        />
-                        <Review
-                          setReportReviewId={setReportReviewId}
-                          reviewId={2}
-                          description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                                      elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                                      rerum inventore consectetur, neque doloribus, cupiditate
-                                      numquam dignissimos laborum fugiat deleniti? Eum quasi
-                                      quidem quibusdam."
-                        />
-                        <Review
-                          setReportReviewId={setReportReviewId}
-                          reviewId={3}
-                          description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                                      elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                                      rerum inventore consectetur, neque doloribus, cupiditate
-                                      numquam dignissimos laborum fugiat deleniti? Eum quasi
-                                      quidem quibusdam."
-                        />
-                        <Review
-                          setReportReviewId={setReportReviewId}
-                          reviewId={4}
-                          description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                                      elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                                      rerum inventore consectetur, neque doloribus, cupiditate
-                                      numquam dignissimos laborum fugiat deleniti? Eum quasi
-                                      quidem quibusdam."
-                        />
-                      </Grid>
-                    </Grid>
+                  <img style={{maxWidth:200, maxHeight:200}} src={Phone} />
                   </Grid>
-                </Controls.Paper>
+                  <Grid item xs={12} style={{ textAlign: "center" }}>
+                    <Rating 
+                      value={4.5}
+                      name="byRating"
+                      precision={0.25}
+                      readOnly
+                    />
+                  </Grid>
+                  <Grid item xs={12} style={{ textAlign: "center" }}>
+                    <Typography variant="h5">4.5</Typography>
+                  </Grid>
+                  <Grid item xs={12} style={{ textAlign: "center" }}>
+                  <Tooltip title="Add to Favourites" aria-label="add" arrow>
+                  <IconButton
+                      color="primary"
+                      aria-label="Add to favourite"
+                      component="span"
+                    >
+                      <FavoriteBorderSharp />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Compare" aria-label="add" arrow>
+                  <Link to={{pathname:"/product/compare"}} >
+                    <IconButton
+                        color="primary"
+                        aria-label="Add to favourite"
+                        component="span"
+                      >
+                        <CompareSharp />
+                      </IconButton>
+                    </Link>
+                  </Tooltip>
+                  <Tooltip title="Create Instant Group" aria-label="add" arrow>
+                  <Link to={{pathname:"/product/instantGroup"}}>
+                    <IconButton
+                        color="primary"
+                        aria-label="Add to favourite"
+                        component="span"
+                      >
+                        <GroupAddSharp />
+                      </IconButton>
+                    </Link>
+                  </Tooltip>
+                  </Grid>
+                  <Grid item xs={9} direction="column">
+                    <Controls.Paper>Brand:</Controls.Paper>
+                    <Controls.Paper>Year:</Controls.Paper>
+                    <Controls.Paper>Review count:</Controls.Paper>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              {/* RHS */}
+              <Grid item xs={12} md={7} className={classes.rhs} >
+                <Grid container style={{ textAlign: "center" }}>
+                  <Grid item xs={6}>
+                    <Typography variant="h5">Product Name</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Controls.Button onClick={()=>setOpen(true)} variant="outlined">Write a review</Controls.Button>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controls.Paper className={useStyles.paper}>
+                      <Grid container className={classes.reviewContainer}>
+                        <Grid item xs={1}>
+                          <Typography variant="h5">Reviews</Typography>
+                        </Grid>
+                        <Grid container>
+                          <Grid
+                            item
+                            xs={12}
+                            style={{
+                              // maxHeight: "100vh",
+                              height: "75vh",
+                              overflow: "auto",
+                              paddingTop: "10px",
+                            }}
+                          >
+                            <Review
+                              setReportReviewId={setReportReviewId}
+                              reviewId={1}
+                              description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
+                                          elit. Quos blanditiis tenetur unde suscipit, quam beatae
+                                          rerum inventore consectetur, neque doloribus, cupiditate
+                                          numquam dignissimos laborum fugiat deleniti? Eum quasi
+                                          quidem quibusdam."
+                            />
+                            <Review
+                              setReportReviewId={setReportReviewId}
+                              reviewId={2}
+                              description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
+                                          elit. Quos blanditiis tenetur unde suscipit, quam beatae
+                                          rerum inventore consectetur, neque doloribus, cupiditate
+                                          numquam dignissimos laborum fugiat deleniti? Eum quasi
+                                          quidem quibusdam."
+                            />
+                            <Review
+                              setReportReviewId={setReportReviewId}
+                              reviewId={3}
+                              description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
+                                          elit. Quos blanditiis tenetur unde suscipit, quam beatae
+                                          rerum inventore consectetur, neque doloribus, cupiditate
+                                          numquam dignissimos laborum fugiat deleniti? Eum quasi
+                                          quidem quibusdam."
+                            />
+                            <Review
+                              setReportReviewId={setReportReviewId}
+                              reviewId={4}
+                              description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
+                                          elit. Quos blanditiis tenetur unde suscipit, quam beatae
+                                          rerum inventore consectetur, neque doloribus, cupiditate
+                                          numquam dignissimos laborum fugiat deleniti? Eum quasi
+                                          quidem quibusdam."
+                            />
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Controls.Paper>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-      </div>
-
-      <Footer />
-    </div>
+          </div>
+          <Footer />
+        </div>
+      )}
+    </UserContext.Consumer>
   );
 };
 

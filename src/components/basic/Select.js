@@ -29,7 +29,6 @@ export default function Select(props) {
                     
                     {...others}
                 >
-                    <MenuItem value="">None</MenuItem>
                     {
                         options.map(op => (
                             <MenuItem key={op.id} value={op.id}>{op.title}</MenuItem>
