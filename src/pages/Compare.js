@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import Phone from '../static/img/j7.jpg';
 import SearchIcon from '@material-ui/icons/Search';
 import Skeleton from '@material-ui/lab/Skeleton';
+import {UserContext} from '../context/UserContext';
 
 const useStyles = makeStyles( theme => ({
 
@@ -77,108 +78,112 @@ const SimillarProductCard = (props) => {
 export default function Compare(props) {
 
     const classes = useStyles();
-    const {userData, setUserData} = props;
 
     return (
-        <>
-            <Header userData={userData} setUserData={setUserData} />
 
-            <Grid container className={"content"}>
-                <Grid item xs={12} style={{marginTop:20}}>
-                    <Controls.Paper className={classes.paper} >
-                        <Typography variant="h4" style={{margin:10}}>
-                            Compare Products/Services
-                        </Typography>
-                        <Grid container className={classes.container}>
-                            <div className={classes.topics}>
-                            </div>
-                            <div className={classes.cardSection} >
-                                <Grid container spacing={2}>
-                                    <Grid item xs={4}>
-                                        <Controls.Input endAdornment={<SearchIcon/>} placeholder="Search similar product">
-                                        </Controls.Input>
-                                        <SimillarProductCard/>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Controls.Input endAdornment={<SearchIcon/>} placeholder="Search similar product">
-                                        </Controls.Input>
-                                        <div style={{display:"flex", justifyContent:"center"}}>
-                                            <Skeleton width={"80%"} height={300} style={{marginTop:50}} variant="rect" />
-                                        </div>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Controls.Input endAdornment={<SearchIcon/>} placeholder="Search similar product">
-                                        </Controls.Input>
-                                        <div style={{display:"flex", justifyContent:"center"}}>
-                                            <Skeleton width={"80%"} height={300} style={{marginTop:50}} variant="rect" />
-                                        </div>
-                                    </Grid>
+        <UserContext.Consumer>
+            {({userData, setUserData}) => (
+                <>
+                    <Header userData={userData} setUserData={setUserData} />
+
+                    <Grid container className={"content"}>
+                        <Grid item xs={12} style={{marginTop:20}}>
+                            <Controls.Paper className={classes.paper} >
+                                <Typography variant="h4" style={{margin:10}}>
+                                    Compare Products/Services
+                                </Typography>
+                                <Grid container className={classes.container}>
+                                    <div className={classes.topics}>
+                                    </div>
+                                    <div className={classes.cardSection} >
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={4}>
+                                                <Controls.Input endAdornment={<SearchIcon/>} placeholder="Search similar product">
+                                                </Controls.Input>
+                                                <SimillarProductCard/>
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <Controls.Input endAdornment={<SearchIcon/>} placeholder="Search similar product">
+                                                </Controls.Input>
+                                                <div style={{display:"flex", justifyContent:"center"}}>
+                                                    <Skeleton width={"80%"} height={300} style={{marginTop:50}} variant="rect" />
+                                                </div>
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <Controls.Input endAdornment={<SearchIcon/>} placeholder="Search similar product">
+                                                </Controls.Input>
+                                                <div style={{display:"flex", justifyContent:"center"}}>
+                                                    <Skeleton width={"80%"} height={300} style={{marginTop:50}} variant="rect" />
+                                                </div>
+                                            </Grid>
+                                        </Grid>
+                                    </div>
                                 </Grid>
-                            </div>
-                        </Grid>
 
-                        <Grid container className={classes.container}>
-                            <div className={classes.topics}>
-                                Brand
-                            </div>
-                            <div className={classes.cardSection} >
-                                <Grid container spacing={2}>
-                                    <Grid item xs={4}>
-                                        Samsung
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        
-                                    </Grid>
+                                <Grid container className={classes.container}>
+                                    <div className={classes.topics}>
+                                        Brand
+                                    </div>
+                                    <div className={classes.cardSection} >
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={4}>
+                                                Samsung
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                
+                                            </Grid>
+                                        </Grid>
+                                    </div>
                                 </Grid>
-                            </div>
-                        </Grid>
 
-                        <Grid container className={classes.container}>
-                            <div className={classes.topics}>
-                                Year
-                            </div>
-                            <div className={classes.cardSection} >
-                                <Grid container spacing={2}>
-                                    <Grid item xs={4}>
-                                        2017
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        
-                                    </Grid>
+                                <Grid container className={classes.container}>
+                                    <div className={classes.topics}>
+                                        Year
+                                    </div>
+                                    <div className={classes.cardSection} >
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={4}>
+                                                2017
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                
+                                            </Grid>
+                                        </Grid>
+                                    </div>
                                 </Grid>
-                            </div>
-                        </Grid>
 
-                        <Grid container className={classes.container}>
-                            <div className={classes.topics}>
-                                Number of reviews
-                            </div>
-                            <div className={classes.cardSection} >
-                                <Grid container spacing={2}>
-                                    <Grid item xs={4}>
-                                        27455
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        
-                                    </Grid>
+                                <Grid container className={classes.container}>
+                                    <div className={classes.topics}>
+                                        Number of reviews
+                                    </div>
+                                    <div className={classes.cardSection} >
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={4}>
+                                                27455
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                
+                                            </Grid>
+                                        </Grid>
+                                    </div>
                                 </Grid>
-                            </div>
+
+                            </Controls.Paper>
                         </Grid>
+                    </Grid>
 
-                    </Controls.Paper>
-                </Grid>
-            </Grid>
-
-            <Footer/>
-        </>
+                    <Footer/>
+                </>
+            ) }
+        </UserContext.Consumer>
     )
 }

@@ -1,8 +1,6 @@
 import { createTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import './App.css';
-import AboutUs from './pages/AboutUs';
 import Router from './pages/Router';
-import UserForm from './pages/UserForm';
 
 const theme = createTheme({
     palette:{

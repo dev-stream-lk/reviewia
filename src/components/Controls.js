@@ -4,6 +4,7 @@ import Select from './basic/Select';
 import Checkbox from './basic/Checkbox';
 import Button from './basic/Button';
 import DatePicker from './basic/DatePicker';
+import DateTimePicker from './basic/DateTimePicker';
 import Popup from '../components/basic/Popup';
 import ActionButton from '../components/basic/ActionButton';
 import Paper from '../components/basic/Paper';
@@ -15,6 +16,7 @@ const  Controls = {
     Select,
     Checkbox,
     DatePicker,
+    DateTimePicker,
     Button,
     Popup,
     ActionButton,

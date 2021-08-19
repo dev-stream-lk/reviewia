@@ -19,6 +19,7 @@ export default function RadioGroup(props) {
                 value={value}
                 onChange={onChange}
                 {...others}
+                style={{fontSize:"12px"}}
             >
                 {
                     items.map(item => (

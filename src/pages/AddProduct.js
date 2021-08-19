@@ -14,6 +14,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import CompleteImage from '../static/img/complete.png';
 import { useHistory } from 'react-router-dom';
 import {Link} from 'react-router-dom';
+import {UserContext} from '../context/UserContext';
 
 const useStyles = makeStyles( theme => ({
     addProductWrapper:{
@@ -490,16 +491,15 @@ export default function AddProduct(props) {
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const steps = getSteps();
-    const {userData, setUserData} = props;
     const history = useHistory();
 
-    useEffect( ()=>{
-        if(userData){
-            if(userData.isLoggedIn == false){
-                history.push("/login")
-            }
-        }
-    },[userData])
+    // useEffect( ()=>{
+    //     if(userData){
+    //         if(userData.isLoggedIn == false){
+    //             history.push("/login")
+    //         }
+    //     }
+    // },[userData])
     
     const handleNext = () => {
     
@@ -512,83 +512,88 @@ export default function AddProduct(props) {
 
 
     return (
-        <>
-            <Header userData={userData} setUserData={setUserData} ></Header>
-            <Grid container alignItems="flex-start" className={`${classes.addProductWrapper} content`}>
-                <Grid container alignItems="flex-start" justifyContent="center">
-                    <Typography variant="h4" component="div">
-                        Add Your Post to better recommendation
-                    </Typography>
-                    <Grid container justifyContent="center" alignItems="center">
-                        <Stepper className={classes.stepper} activeStep={activeStep} alternativeLabel>
-                            { steps.map( (label,index) => {
-                                const stepProps = {};
-                                const labelProps = {};
+
+        <UserContext.Consumer>
+            { ({userData, setUserData}) => (
+                <>
+                    <Header userData={userData} setUserData={setUserData} ></Header>
+                    <Grid container alignItems="flex-start" className={`${classes.addProductWrapper} content`}>
+                        <Grid container alignItems="flex-start" justifyContent="center">
+                            <Typography variant="h4" component="div">
+                                Add Your Post to better recommendation
+                            </Typography>
+                            <Grid container justifyContent="center" alignItems="center">
+                                <Stepper className={classes.stepper} activeStep={activeStep} alternativeLabel>
+                                    { steps.map( (label,index) => {
+                                        const stepProps = {};
+                                        const labelProps = {};
 
 
-                                return (
-                                    <Step key={index}>
-                                      <StepLabel>{label}</StepLabel>
-                                    </Step>
-                                  );                                
-                            })}
-                        
-                        </Stepper>
+                                        return (
+                                            <Step key={index}>
+                                            <StepLabel>{label}</StepLabel>
+                                            </Step>
+                                        );                                
+                                    })}
+                                
+                                </Stepper>
+                            </Grid>
+                            <Grid container>
+
+                            { activeStep === 0 ? 
+                                (   <>
+                                        <Step1 handleNext={handleNext} />
+                                    </>
+                                ):
+                                null
+                            }
+
+                            { activeStep === 1 ? 
+                                (
+                                    <>
+                                        <Step2 handleNext={handleNext} handleBack={handleBack} />
+                                    </>
+                                ):
+                                null
+                            }
+
+                            { activeStep === 2 ? 
+                                (
+                                    <>
+                                        <Step3 handleNext={handleNext} handleBack={handleBack} />
+                                    </>
+                                ):
+                                null
+                            }
+
+                            { activeStep === 3 ? 
+                                (
+                                    <>
+                                        <Grid container justifyContent="center" style={{ marginBottom:30}}>
+                                            <Grid item xs={6}>
+                                                <img src={CompleteImage} style={{width:100, height:100}} />
+                                                <Typography variant="h4">
+                                                    Post Published Successfully.
+                                                </Typography>
+                                                <Link to={{pathname:"/product/view/1"}} style={{textDecoration:"none"}}>
+                                                    <Controls.Button style={{marginTop:20}}>
+                                                        View Your Post
+                                                    </Controls.Button>
+                                                </Link>
+                                            </Grid>
+                                        </Grid>
+                                    </>
+                                ):
+                                null
+                            }
+
+                            </Grid>
+                        </Grid>
+
                     </Grid>
-                    <Grid container>
-
-                    { activeStep === 0 ? 
-                        (   <>
-                                <Step1 handleNext={handleNext} />
-                            </>
-                        ):
-                        null
-                    }
-
-                    { activeStep === 1 ? 
-                        (
-                            <>
-                                <Step2 handleNext={handleNext} handleBack={handleBack} />
-                            </>
-                        ):
-                        null
-                    }
-
-                    { activeStep === 2 ? 
-                        (
-                            <>
-                                <Step3 handleNext={handleNext} handleBack={handleBack} />
-                            </>
-                        ):
-                        null
-                    }
-
-                    { activeStep === 3 ? 
-                        (
-                            <>
-                                <Grid container justifyContent="center" style={{ marginBottom:30}}>
-                                    <Grid item xs={6}>
-                                        <img src={CompleteImage} style={{width:100, height:100}} />
-                                        <Typography variant="h4">
-                                            Post Published Successfully.
-                                        </Typography>
-                                        <Link to={{pathname:"/product/view/1"}} style={{textDecoration:"none"}}>
-                                            <Controls.Button style={{marginTop:20}}>
-                                                View Your Post
-                                            </Controls.Button>
-                                        </Link>
-                                    </Grid>
-                                </Grid>
-                            </>
-                        ):
-                        null
-                    }
-
-                    </Grid>
-                </Grid>
-
-            </Grid>
-            <Footer></Footer>
-        </>
+                    <Footer></Footer>
+                </>
+            ) }
+        </UserContext.Consumer>
     )
 }

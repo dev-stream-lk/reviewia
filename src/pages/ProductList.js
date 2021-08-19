@@ -16,6 +16,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import {Link} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
+import {UserContext} from '../context/UserContext';
 
 const drawerWidth = 280;
 
@@ -47,6 +48,11 @@ const useStyles = makeStyles( theme => ({
     filterMenuItem:{
         display:"flex",
         flexDirection:"column",
+    },
+    radioGroup:{
+        "& .MuiFormControlLabel-label":{
+            fontSize:"12px"
+        }
     },
     drawer: {
         width: drawerWidth,
@@ -95,13 +101,49 @@ const FiltersMenu = (props) => {
     const [byRating, setByRating] = useState(0);
     const [categorySortBy, setCategorySortBy] = useState("higher");
     const [handleCollapseByCategory, setHandleCollapseByCategory] = useState(false);
-    const [byCategory, setByCategory] = useState(0);
-    const [electronics, setElectronics] = useState(false);
-    const [vehicles, setVehicles] = useState(false);
-    const [others, setOthers] = useState(false);
+    const [handleCollapseByDates, setHandleCollapseByDates] = useState(false);
+    const [filterByCategory, setFilterByCategory] = useState("1");
+    const [filterBySubCategory, setFilterBySubCategory] = useState("1");
+    const [filterBrand, setFilterBrand] = useState("1");
+    const [filterStartDate, setFilterStartDate] = useState("");
+    const [filterEndDate, setFilterEndDate] = useState("");
+    const [byState, setByState] = useState("new");
 
+    const [categoryOptions, setCategoryOptions] = useState([
+        {id:"0", title:"All"},
+        {id: "1", title:"Electronics"},
+        {id: "2", title:"Vehicles"},
+        {id: "3", title:"Others"}
+    ]);
+    const [subCategoryOptions, setSubCategoryOptions] = useState([
+        {id:"0", title:"All"},
+        {id: "1", title:"Mobile Phones"},
+        {id: "2", title:"Tvs"},
+        {id: "3", title:"Laptops"}
+    ]);
+    const [brandOptions, setBrandOptions] = useState([
+        {id:"0", title:"All"},
+        {id: "1", title:"Samsung"},
+        {id: "2", title:"Huawei"},
+        {id: "3", title:"LG"}
+    ]);
+    
     return (
         <List>
+            <ListItem className={classes.filterMenuItem}>
+                <Grid container>
+                    <Controls.RadioGroup
+                        name="byState"
+                        label="Sort By"
+                        items={[{id:"new",title:"New"},{id:'popular', title:"Popular"}, {id:'name', title:"Name"}]}
+                        value={byState}
+                        className={classes.filterCollapseInputGroup}
+                        onChange={ (e,value) => setByState(value)}
+                        className={classes.radioGroup}
+                    >
+                    </Controls.RadioGroup>
+                </Grid>
+            </ListItem>
             <ListItem className={classes.filterMenuItem}>
                 <Grid container>
                     <Typography variant="subtitle1" component="div" className={classes.filterTypo} onClick={() => setHandleCollapseByRating(!handleCollapseByRating)}>
@@ -123,6 +165,37 @@ const FiltersMenu = (props) => {
                 </Grid>
             </ListItem>
 
+            <ListItem className={classes.filterMenuItem}>
+                <Grid container>
+                    <Typography variant="subtitle1" component="div" className={classes.filterTypo} onClick={() => setHandleCollapseByDates(!handleCollapseByDates)}>
+                        By Dates
+                    </Typography>
+                </Grid>
+                <Grid container>
+                    <Collapse in={handleCollapseByDates} timeout="auto">
+                        <div style={{paddingLeft:20, marginTop:10}}>
+                            <Controls.DatePicker
+                                name="startDate"
+                                label="Start Date"
+                                format="MM/yyyy"
+                                style={{marginBottom:10}}
+                                onChange={(e) => setFilterStartDate(e.target.value) }
+                                views={["year","month"]}
+                            >
+                            </Controls.DatePicker>
+                            <Controls.DatePicker
+                                name="endDate"
+                                label="End Date"
+                                onChange={(e) => setFilterEndDate(e.target.value) }
+                                format="MM/yyyy"
+                                views={["year","month"]}
+                            >
+                            </Controls.DatePicker>
+                        </div>
+                    </Collapse>
+                </Grid>
+            </ListItem>
+
             {/* Start ByCategory */}
             <ListItem className={classes.filterMenuItem}>
                 <Grid container>
@@ -139,25 +212,47 @@ const FiltersMenu = (props) => {
                         value={categorySortBy}
                         className={classes.filterCollapseInputGroup}
                         onChange={ (e,value) => setCategorySortBy(value)}
+                        className={classes.radioGroup}
                     >
                     </Controls.RadioGroup>
                     <Typography variant="subtitle1" style={{color:"gray"}}>
                         Select Category
                     </Typography>
                     <FormGroup className={classes.filterCollapseInputGroup}>
-                        <FormControlLabel
-                            control={<Controls.Checkbox value={electronics} onChange={ () => setElectronics(!electronics)}  name="electronics" />}
-                            label="Electronics"
-                        />
-                        <FormControlLabel
-                            control={<Controls.Checkbox value={vehicles} onChange={ () => setVehicles(!vehicles)}  name="vehicles" />}
-                            label="Vehicles"
-                        />
-                        <FormControlLabel
-                            control={<Controls.Checkbox value={others} onChange={ () => setOthers(!others)} name="others" />}
-                            label="Others"
-                        />
-                        </FormGroup>
+                        <Controls.Select
+                            name="category"
+                            // label="Select a Category"
+                            options = {categoryOptions}
+                            value= {filterByCategory}
+                            onChange= {(e) => setFilterByCategory(e.target.value)}
+                        >
+                        </Controls.Select>    
+                    </FormGroup>
+                    <Typography variant="subtitle1" style={{color:"gray"}}>
+                        Select Sub Category
+                    </Typography>
+                    <FormGroup className={classes.filterCollapseInputGroup}>
+                        <Controls.Select
+                            name="subCategory"
+                            options = {subCategoryOptions}
+                            value= {filterBySubCategory}
+                            onChange= { (e) => setFilterBySubCategory(e.target.value)}
+                        >
+                        </Controls.Select>    
+                    </FormGroup>
+
+                    <Typography variant="subtitle1" style={{color:"gray"}}>
+                        Brand / Company
+                    </Typography>
+                    <FormGroup className={classes.filterCollapseInputGroup}>
+                        <Controls.Select
+                            name="brand"
+                            options = {brandOptions}
+                            value= {filterBrand}
+                            onChange= { (e) => setFilterBrand(e.target.value)}
+                        >
+                        </Controls.Select>    
+                    </FormGroup>
                     </Collapse>
                 </Grid>
             </ListItem>
@@ -227,87 +322,91 @@ const ProductCard = (props) => {
 export default function ProductList(props) {
 
     const classes = useStyles();
-    const {isMobile, handleIsMobile, userData, setUserData} = props;
+    const {isMobile, handleIsMobile} = props;
     const [productSearch, setProductSearch] = useState("");
 
     useEffect(() => {
     }, [handleIsMobile])
 
     return (
-        <>
-        <Header isMobile={isMobile} handleIsMobile={handleIsMobile} userData={userData} setUserData={setUserData} ></Header>
+        <UserContext.Consumer>
+            {({userData, setUserData}) => (
+                <>
+                <Header isMobile={isMobile} handleIsMobile={handleIsMobile} userData={userData} setUserData={setUserData} ></Header>
 
-            <Grid container className={`${classes.wrapper} content`}>
-                {/* Start Drawer */}
-                <Drawer
-                    className={classes.drawer}
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
-                    <Typography variant="h5" component="div">
-                        Filter Products
-                    </Typography>
-                    <Form className={classes.filterForm}>
-                        <FiltersMenu/>
-                    </Form>
-                </Drawer>
-                {/* End Drawer */}
-                
-                {/* Start Mobile Drawer */}
-                <Drawer
-                    className={classes.mobileDrawer}
-                    variant="temporary"
-                    classes={{
-                        paper: classes.drawerPaperMobile,
-                    }}
-                    open={isMobile}
-                    onClose={()=> handleIsMobile(false)}
-                >
-                    <Typography variant="h5" component="div">
-                        Filter Products
-                    </Typography>
-                    <Form className={classes.filterForm}>
-                        <FiltersMenu/>
-                    </Form>
-                </Drawer>
-
-                {/* End Mobile Drawer */}
-
-                {/* Start ProductList */}
-
-                <div className={classes.productListSection}>
-                    <Grid container justifyContent="center">
-                        <Controls.Input
-                            endAdornment={<SearchIcon/>}
-                            className={classes.productListSearch}
-                            placeholder="Find Product or service"
-                            value={productSearch}
-                            onChange={ (e)=>setProductSearch(e.target.value)}
+                    <Grid container className={`${classes.wrapper} content`}>
+                        {/* Start Drawer */}
+                        <Drawer
+                            className={classes.drawer}
+                            variant="permanent"
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
                         >
-                        </Controls.Input>
-                    </Grid>
-                    <Grid container style={{paddingRight:50}} justifyContent="flex-end">
-                        <Link to={{pathname:"/product/add"}} style={{textDecoration:"none"}} >
-                            <Controls.Button>
-                                <AddIcon/> Add New
-                            </Controls.Button>
-                        </Link>
-                    </Grid>
-                    <Controls.Paper>
-                        <Grid container spacing={2}>
-                            { [{title:"Samsung galaxy J7 Nxt",image:Phone}, {title:"Apple iphone X pro", image:IphoneX}, {title:"Oppo F21",image:F21}, {title:"Huawei P30 Pro", image:P30}, {title:"Samsung galaxy J7 Nxt",image:Phone}].map( (item,index) => (
-                                <Grid key={index} item xs={12} md={6}>
-                                    <Link style={{textDecoration:"none"}} to={`/product/view/${index+1}`}><ProductCard {...item} /></Link>
+                            <Typography variant="h5" component="div">
+                                Filter Products
+                            </Typography>
+                            <Form className={classes.filterForm}>
+                                <FiltersMenu/>
+                            </Form>
+                        </Drawer>
+                        {/* End Drawer */}
+                        
+                        {/* Start Mobile Drawer */}
+                        <Drawer
+                            className={classes.mobileDrawer}
+                            variant="temporary"
+                            classes={{
+                                paper: classes.drawerPaperMobile,
+                            }}
+                            open={isMobile}
+                            onClose={()=> handleIsMobile(false)}
+                        >
+                            <Typography variant="h5" component="div">
+                                Filter Products
+                            </Typography>
+                            <Form className={classes.filterForm}>
+                                <FiltersMenu/>
+                            </Form>
+                        </Drawer>
+
+                        {/* End Mobile Drawer */}
+
+                        {/* Start ProductList */}
+
+                        <div className={classes.productListSection}>
+                            <Grid container justifyContent="center">
+                                <Controls.Input
+                                    endAdornment={<SearchIcon/>}
+                                    className={classes.productListSearch}
+                                    placeholder="Find Product or service"
+                                    value={productSearch}
+                                    onChange={ (e)=>setProductSearch(e.target.value)}
+                                >
+                                </Controls.Input>
+                            </Grid>
+                            <Grid container style={{paddingRight:50}} justifyContent="flex-end">
+                                <Link to={{pathname:"/product/add"}} style={{textDecoration:"none"}} >
+                                    <Controls.Button>
+                                        <AddIcon/> Add New
+                                    </Controls.Button>
+                                </Link>
+                            </Grid>
+                            <Controls.Paper>
+                                <Grid container spacing={2}>
+                                    { [{title:"Samsung galaxy J7 Nxt",image:Phone}, {title:"Apple iphone X pro", image:IphoneX}, {title:"Oppo F21",image:F21}, {title:"Huawei P30 Pro", image:P30}, {title:"Samsung galaxy J7 Nxt",image:Phone}].map( (item,index) => (
+                                        <Grid key={index} item xs={12} md={6}>
+                                            <Link style={{textDecoration:"none"}} to={`/product/view/${index+1}`}><ProductCard {...item} /></Link>
+                                        </Grid>
+                                    ) ) }
                                 </Grid>
-                            ) ) }
-                        </Grid>
-                    </Controls.Paper>
-                </div>
-                {/* End ProductList */}
-            </Grid>
-        <Footer ></Footer>
-        </>
+                            </Controls.Paper>
+                        </div>
+                        {/* End ProductList */}
+                    </Grid>
+                <Footer ></Footer>
+                </>
+            )}
+        </UserContext.Consumer>
     )
 }

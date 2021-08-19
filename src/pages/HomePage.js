@@ -1,5 +1,5 @@
 import { Grid, ListItemText, makeStyles, Typography, List, Link as MuiLink, ListItem, CardActions, CardHeader, CardMedia, CardContent, Box } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Controls from '../components/Controls';
 import Header from '../components/Header';
 import HeadImage from '../static/img/homepage_head.svg';
@@ -13,7 +13,8 @@ import Rating from '@material-ui/lab/Rating';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import AppleStore from '../static/img/getAppleStore.svg';
 import PlayStore from '../static/img/getPlayStore.png';
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+import {UserContext} from '../context/UserContext';
 
 const useStyles = makeStyles( theme => ({
     headSection:{
@@ -171,11 +172,11 @@ const PopularcategoryItem = (props) => {
 export default function HomePage(props) {
 
     const classes = useStyles();
-    const {userData, setUserData} = props;
-    
     const [search, setSearch] = useState("");
+    const {userData, setUserData} = useContext(UserContext);
 
     return (
+
         <div>
             <Header userData={userData} setUserData={setUserData}></Header>
             {/* Start Head section */}
