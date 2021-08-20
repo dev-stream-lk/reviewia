@@ -11,7 +11,7 @@ import {
   Avatar,
   CardContent,
 } from "@material-ui/core";
-import { React, useEffect, useState } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import Controls from "../components/Controls";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -19,6 +19,7 @@ import ProductListContainer from "../components/comp_productList";
 import GroupListContainer from "../components/comp_groupList";
 import ProfilePic from "../static/img/Profile.png";
 import { useHistory } from "react-router-dom";
+import {UserContext} from '../context/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -62,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 const Profile = (props) => {
   const classes = useStyles();
   const [active, setActive] = useState("GroupList");
-  const { userData, setUserData} = props;
+  const {userData, setUserData} = useContext(UserContext);
   const history = useHistory();
 
   useEffect( ()=>{

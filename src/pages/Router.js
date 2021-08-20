@@ -14,7 +14,7 @@ import TermsOfService from "./TermsOfService";
 import {UserContext, initialUserData} from '../context/UserContext';
 
 import {getCookie} from '../services/cookies';
-import DashBoard from './DashBoard';
+import DashBoard from './admin_dashboard/DashBoard';
 
 
 export default function Router() {

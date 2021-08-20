@@ -8,13 +8,13 @@ import {
 } from "@material-ui/core";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Controls from "../components/Controls";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import ReportedBannedPost from "../components/comp_reportedPostList";
-import ReportedHiddenReview from "../components/comp_reportHiddenReview";
-import BlockedUsers from "../components/comp_blockedUsers";
-import AddCaregory from "../components/comp_addCategory";
+import Controls from "../../components/Controls";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import ReportedBannedPost from "./comp_reportedPostList";
+import ReportedHiddenReview from "./comp_reportHiddenReview";
+import BlockedUsers from "./comp_blockedUsers";
+import AddCaregory from "./comp_addCategory";
 
 const drawerWidth = 280;
 
