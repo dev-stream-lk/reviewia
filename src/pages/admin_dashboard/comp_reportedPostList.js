@@ -11,7 +11,7 @@ import {
   CardContent,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import Controls from "../components/Controls";
+import Controls from "../../components/Controls";
 
 
 const useStyles = makeStyles((theme) => ({

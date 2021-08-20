@@ -11,7 +11,7 @@ import {
   CardContent,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import Controls from "../components/Controls";
+import Controls from "../../components/Controls";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BlockedUsers() {
+export default function ReportedHiddenReview() {
   const classes = useStyles();
   var flag = 0;
   const [selected, setSelected] = useState(flag);
@@ -57,7 +57,7 @@ export default function BlockedUsers() {
                 ...(selected === 0 ? { color: "white" } : { color: "black" }),
               }}
             >
-              Reported Users
+              Reported Reviews
             </Controls.ActionButton>
           </Grid>
           <Grid
@@ -77,7 +77,7 @@ export default function BlockedUsers() {
                 ...(selected === 1 ? { color: "white" } : { color: "black" }),
               }}
             >
-              Banned Users
+              Hidden Reviews
             </Controls.ActionButton>
           </Grid>
           <Grid item xs={12}>
@@ -87,7 +87,7 @@ export default function BlockedUsers() {
               style={{ marginTop: "20px", marginLeft: 40, fontWeight: 600 }}
               component="div"
             >
-              Users
+              Reviews
             </Typography>
           </Grid>
         </Grid>

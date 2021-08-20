@@ -3,7 +3,7 @@ import { Drawer } from '@material-ui/core';
 import { MenuItem } from '@material-ui/core';
 import { Grid, makeStyles } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Controls from '../components/Controls';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -324,89 +324,86 @@ export default function ProductList(props) {
     const classes = useStyles();
     const {isMobile, handleIsMobile} = props;
     const [productSearch, setProductSearch] = useState("");
+    const {userData, setUserData} = useContext(UserContext);
 
     useEffect(() => {
     }, [handleIsMobile])
 
     return (
-        <UserContext.Consumer>
-            {({userData, setUserData}) => (
-                <>
-                <Header isMobile={isMobile} handleIsMobile={handleIsMobile} userData={userData} setUserData={setUserData} ></Header>
+        <>
+        <Header isMobile={isMobile} handleIsMobile={handleIsMobile} userData={userData} setUserData={setUserData} ></Header>
 
-                    <Grid container className={`${classes.wrapper} content`}>
-                        {/* Start Drawer */}
-                        <Drawer
-                            className={classes.drawer}
-                            variant="permanent"
-                            classes={{
-                                paper: classes.drawerPaper,
-                            }}
+            <Grid container className={`${classes.wrapper} content`}>
+                {/* Start Drawer */}
+                <Drawer
+                    className={classes.drawer}
+                    variant="permanent"
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                >
+                    <Typography variant="h5" component="div">
+                        Filter Products
+                    </Typography>
+                    <Form className={classes.filterForm}>
+                        <FiltersMenu/>
+                    </Form>
+                </Drawer>
+                {/* End Drawer */}
+                
+                {/* Start Mobile Drawer */}
+                <Drawer
+                    className={classes.mobileDrawer}
+                    variant="temporary"
+                    classes={{
+                        paper: classes.drawerPaperMobile,
+                    }}
+                    open={isMobile}
+                    onClose={()=> handleIsMobile(false)}
+                >
+                    <Typography variant="h5" component="div">
+                        Filter Products
+                    </Typography>
+                    <Form className={classes.filterForm}>
+                        <FiltersMenu/>
+                    </Form>
+                </Drawer>
+
+                {/* End Mobile Drawer */}
+
+                {/* Start ProductList */}
+
+                <div className={classes.productListSection}>
+                    <Grid container justifyContent="center">
+                        <Controls.Input
+                            endAdornment={<SearchIcon/>}
+                            className={classes.productListSearch}
+                            placeholder="Find Product or service"
+                            value={productSearch}
+                            onChange={ (e)=>setProductSearch(e.target.value)}
                         >
-                            <Typography variant="h5" component="div">
-                                Filter Products
-                            </Typography>
-                            <Form className={classes.filterForm}>
-                                <FiltersMenu/>
-                            </Form>
-                        </Drawer>
-                        {/* End Drawer */}
-                        
-                        {/* Start Mobile Drawer */}
-                        <Drawer
-                            className={classes.mobileDrawer}
-                            variant="temporary"
-                            classes={{
-                                paper: classes.drawerPaperMobile,
-                            }}
-                            open={isMobile}
-                            onClose={()=> handleIsMobile(false)}
-                        >
-                            <Typography variant="h5" component="div">
-                                Filter Products
-                            </Typography>
-                            <Form className={classes.filterForm}>
-                                <FiltersMenu/>
-                            </Form>
-                        </Drawer>
-
-                        {/* End Mobile Drawer */}
-
-                        {/* Start ProductList */}
-
-                        <div className={classes.productListSection}>
-                            <Grid container justifyContent="center">
-                                <Controls.Input
-                                    endAdornment={<SearchIcon/>}
-                                    className={classes.productListSearch}
-                                    placeholder="Find Product or service"
-                                    value={productSearch}
-                                    onChange={ (e)=>setProductSearch(e.target.value)}
-                                >
-                                </Controls.Input>
-                            </Grid>
-                            <Grid container style={{paddingRight:50}} justifyContent="flex-end">
-                                <Link to={{pathname:"/product/add"}} style={{textDecoration:"none"}} >
-                                    <Controls.Button>
-                                        <AddIcon/> Add New
-                                    </Controls.Button>
-                                </Link>
-                            </Grid>
-                            <Controls.Paper>
-                                <Grid container spacing={2}>
-                                    { [{title:"Samsung galaxy J7 Nxt",image:Phone}, {title:"Apple iphone X pro", image:IphoneX}, {title:"Oppo F21",image:F21}, {title:"Huawei P30 Pro", image:P30}, {title:"Samsung galaxy J7 Nxt",image:Phone}].map( (item,index) => (
-                                        <Grid key={index} item xs={12} md={6}>
-                                            <Link style={{textDecoration:"none"}} to={`/product/view/${index+1}`}><ProductCard {...item} /></Link>
-                                        </Grid>
-                                    ) ) }
-                                </Grid>
-                            </Controls.Paper>
-                        </div>
-                        {/* End ProductList */}
+                        </Controls.Input>
                     </Grid>
-                <Footer ></Footer>
-                </>
-            )}
-        </UserContext.Consumer>
+                    <Grid container style={{paddingRight:50}} justifyContent="flex-end">
+                        <Link to={{pathname:"/product/add"}} style={{textDecoration:"none"}} >
+                            <Controls.Button>
+                                <AddIcon/> Add New
+                            </Controls.Button>
+                        </Link>
+                    </Grid>
+                    <Controls.Paper>
+                        <Grid container spacing={2}>
+                            { [{title:"Samsung galaxy J7 Nxt",image:Phone}, {title:"Apple iphone X pro", image:IphoneX}, {title:"Oppo F21",image:F21}, {title:"Huawei P30 Pro", image:P30}, {title:"Samsung galaxy J7 Nxt",image:Phone}].map( (item,index) => (
+                                <Grid key={index} item xs={12} md={6}>
+                                    <Link style={{textDecoration:"none"}} to={`/product/view/${index+1}`}><ProductCard {...item} /></Link>
+                                </Grid>
+                            ) ) }
+                        </Grid>
+                    </Controls.Paper>
+                </div>
+                {/* End ProductList */}
+            </Grid>
+        <Footer ></Footer>
+        </>
     )
 }

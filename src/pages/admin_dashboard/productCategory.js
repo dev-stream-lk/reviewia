@@ -6,6 +6,7 @@ import {
   ListItem,
   ListItemText,
   TextField,
+  InputBase,
   Button,
   IconButton,
   Tooltip,
@@ -13,25 +14,33 @@ import {
   CardHeader,
   Avatar,
   CardContent,
+  ListItemSecondaryAction,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import Controls from "../components/Controls";
+import Controls from "../../components/Controls";
+import SearchIcon from "@material-ui/icons/Search";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
-export default function ServiceCategory() {
+
+export default function ProductCategory() {
+  
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-  const [searchItem, setSearch] = useState("");
-
   const handleListItemClick = (event, index) => {
+    console.log(index);
     //call the function to gain sub classes..using index as id.
+
     setSelectedIndex(index);
   };
 
-  const [services, setService] = useState([
-    { title: "Electronics service", id: 1 },
-    { title: "Cloths service", id: 2 },
-    { title: "Education service", id: 3 },
-    { title: "Foods service", id: 4 },
+  const [searchItem, setSearch] = useState("");
+
+  const [products, setProduct] = useState([
+    { title: "Electronics", id: 1 },
+    { title: "Cloths", id: 2 },
+    { title: "Education", id: 3 },
+    { title: "Foods", id: 4 },
   ]);
 
   return (
@@ -48,7 +57,7 @@ export default function ServiceCategory() {
         </Grid>
       </form>
       <List component="nav" aria-label="secondary mailbox folder">
-        {services
+        {products
           .filter((val) => {
             if (searchItem == "") {
               return val;
@@ -60,13 +69,21 @@ export default function ServiceCategory() {
               return val;
             }
           })
-          .map((service) => (
+          .map((product) => (
             <ListItem
               button
-              selected={selectedIndex === service["id"]}
-              onClick={(event) => handleListItemClick(event, service["id"])}
+              selected={selectedIndex === product["id"]}
+              onClick={(event) => handleListItemClick(event, product["id"])}
             >
-              <ListItemText primary={service.title} />
+              <ListItemText primary={product.title} />
+              <ListItemSecondaryAction>
+                <IconButton edge="end" aria-label="edit">
+                  <EditIcon />
+                </IconButton>
+                <IconButton edge="end" aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
             </ListItem>
           ))}
       </List>

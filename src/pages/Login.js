@@ -1,5 +1,5 @@
 import { Checkbox, Grid, makeStyles, Paper } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Controls from '../components/Controls';
 import {useForm, Form} from '../components/useForm';
 import EmailIcon from '@material-ui/icons/Email';
@@ -16,6 +16,7 @@ import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import {login,register} from '../services/auth';
 import MainImage from '../static/img/login_img.svg';
 import {getCookie, getCookies, setCookie, setCookies} from '../services/cookies';
+import {UserContext} from '../context/UserContext';
 
 const useStyles = makeStyles( theme => ({
 
@@ -56,7 +57,7 @@ const useStyles = makeStyles( theme => ({
 const SignIN = (props) => {
 
     const classes = useStyles();
-    const {userData, setUserData} = props;
+    const {userData, setUserData} = useContext(UserContext);
     const  [disableSubmit, setDisabledSubmit] = useState(true);
     const history = useHistory();
     const [visibility, setVisibility] = useState(false);
@@ -212,7 +213,8 @@ const SignUp =(props) => {
 
     const classes = useStyles();
     const  [disableSubmit, setDisabledSubmit] = useState(true);
-    const {userData, setUserData, setSelected} = props;
+    const {userData, setUserData} = useContext(UserContext);
+    const { setSelected} = props;
     const [visibility, setVisibility] = useState(false);
     const history = useHistory();
     const [error, setError] = useState("");
@@ -399,7 +401,7 @@ export default function Login(props) {
 
     const history = useHistory()
     const location = useLocation();
-    const {userData, setUserData} = props;
+    const {userData, setUserData} = useContext(UserContext);
     var register = 0;
     if( location.state){
         register = location.state.register;
@@ -453,11 +455,11 @@ export default function Login(props) {
                     </Grid>
                     { selected===0 ?
                         (
-                            <SignIN userData={userData} setUserData={setUserData} />
+                            <SignIN />
                         )
                         :
                         (
-                            <SignUp setSelected={setSelected} userData={userData} setUserData={setUserData} />
+                            <SignUp setSelected={setSelected} />
                         )
                     }
                    

@@ -20,12 +20,11 @@ import {
   DialogActions,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import Controls from "../components/Controls";
-import ProductCategory from "../components/productCategory";
-import ServiceCategory from "../components/serviceCategory";
-import SubCategory from "../components/comp_subCategory"
+import Controls from "../../components/Controls";
+import ProductCategory from "./productCategory";
+import ServiceCategory from "./serviceCategory";
+import SubCategory from "./comp_subCategory"
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,

@@ -33,6 +33,7 @@ export default function Popup(props) {
                     <Controls.Button
                         color="secondary"
                         variant="outlined"
+                        style={{marginLeft:20}}
                         onClick={ () => setOpenPopup(false)}
                     >
                         <CloseIcon></CloseIcon>
