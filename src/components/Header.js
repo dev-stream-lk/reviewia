@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   AppBar,
   IconButton,
@@ -27,6 +27,8 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import {Link, useHistory} from 'react-router-dom';
 import { logout } from "../services/auth";
 import AddIcon from '@material-ui/icons/Add';
+import {UserContext} from '../context/UserContext';
+import {getCategoryWithSubCategory} from '../services/category'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -98,17 +100,10 @@ const GenerateList = (props) => {
   const classes = useStyles();
 
   const { list, ...others } = props;
-  const sublist= [
-    "Mobile Phones",
-    "Laptops",
-    "Tvs",
-    "Kitchen Products",
-    "Others"
-  ]
 
   return (
     <div className={classes.accordination}  {...others}>
-        {list.map((item, i) => (
+        {list.map((category, i) => (
             <Accordion key={i}>
                 <AccordionSummary
                  className={classes.accordinationSummary}
@@ -116,13 +111,13 @@ const GenerateList = (props) => {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
                 >
-                <Typography>{item}</Typography>
+                <Typography>{category.categoryName}</Typography>
                 </AccordionSummary>
                 <AccordionDetails className={classes.accordinationDetails}>
                     <List dense={true}>
-                        {sublist.map((item, j) => (
+                        {category.subCategoryList.map((item, j) => (
                             <ListItem key={j} to="/products/1" component={Link} >
-                              <ListItemText primary={item} secondary="3245 Posts" />
+                              <ListItemText primary={item.subCategoryName} secondary="3245 Posts" />
                             </ListItem>
                         ))}
                     </List>
@@ -136,17 +131,24 @@ const GenerateList = (props) => {
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const { isMobile, handleIsMobile, userData, setUserData } = props;
+  const { isMobile, handleIsMobile } = props;
+  const {userData, setUserData} = useContext(UserContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   let isLogin = false;
-
-  useEffect( ()=>{
-    setUserData(props.userData);
-  },[props])
-
+  const [ categories, setCategories]= useState({})
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
+
+
+  useEffect( async () => {
+    if(userData){
+      let res = await getCategoryWithSubCategory()
+      if(res){
+        setCategories(res)
+      }
+    }
+  },[userData])
 
   useEffect(() => {}, [handleIsMobile]);
 
@@ -247,35 +249,14 @@ export default function Header(props) {
                     Product
                   </Typography>
                   <GenerateList
-                    list={[
-                      "Electronics",
-                      "Vehicles",
-                      "Home Garden",
-                      "Fashion & Beauty",
-                      "Sport",
-                      "Agriculture",
-                      "Education",
-                      "Instrument",
-                      "Animal Materials",
-                      "Others"
-
-                    ]}
+                    list={ categories.products }
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <Typography align="center" variant="h6" component="div">
                     Services
                   </Typography>
-                  <GenerateList list={[
-                    "Courier Services",
-                    "Banking",
-                    "Telecommunication",
-                    "Health Services",
-                    "Education Services",
-                    "Travel Services",
-                    "Entertainment",
-                    "Other services"
-                  ]} />
+                  <GenerateList list={ categories.services} />
                 </Grid>
               </Grid>
               <Grid container justifyContent="center" className={classes.closeIcon}>

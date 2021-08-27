@@ -9,11 +9,12 @@ import CompareSharp from "@material-ui/icons/CompareSharp";
 import GroupAddSharp from "@material-ui/icons/GroupAddSharp";
 import Rating from "@material-ui/lab/Rating";
 import { Skeleton } from "@material-ui/lab";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Phone from '../static/img/j7.jpg';
 import {useForm, Form} from '../components/useForm';
 import {requiredField} from '../components/Validators';
 import {UserContext} from '../context/UserContext';
+import {getPostById} from '../services/posts';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -216,6 +217,19 @@ const ProductView = (props) => {
   const [openReport, setOpenReport] = useState(false);
   const [reportReviewId, setReportReviewId] = useState(null);
   const {userData, setUserData} = useContext(UserContext);
+  const [postData, setPostData] = useState({})
+  const [postId, setPostId] = useState(useParams().id);
+
+  useEffect(async () => {
+    if( userData && postId){
+      console.log(postId)
+      let data = await getPostById(postId)
+      console.log(data)
+      if(data){
+        setPostData(data)
+      }
+    }
+  },[userData,postId]);
 
 
   useEffect( ()=>{
@@ -250,14 +264,14 @@ const ProductView = (props) => {
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
                   <Rating 
-                    value={4.5}
+                    value={postData.rate}
                     name="byRating"
                     precision={0.25}
                     readOnly
                   />
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
-                  <Typography variant="h5">4.5</Typography>
+                  <Typography variant="h5">{postData.rate}</Typography>
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
                 <Tooltip title="Add to Favourites" aria-label="add" arrow>
@@ -293,9 +307,9 @@ const ProductView = (props) => {
                 </Tooltip>
                 </Grid>
                 <Grid item xs={9} direction="column">
-                  <Controls.Paper>Brand:</Controls.Paper>
+                  <Controls.Paper>Brand: {postData.brand}</Controls.Paper>
                   <Controls.Paper>Year:</Controls.Paper>
-                  <Controls.Paper>Review count:</Controls.Paper>
+                  <Controls.Paper>Review count:{postData.reviewCount}</Controls.Paper>
                 </Grid>
               </Grid>
             </Grid>

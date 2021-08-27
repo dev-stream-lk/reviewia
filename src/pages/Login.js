@@ -13,7 +13,7 @@ import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import PersonIcon from '@material-ui/icons/Person';
 import {validateUserName, validatePassword, validateEmail, validateName, requiredField} from '../components/Validators'
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
-import {login,register} from '../services/auth';
+import {user_login,user_register} from '../services/auth';
 import MainImage from '../static/img/login_img.svg';
 import {getCookie, getCookies, setCookie, setCookies} from '../services/cookies';
 import {UserContext} from '../context/UserContext';
@@ -62,6 +62,7 @@ const SignIN = (props) => {
     const history = useHistory();
     const [visibility, setVisibility] = useState(false);
     const [showError, setShowError] = useState("");
+    const {commonMsg, setCommonMsg} = props;
 
 
     const initialValues = {
@@ -114,22 +115,23 @@ const SignIN = (props) => {
 
     const  handleOnSubmit = async (e) => {
         e.preventDefault();
+        setCommonMsg({});
 
         if(values.rememberMe){
             setCookie('email', values.email,30);
             setCookie('password', values.password,30);
         }
         
-        const result = await login({
+        const token = await user_login({
             email: values.email,
             password:values.password
-        }, setUserData, history)
-
-        if(result){
-            setUserData( { ...userData,isLoggedIn:true })
+        })
+        if(token){
+            setUserData( { userData:{...userData,token:token,isLoggedIn:true}, setUserData })
             setShowError("")
             history.push("/")
         }else{
+            console.log("Dfdf")
             setShowError("Invalid email or password")
         }
 
@@ -152,6 +154,12 @@ const SignIN = (props) => {
                     <Typography align="left" variant="caption" style={{color:'red', fontSize:16, fontWeight:"bold", paddingLeft:40}}>{showError}</Typography>
                 </Grid>
             ):null}
+            { commonMsg.for="signin" && commonMsg.isError==false ? (
+                <Grid container>
+                    <Typography align="left" variant="caption" style={{color:'green', fontSize:16, fontWeight:"bold", paddingLeft:40}}>{commonMsg.msg}</Typography>
+                </Grid>
+            ):null}
+
             <Grid container>
                 <Controls.Input
                     name="email"
@@ -214,7 +222,7 @@ const SignUp =(props) => {
     const classes = useStyles();
     const  [disableSubmit, setDisabledSubmit] = useState(true);
     const {userData, setUserData} = useContext(UserContext);
-    const { setSelected} = props;
+    const { setSelected, commonMsg, setCommonMsg} = props;
     const [visibility, setVisibility] = useState(false);
     const history = useHistory();
     const [error, setError] = useState("");
@@ -280,16 +288,26 @@ const SignUp =(props) => {
     }
     const { values, setValues, handleInputChange, errors, setErrors } = useForm(initialValues,true,validate);
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
 
         if( validate()){
-            let res = register({
+            let res = await user_register({
                 firstName: values.firstName,
                 lastName: values.lastName,
                 email:values.email,
                 password: values.password
-            }, callback)
+            });
+            if (res=== true){
+                setSelected(0);
+                setCommonMsg({
+                    for:"signin",
+                    isError:false,
+                    msg:"Please verify your email"
+                })
+            }else{
+                setError(res);
+            }
         }else{
             console.log("invalid")
         }
@@ -299,7 +317,7 @@ const SignUp =(props) => {
         <Form onSubmit={onSubmit}>
             { error.length ? 
                 (
-                    <span>{error}</span>
+                    <Typography align="left" variant="caption" style={{color:'red', fontSize:16, fontWeight:"bold", paddingLeft:40}}>{error}</Typography>
                 ): null
             }
             <Grid container>
@@ -402,6 +420,7 @@ export default function Login(props) {
     const history = useHistory()
     const location = useLocation();
     const {userData, setUserData} = useContext(UserContext);
+    const [commonMsg, setCommonMsg] = useState({for:"",isError:false,msg:""});
     var register = 0;
     if( location.state){
         register = location.state.register;
@@ -455,22 +474,22 @@ export default function Login(props) {
                     </Grid>
                     { selected===0 ?
                         (
-                            <SignIN />
+                            <SignIN commonMsg={commonMsg} setCommonMsg={setCommonMsg} />
                         )
                         :
                         (
-                            <SignUp setSelected={setSelected} />
+                            <SignUp commonMsg={commonMsg} setCommonMsg={setCommonMsg} setSelected={setSelected} />
                         )
                     }
                    
-                    <Grid container justifyContent="center" style={{ marginTop:"10px"}}>
+                    {/* <Grid container justifyContent="center" style={{ marginTop:"10px"}}>
                         <span>------- Or register with --------</span>
                     </Grid>
                     <Grid container justifyContent="center" style={{ marginTop:"10px"}}>
                         <FacebookIcon/>
                         <TwitterIcon/>
                         <LinkedInIcon/>
-                    </Grid>
+                    </Grid> */}
                 </Controls.Paper>
             </Grid>
             <Grid item xs={1} sm></Grid>

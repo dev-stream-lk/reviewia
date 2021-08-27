@@ -1,6 +1,9 @@
 import { createTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import './App.css';
 import Router from './pages/Router';
+import {UserContext, initialUserData} from './context/UserContext';
+import {getCookie} from './services/cookies';
+import { useState } from 'react';
 
 const theme = createTheme({
     palette:{
@@ -13,13 +16,29 @@ const theme = createTheme({
 
 
 function App() {
+
+    const changeUserContext = (data) => {
+        setUserData(data)
+      }
+    
+      const [userData, setUserData] = useState({
+        userData:{
+          ...initialUserData,
+          isLoggedIn: getCookie("isLoggedIn") == "true" ? true : false,
+        },
+        setUserData:changeUserContext
+      });
+
+
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <div className="App">
-                <Router/>
-            </div>
-        </ThemeProvider>
+        <UserContext.Provider value={userData}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <div className="App">
+                    <Router/>
+                </div>
+            </ThemeProvider>
+        </UserContext.Provider>
     );
 }
 

@@ -76,7 +76,7 @@ const Profile = (props) => {
 
   return (
     <div>
-      <Header userData={userData} setUserData={setUserData} />
+      <Header />
       <div className={classes.mainDiv}>
         <Grid container className={classes.productContainer}>
           {/* LHS */}

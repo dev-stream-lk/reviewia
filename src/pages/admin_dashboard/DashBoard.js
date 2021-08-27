@@ -53,12 +53,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DashBoard(props) {
   const classes = useStyles();
-  const { userData, setUserData } = props;
   const [selected, setSelected] = useState(1);
 
   return (
     <>
-      <Header userData={userData} setUserData={setUserData} />
+      <Header/>
       <Grid container className={"content"}>
         <Grid item className={classes.wrapper}>
           <Drawer
