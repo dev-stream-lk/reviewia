@@ -15,6 +15,7 @@ import AppleStore from '../static/img/getAppleStore.svg';
 import PlayStore from '../static/img/getPlayStore.png';
 import {Link} from 'react-router-dom';
 import {UserContext} from '../context/UserContext';
+import {getRecentPosts} from '../services/posts';
 
 const useStyles = makeStyles( theme => ({
     headSection:{
@@ -73,7 +74,7 @@ const useStyles = makeStyles( theme => ({
             paddingLeft: theme.spacing(2)
         },
     },
-    mostViewedCard:{
+    mostRecentCard:{
         cursor:"pointer",
     },
     boxClassName:{
@@ -113,35 +114,39 @@ const useStyles = makeStyles( theme => ({
     }
 }))
 
-const MostViewdCard = (props) => {
+const MostRecentCard = (props) => {
 
     const classes = useStyles();
-    let {title="",image=Phone,value=4.5} = props;
+    let {post} = props;
 
     return (
-        <Controls.Card className={classes.mostViewedCard} >
-            <CardHeader
-                title={title}
-                subheader="34 Aug, 2021"
-            >
-            </CardHeader>
-            <CardMedia title="Samsung Galaxy j7 Nxt">
-                <img style={{maxWidth:200, maxHeight:200}} src={image} />
-            </CardMedia>
-            <CardContent>
-                <Rating
-                    name="phone"
-                    value={value}
-                    precision={0.25}
-                    getLabelText={(val) => `${val} Heart${val !== 1 ? 's' : ''}`}
-                    readOnly
-                />
-                <Box>{value}</Box>
-            </CardContent>
-            <CardActions>
+        <Grid item xs={6} sm={4} lg={3}>
+            <Link to={`/product/view/${post.postId}`} style={{textDecoration:"none"}} >
+                <Controls.Card className={classes.mostRecentCard} >
+                <CardHeader
+                    title={post.title}
+                    subheader="34 Aug, 2021"
+                >
+                </CardHeader>
+                <CardMedia title={post.title}>
+                    <img style={{maxWidth:200, maxHeight:200}} src={`${post.imgURL}`} />
+                </CardMedia>
+                <CardContent>
+                    <Rating
+                        name="phone"
+                        value={post.rate}
+                        precision={0.25}
+                        getLabelText={(val) => `${val} Heart${val !== 1 ? 's' : ''}`}
+                        readOnly
+                    />
+                    <Box>{post.rate}</Box>
+                </CardContent>
+                <CardActions>
 
-            </CardActions>
-        </Controls.Card>
+                </CardActions>
+            </Controls.Card>
+            </Link>
+        </Grid>
     )
 }
 
@@ -174,6 +179,18 @@ export default function HomePage(props) {
     const classes = useStyles();
     const [search, setSearch] = useState("");
     const {userData, setUserData} = useContext(UserContext);
+
+    const [recentPosts, setRecentPosts] = useState([]);
+
+    useEffect( async () => {
+        if(userData){
+            let data = await getRecentPosts()
+            console.log(data)
+            if(data){
+                setRecentPosts(data)
+            }
+        }
+    }, [userData])
 
     return (
 
@@ -238,21 +255,12 @@ export default function HomePage(props) {
                         <Grid container spacing={2}>
                             <Grid container justifyContent="center">
                                 <Typography variant="h4" component="div">
-                                    Most Viewed
+                                    Most Recent Posts
                                 </Typography>
                             </Grid>
-                            <Grid item xs={6} sm={4} lg={3}>
-                                <Link to="/product/view/1" style={{textDecoration:"none"}} > <MostViewdCard image={Phone} title="Samsung galaxy J7 Nxt" /></Link>
-                            </Grid>
-                            <Grid item xs={6} sm={4} lg={3}>
-                                <Link to="/product/view/2" style={{textDecoration:"none"}} > <MostViewdCard image={IphoneX} title="Apple iphone x pro" /></Link>
-                            </Grid>
-                            <Grid item xs={6} sm={4} lg={3}>
-                                <Link to="/product/view/3" style={{textDecoration:"none"}} > <MostViewdCard image={F21} title="Oppo f21(64Gb)" /></Link>
-                            </Grid>
-                            <Grid item xs={6} sm={4} lg={3}>
-                                <Link to="/product/view/4" style={{textDecoration:"none"}} > <MostViewdCard image={P30} title="Huawei p30 Pro" /></Link>
-                            </Grid>
+                            { recentPosts.length !== 0 ?  recentPosts.map ( (item,i) => (
+                                <MostRecentCard key={i} post={item}/>
+                            )): null}
                         </Grid>
                     </Controls.Paper>
                 </Grid>

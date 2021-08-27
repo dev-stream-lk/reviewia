@@ -11,33 +11,13 @@ import AddProduct from "./AddProduct";
 import Profile from "./Profile";
 import PasswordRecovery from "./PasswordRecovery";
 import TermsOfService from "./TermsOfService";
-import {UserContext, initialUserData} from '../context/UserContext';
-
-import {getCookie} from '../services/cookies';
 import DashBoard from './admin_dashboard/DashBoard';
 
 
 export default function Router() {
 
-  const changeUserContext = (data) => {
-    setUserData(data)
-  }
-  const [userData, setUserData] = useState({
-      ...initialUserData,
-      isLoggedIn: getCookie("isLoggedIn") == "true" ? true : false,
-  });
-
-  const [userDatas, setUserDatas] = useState({
-    userData:{
-      ...initialUserData,
-      isLoggedIn: getCookie("isLoggedIn") == "true" ? true : false,
-    },
-    setUserData:changeUserContext
-  });
-
-
   return (
-    <UserContext.Provider value={userDatas}>
+    <>
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
@@ -65,28 +45,25 @@ export default function Router() {
           </Route>
           <Route exact path="/login">
             {" "}
-            <Login userData={userData} setUserData={setUserData} />{" "}
+            <Login />{" "}
           </Route>
           <Route exact path="/product/instantGroup">
             {" "}
-            <InstantGroup userData={userData} setUserData={setUserData} />{" "}
+            <InstantGroup />{" "}
           </Route>
           <Route exact path="/profile">
-            <Profile userData={userData} setUserData={setUserData} />
+            <Profile />
           </Route>
           <Route exact path="/TermsOfService">
-            <TermsOfService userData={userData} setUserData={setUserData} />
+            <TermsOfService/>
           </Route>
           <Route exact path="/passwordRecovery">
             {" "}
-            <PasswordRecovery
-              userData={userData}
-              setUserData={setUserData}
-            />{" "}
+            <PasswordRecovery/>{" "}
           </Route>
-          <Route exact path="/dashboard"> <DashBoard userData={userData} setUserData={setUserData} /> </Route>
+          <Route exact path="/dashboard"> <DashBoard /> </Route>
         </Switch>
       </BrowserRouter>
-    </UserContext.Provider>
+    </>
   );
 }

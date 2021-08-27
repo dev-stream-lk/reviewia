@@ -2,7 +2,7 @@ import {getCookie, setCookie, checkCookie} from './cookies';
 import HOST from '../config/config';
 
 
-const register = (data, callback) => {
+const user_register = (data) => {
     const {firstName, lastName, email, password} = data;
     
     const requestOptions = {
@@ -18,15 +18,25 @@ const register = (data, callback) => {
             })
     }
 
-    fetch(HOST+'registration', requestOptions)
+    return fetch(HOST+'registration', requestOptions)
     .then( res => { 
-        callback(res)
+        if (res.status == 201){
+            return true
+        }else{
+            return res.json()
+        }
     })
-    .catch( err => console.error(err));
+    .then( data => {
+        if( data === true)
+            return true
+        else
+            return data['message']
+    })
+    .catch( err => {console.error(err); return false});
 }
 
 
-const login = ({email, password},setUserData,history) => {
+const user_login = ({email, password},setUserData,history) => {
     const requestOptions = {
         method:"POST",
         headers:{
@@ -41,20 +51,28 @@ const login = ({email, password},setUserData,history) => {
     return fetch(HOST+'login', requestOptions )
     .then( res => {
         if(res.ok){
-            setCookie("isLoggedIn", true,7 )
-            return true;
+            return res.json();
         }
         return false;
-        
+    })
+    .then ( data => {
+        if( data){
+            let token = data['token'].split("Bearer ")[1]
+            setCookie("token", token );
+            return token
+        }else{
+            return false;
+        }
     })
     .catch( err=> console.error(err));
 
 }
 
 const logout = (setUserData,history) => {
-    setUserData( userData=> { return {...userData, isLoggedIn:false}})
-    setCookie("isLoggedIn", false,7 )
-    history.push("/login")
+    setUserData( userData=> { return { userData:{...userData.userData,token:"",isLoggedIn:false}, setUserData:userData.setUserData }})
+    setCookie("isLoggedIn", false,7 );
+    setCookie("token","");
+    history.push("/login");
 }
 
 const passwordRecovery = ({email}) => {
@@ -71,11 +89,9 @@ const passwordRecovery = ({email}) => {
   return fetch(HOST+'reset', requestOptions )
     .then( res => {
         if(res.ok){
-            setCookie("isLoggedIn", true,7 )
             return true;
         }
         return false;
-        
     })
     .catch( err=> console.error(err));
 
@@ -83,8 +99,8 @@ const passwordRecovery = ({email}) => {
 
 
 export {
-    login,
+    user_login,
     logout,
     passwordRecovery,
-    register,
+    user_register,
 }

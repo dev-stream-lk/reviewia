@@ -1,10 +1,21 @@
 import React from 'react';
 
-export const initialUserData = {
+const initialUserData = {
     email: "",
     role: "admin",
     token:"",
     isLoggedIn:false
 }
 
-export const UserContext = React.createContext(initialUserData)
+var UserContext = React.createContext(initialUserData)
+
+const login = (token) => {
+    
+}
+
+export {
+    initialUserData,
+    UserContext,
+    login
+};
+

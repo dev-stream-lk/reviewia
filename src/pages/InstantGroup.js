@@ -13,7 +13,7 @@ import {
   IconButton,
 } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Controls from "../components/Controls";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -22,6 +22,7 @@ import SendIcon from "@material-ui/icons/Send";
 import { useHistory } from "react-router-dom";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import {UserContext} from '../context/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   titleLabel: {
@@ -201,8 +202,8 @@ const Message = (props) => {
 
 export default function InstantGroup(props) {
   const classes = useStyles();
-  const { userData, setUserData } = props;
   const history = useHistory();
+  const {userData, setUserData} = useContext(UserContext);
 
   useEffect(() => {
     if (userData) {
@@ -214,8 +215,7 @@ export default function InstantGroup(props) {
 
   return (
     <>
-      <Header userData={userData} setUserData={setUserData} />
-
+      <Header/>
       <Grid container className={"content"}>
         <Grid item xs={12} style={{ marginTop: 50 }}>
           <Typography variant="h4">Instant Group(Remaining: 2 days)</Typography>
