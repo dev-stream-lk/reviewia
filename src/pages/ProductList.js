@@ -1,4 +1,4 @@
-import { Avatar, CardContent, CardHeader, CardMedia, Collapse, FormControlLabel, FormGroup, IconButton, List, ListItem, Menu, MenuList, Typography } from '@material-ui/core';
+import { Avatar, CardContent, CardHeader, CardMedia, Collapse, FormControlLabel, FormGroup, IconButton, List, ListItem, Menu, MenuList, Typography, useTheme } from '@material-ui/core';
 import { Drawer } from '@material-ui/core';
 import { MenuItem } from '@material-ui/core';
 import { Grid, makeStyles } from '@material-ui/core';
@@ -14,9 +14,10 @@ import F21 from '../static/img/f21.jpg';
 import P30 from '../static/img/p30.png';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
-import {Link} from 'react-router-dom';
+import {Link, useLocation, useParams} from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import {UserContext} from '../context/UserContext';
+import {getPostBySearch} from '../services/posts'
 
 const drawerWidth = 280;
 
@@ -57,8 +58,8 @@ const useStyles = makeStyles( theme => ({
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
-        display:"none",
-        [ theme.breakpoints.up("md")]: {
+        // display:"none",
+        [ theme.breakpoints.up("sm")]: {
             display:"inherit"
         }
       },
@@ -266,14 +267,14 @@ const ProductCard = (props) => {
     const classes = useStyles();
     // const [rating, setRating] = useState(props.rating | (4.5));
     const [rating, setRating] = useState(4.5);
-    const {title="", image=Phone} = props;
+    const {post} = props;
 
     return (
         <Controls.Card className={classes.productListcard}>
             <Grid container>
                 <Grid item xs={4}>
-                    <CardMedia title="Samsung j7 nxt">
-                        <img src={image} className={classes.productListItemImage} />
+                    <CardMedia title={post.title}>
+                        <img src={`${post.imgURL[0]}`} className={classes.productListItemImage} />
                     </CardMedia>
                 </Grid>
                 <Grid container item xs={8}>
@@ -290,20 +291,19 @@ const ProductCard = (props) => {
                                 <MoreVertIcon />
                             </IconButton>
                             }
-                            title={title}
-                            subheader="September 14, 2016"
+                            title={post.title}
+                            subheader={post.createdAt}
                         />
                     </Grid>
                         <Grid container alignItems="center">
                             <Rating
                                 className={classes.filterCollapseInputGroup}
-                                value={rating}
+                                value={post.rate}
                                 name="byRating"
                                 precision={0.25}
-                                onChange={ (e,value) => setRating(value)}
                                 readOnly
                             />
-                            ({rating})
+                            ({post.rate})
                         </Grid>
                     <CardContent>
                         <Grid item xs={12}>
@@ -321,23 +321,63 @@ const ProductCard = (props) => {
 
 export default function ProductList(props) {
 
+    const location = useLocation()
     const classes = useStyles();
-    const {isMobile, handleIsMobile} = props;
+    const params = useParams()
+    const [isMobile, setIsMobile] = useState(false);
+    const [openMobileDrawer, setOpenMobileDrawer] = useState(false);
     const [productSearch, setProductSearch] = useState("");
     const {userData, setUserData} = useContext(UserContext);
+    const [ filterData, setFilterData ] = useState([])
+    const [posts, setPosts] = useState([])
 
-    useEffect(() => {
-    }, [handleIsMobile])
+    useEffect(()=>{
+        let filters = {}
+        if (params.categoryId != undefined){
+            filters['category'] = params.categoryId
+            if (params.subCategoryId != undefined){
+                filters['subCategory'] = params.subCategoryId
+            }
+        }
+        setFilterData(filters)
+    },[location])
+
+
+
+    const handleDisplaySize = () => {
+        let width = window.innerWidth
+        if(width < 800){
+            setIsMobile(true)
+        }else{
+            setIsMobile(false)
+        }
+    }
+
+    useEffect ( ()=> {
+        handleDisplaySize()
+        window.addEventListener('resize', handleDisplaySize)
+    })
+
+    useEffect( async () => {
+        if (filterData){
+          let data = await getPostBySearch(filterData)
+          console.log(data)
+          if(data){
+              setPosts(data.posts);
+          }
+        }
+    }, [filterData])
 
     return (
         <>
-        <Header isMobile={isMobile} handleIsMobile={handleIsMobile} userData={userData} setUserData={setUserData} ></Header>
+        <Header isMobile={isMobile} setIsMobile={setIsMobile} openMobileDrawer={openMobileDrawer} setOpenMobileDrawer={setOpenMobileDrawer} userData={userData} setUserData={setUserData} ></Header>
 
             <Grid container className={`${classes.wrapper} content`}>
                 {/* Start Drawer */}
                 <Drawer
                     className={classes.drawer}
                     variant="permanent"
+                    style={{ display: isMobile ? "none":"inherit" }}
                     classes={{
                         paper: classes.drawerPaper,
                     }}
@@ -358,8 +398,8 @@ export default function ProductList(props) {
                     classes={{
                         paper: classes.drawerPaperMobile,
                     }}
-                    open={isMobile}
-                    onClose={()=> handleIsMobile(false)}
+                    open={openMobileDrawer}
+                    onClose={()=> setOpenMobileDrawer(false)}
                 >
                     <Typography variant="h5" component="div">
                         Filter Products
@@ -393,17 +433,17 @@ export default function ProductList(props) {
                     </Grid>
                     <Controls.Paper>
                         <Grid container spacing={2}>
-                            { [{title:"Samsung galaxy J7 Nxt",image:Phone}, {title:"Apple iphone X pro", image:IphoneX}, {title:"Oppo F21",image:F21}, {title:"Huawei P30 Pro", image:P30}, {title:"Samsung galaxy J7 Nxt",image:Phone}].map( (item,index) => (
-                                <Grid key={index} item xs={12} md={6}>
-                                    <Link style={{textDecoration:"none"}} to={`/product/view/${index+1}`}><ProductCard {...item} /></Link>
+                            { posts.length != 0 ? posts.map( (item,index) => (
+                                <Grid key={index} item xs={12} lg={6}>
+                                    <Link style={{textDecoration:"none"}} to={`/product/view/${item.postId}`}><ProductCard post={item} /></Link>
                                 </Grid>
-                            ) ) }
+                            ) ): null }
                         </Grid>
                     </Controls.Paper>
                 </div>
                 {/* End ProductList */}
             </Grid>
-        <Footer ></Footer>
+        <Footer></Footer>
         </>
     )
 }

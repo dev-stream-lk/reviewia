@@ -118,7 +118,6 @@ const SignIN = (props) => {
         setCommonMsg({});
 
         if(values.rememberMe){
-            setCookie('email', values.email,30);
             setCookie('password', values.password,30);
         }
         
@@ -131,7 +130,6 @@ const SignIN = (props) => {
             setShowError("")
             history.push("/")
         }else{
-            console.log("Dfdf")
             setShowError("Invalid email or password")
         }
 

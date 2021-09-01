@@ -58,8 +58,32 @@ const user_login = ({email, password},setUserData,history) => {
     .then ( data => {
         if( data){
             let token = data['token'].split("Bearer ")[1]
-            setCookie("token", token );
-            return token
+            console.log(token)
+            setCookie("token", token ,30);
+            setCookie("email", email ,30);
+            
+            const requestOptions = {
+                method:"GET",
+                headers:{
+                    'Content-Type':"application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+            fetch(HOST+`user?email=${email}`, requestOptions )
+            .then( res => {
+                if(res.ok){
+                    return res.json();
+                }
+                return false;
+            })
+            .then ( data => {
+                if( data){
+                    console.log(data)
+                    setCookie("name", data['firstName'] + data['lastName'] ,30);
+                }
+            })
+            .catch( err => console.error(err));
+            return token;
         }else{
             return false;
         }
@@ -68,10 +92,32 @@ const user_login = ({email, password},setUserData,history) => {
 
 }
 
+const get_user_basic_info = (token, email) => {
+    const requestOptions = {
+        method:"GET",
+        headers:{
+            'Content-Type':"application/json",
+            'Authorization': `Bearer ${token}`
+        }
+    }
+
+    return fetch(HOST+`user?email=${email}`, requestOptions)
+        .then( async res => { 
+            let data = await res.json()
+            if(data){
+                return data
+            }
+            return false
+        })
+        .catch( err => console.error(err));
+}
+
 const logout = (setUserData,history) => {
     setUserData( userData=> { return { userData:{...userData.userData,token:"",isLoggedIn:false}, setUserData:userData.setUserData }})
-    setCookie("isLoggedIn", false,7 );
-    setCookie("token","");
+    setCookie("isLoggedIn", false, -7);
+    setCookie("email", "", -7 );
+    setCookie("token","", -7);
+    setCookie("name","", -7);
     history.push("/login");
 }
 
@@ -103,4 +149,5 @@ export {
     logout,
     passwordRecovery,
     user_register,
+    get_user_basic_info
 }

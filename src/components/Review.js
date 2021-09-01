@@ -36,8 +36,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Review({ description,setReportReviewId, reviewId }) {
+export default function Review(props) {
   const classes = useStyles();
+  const { setReportReviewId, review } = props;
 
   return (
     <div className={classes.root}>      
@@ -59,10 +60,10 @@ export default function Review({ description,setReportReviewId, reviewId }) {
                       height={40}
                       style={{ margin: 10 }}
                     />
-                    <span variant="h6">Review - 1</span>
+                    <span variant="h6">{review.reviewedBy}</span>
                   </div>
                   <Rating
-                    value={3.6}
+                    value={review.userRate}
                     name="byRating"
                     precision={0.25}
                     readOnly
@@ -73,7 +74,7 @@ export default function Review({ description,setReportReviewId, reviewId }) {
                       gutterBottom
                       className={classes.typography}
                     >
-                      {description}
+                      {review.description}
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
@@ -83,7 +84,7 @@ export default function Review({ description,setReportReviewId, reviewId }) {
                           color="secondary"
                           aria-label="report"
                           component="span"
-                          onClick={() => setReportReviewId(reviewId)}
+                          onClick={() => setReportReviewId(review.reviewId)}
                         >
                           <ReportIcon />
                         </IconButton>

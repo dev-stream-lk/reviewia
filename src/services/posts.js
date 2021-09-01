@@ -52,7 +52,7 @@ export const getAllPosts = () => {
 }
 
 // get all posts with paging and sorting
-export const getAllPostsWithPagin = (page=1,size=10,sort="asc") => {
+export const getAllPostsWithPagin = (page=1,size=10,sort="createdAt",order="asc") => {
     const requestOptions = {
         method:"GET",
         headers:{
@@ -61,7 +61,7 @@ export const getAllPostsWithPagin = (page=1,size=10,sort="asc") => {
         }
     }
 
-    return fetch(HOST+`public/post?page=${page}&size=${size}&sort=${sort}`, requestOptions )
+    return fetch(HOST+`public/post?page=${page}&size=${size}&sort=${sort}&order=${order}`, requestOptions )
     .then( async res => {
         if(res.ok){
             let data = await res.json()
@@ -94,7 +94,60 @@ export const getPostById = (id) => {
 }
 
 // get all post by search
-export const getPostBySearch = (title) => {
+export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", order="asc") => {
+
+    let search_url = "";
+    let isEmpty = true;
+    if ("title" in filters && filters.title != ""){
+        search_url += `title:${filters.title}`
+        isEmpty = false
+    }
+    if ("rating" in filters && filters.rating >0){
+        if( !isEmpty)
+            search_url += ",rate";
+        else
+            search_url += "rate";
+        isEmpty = false
+        
+        if( "ratingOperator" in filters && filters.rating != ""){
+            search_url += filters.ratingOperator;
+        }else{
+            search_url += ":";
+        }
+        search_url += `${filters.rating}`;
+    }
+    if ("category" in filters && filters.category != ""){
+        if( !isEmpty)
+            search_url += ",category";
+        else
+            search_url += "category";
+
+        isEmpty = false
+        search_url += `:${filters.category}`
+    }
+    if ("subCategory" in filters && filters.subCategory != ""){
+        if( !isEmpty)
+            search_url += ",subCategory";
+        else
+            search_url += "subCategory";
+        isEmpty = false
+        search_url += `:${filters.subCategory}`
+    }
+
+    if ("brand" in filters && filters.brand != ""){
+        if( !isEmpty)
+            search_url += ",brand";
+        else
+            search_url += "brand";
+        isEmpty = false
+        search_url += `:${filters.brand}`
+    }
+
+    // add paging options
+    if( !isEmpty)
+        search_url += "&";
+    search_url += `page=${page}&size=${size}&sort=${sort}&order=${order}`;
+
     const requestOptions = {
         method:"GET",
         headers:{
@@ -103,7 +156,7 @@ export const getPostBySearch = (title) => {
         }
     }
 
-    return fetch(HOST+`public/post?title=${title}`, requestOptions )
+    return fetch(HOST+`public/posts?search=${search_url}`, requestOptions )
     .then( async res => {
         if(res.ok){
             let data = await res.json()
@@ -123,7 +176,7 @@ export const getRecentPosts = () => {
         }
     }
 
-    return fetch(HOST+'public/posts?page=0&size=8&sort=desc', requestOptions )
+    return fetch(HOST+'public/posts?page=0&size=8&sort=createdAt&order=desc', requestOptions )
     .then( async res => {
         if(res.ok){
             let data = await res.json()

@@ -1,15 +1,18 @@
 import React from 'react';
+import {getCookie} from '../services/cookies';
 
+const token = getCookie("token")
+console.log(token)
 const initialUserData = {
-    email: "",
-    role: "admin",
-    token:"",
-    isLoggedIn:false
+    name: getCookie("name"),
+    email: getCookie("email"),
+    token: getCookie("token"),
+    isLoggedIn: token != "" ? true : false
 }
 
 var UserContext = React.createContext(initialUserData)
 
-const login = (token) => {
+const login = (email, name, role, token) => {
     
 }
 

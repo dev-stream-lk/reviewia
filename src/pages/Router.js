@@ -39,7 +39,15 @@ export default function Router() {
             {" "}
             <ProductView/>{" "}
           </Route>
-          <Route exact path="/products/:id">
+          <Route exact path="/products/:categoryId/:subCategoryId">
+            {" "}
+            <ProductList />{" "}
+          </Route>
+          <Route exact path="/products/:categoryId">
+            {" "}
+            <ProductList />{" "}
+          </Route>
+          <Route exact path="/products">
             {" "}
             <ProductList />{" "}
           </Route>

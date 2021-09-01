@@ -116,8 +116,8 @@ const GenerateList = (props) => {
                 <AccordionDetails className={classes.accordinationDetails}>
                     <List dense={true}>
                         {category.subCategoryList.map((item, j) => (
-                            <ListItem key={j} to="/products/1" component={Link} >
-                              <ListItemText primary={item.subCategoryName} secondary="3245 Posts" />
+                            <ListItem key={j} to={`/products/${category.categoryName}/${item.subCategoryName}`} component={Link} >
+                              <ListItemText primary={item.subCategoryName} secondary={`${item.postCount} Posts`} />
                             </ListItem>
                         ))}
                     </List>
@@ -131,15 +131,14 @@ const GenerateList = (props) => {
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const { isMobile, handleIsMobile } = props;
+  const { isMobile, setIsMobile, openMobileDrawer, setOpenMobileDrawer } = props;
   const {userData, setUserData} = useContext(UserContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  let isLogin = false;
   const [ categories, setCategories]= useState({})
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
-
+  
 
   useEffect( async () => {
     if(userData){
@@ -149,8 +148,6 @@ export default function Header(props) {
       }
     }
   },[userData])
-
-  useEffect(() => {}, [handleIsMobile]);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -194,13 +191,13 @@ export default function Header(props) {
       <div className={classes.getHeaderPadding}></div>
       <AppBar className={classes.appBar} id="header">
         <Toolbar>
-          {handleIsMobile ? (
+          { isMobile? (
             <div className={classes.isMobileIcon}>
               <IconButton
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                onClick={() => handleIsMobile(true)}
+                onClick={() => setOpenMobileDrawer(true)}
                 size="small"
               >
                 <MenuIcon />
@@ -228,7 +225,7 @@ export default function Header(props) {
                 }}
               />
             </Controls.ActionButton>
-            { userData.isLoggedIn ? 
+            { userData.true ? 
               (
                 <Controls.ActionButton textColor="white" component={Link} to={{pathname:"/product/add"}}>
                   <AddIcon/> New Post
