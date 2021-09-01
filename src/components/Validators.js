@@ -66,10 +66,19 @@ const requiredField = ( field ) => {
     return "";
 }
 
+const ratingFieldRequired = (value) => {
+    if(0<value && value <=5){
+        return ""
+    }else{
+        return "Select a rating."
+    }
+}
+
 export {
     validateUserName,
     validatePassword,
     validateEmail,
     validateName,
-    requiredField
+    requiredField,
+    ratingFieldRequired
 }

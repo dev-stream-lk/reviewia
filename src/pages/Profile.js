@@ -20,6 +20,7 @@ import GroupListContainer from "../components/comp_groupList";
 import ProfilePic from "../static/img/Profile.png";
 import { useHistory } from "react-router-dom";
 import {UserContext} from '../context/UserContext';
+import {get_user_basic_info} from '../services/auth';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -61,10 +62,30 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Profile = (props) => {
+
+  const initialProfileData = {
+    id: 31,
+    firstName: "Chamith",
+    lastName: "Nimmitha",
+    email: "chamith123.cn@gmail.com",
+    role: "USER",
+    favouriteList: []
+  }
+
   const classes = useStyles();
   const [active, setActive] = useState("GroupList");
   const {userData, setUserData} = useContext(UserContext);
+  const [profileData, setProfileData] = useState({});
   const history = useHistory();
+
+  useEffect( async ()=>{
+    if(userData){
+      let data = await get_user_basic_info(userData.token, userData.email)
+      if (data){
+        setProfileData(data);
+      }
+    }
+  }, [userData])
 
   useEffect( ()=>{
     if(userData){
@@ -72,7 +93,7 @@ const Profile = (props) => {
             history.push("/login")
         }
     }
-},[userData])
+  },[userData])
 
   return (
     <div>
@@ -80,31 +101,34 @@ const Profile = (props) => {
       <div className={classes.mainDiv}>
         <Grid container className={classes.productContainer}>
           {/* LHS */}
-          <Grid item xs={12} sm={5}>
+          <Grid item xs={12} md={5}>
             <Grid
               container
-              justify="center"
+              justifyContent="center"
+              alignItems="center"
               className = "PicDiv"
             >
               <Grid
                 item
                 xs={12}
+                sm={5}
+                md={12}
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 <Grid container justify="center" className="pictureContainer">
                   <img src={ProfilePic} className={classes.profilePicture} />
                 </Grid>
               </Grid>
-              <Grid item xs={9} direction="column">
-                <Controls.Paper>Name:</Controls.Paper>
-                <Controls.Paper>Password:</Controls.Paper>
-                <Controls.Paper>Email:</Controls.Paper>
+              <Grid item xs={12} sm={7} md={12} direction="column">
+                <Controls.Paper>Id:{profileData.id}</Controls.Paper>
+                <Controls.Paper>Name:{`${profileData.firstName} ${profileData.lastName}`}</Controls.Paper>
+                <Controls.Paper>Email:{profileData.email}</Controls.Paper>
               </Grid>
             </Grid>
           </Grid>
 
           {/* RHS */}
-          <Grid item xs={12} sm={7}>
+          <Grid item xs={12} md={7}>
             <Grid container style={{ textAlign: "center" }}>
               <Grid item xs={6} className="Button_grid">
                 <ButtonGroup

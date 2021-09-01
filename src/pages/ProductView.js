@@ -12,9 +12,11 @@ import { Skeleton } from "@material-ui/lab";
 import { Link, useParams } from "react-router-dom";
 import Phone from '../static/img/j7.jpg';
 import {useForm, Form} from '../components/useForm';
-import {requiredField} from '../components/Validators';
+import {requiredField, ratingFieldRequired} from '../components/Validators';
 import {UserContext} from '../context/UserContext';
 import {getPostById} from '../services/posts';
+import {getReviewsByPostId, addReview} from '../services/reviews';
+import { parse } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -120,17 +122,19 @@ const ReportReview = (props) => {
 const WriteReview = (props) => {
 
   const classes = useStyles();
-  const {open, setOpen} = props;
-
+  const {open, setOpen, writeReview} = props;
+  const [enableSave, setEnableSave] = useState(false);
   const initialValues = {
-    review:"",
-    rating:2.5
+    description:"",
+    rating:0
   };
 
   const validate = (fieldValue= values) => {
     const temp = {};
-    if('review' in fieldValue)
-      temp.review = requiredField(fieldValue.review);
+    if('description' in fieldValue)
+      temp.description = requiredField(fieldValue.description);
+    if('rating' in fieldValue)
+      temp.rating = ratingFieldRequired(fieldValue.rating);
 
     setErrors({
       ...errors,
@@ -138,6 +142,11 @@ const WriteReview = (props) => {
     })
     
     const isValid = Object.values(temp).every(x => x=="");
+    const all_valid = Object.values({...errors,...temp}).every(x => x=="");
+    if (all_valid)
+      setEnableSave(true)
+    else
+      setEnableSave(false)
 
     return isValid;
   }
@@ -148,13 +157,14 @@ const WriteReview = (props) => {
     errors,
     setErrors,
     handleInputChange
-  } = useForm(initialValues,false,validate);
+  } = useForm(initialValues,true,validate);
 
   const onSubmit = () => {
-    // if(validate){
-
-    // }
-    console.log("sddsd")
+    if(validate()){
+      writeReview(values.description, values.rating)
+      setOpen(false)
+      setValues(initialValues)
+    }
   }
 
   const Actions= () => {
@@ -169,6 +179,7 @@ const WriteReview = (props) => {
           Cancel
         </Controls.Button>
         <Controls.Button
+          disabled={enableSave ? false:true}
           onClick={()=>onSubmit()}
         >
           Save
@@ -182,10 +193,10 @@ const WriteReview = (props) => {
           <Controls.Popup title="Write Review" openPopup={open} setOpenPopup={setOpen} actions={<Actions/>}>
             <Form className={classes.writeReviewForm} >
               <Controls.Input
-                name="review"
+                name="description"
                 label="Review"
-                value={values.review}
-                error={errors.review}
+                value={values.description}
+                error={errors.description}
                 onChange={handleInputChange}
                 multiline
                 maxRows={6}
@@ -219,18 +230,29 @@ const ProductView = (props) => {
   const {userData, setUserData} = useContext(UserContext);
   const [postData, setPostData] = useState({})
   const [postId, setPostId] = useState(useParams().id);
+  const [reviews, setReviews] = useState([])
+
+  useEffect(async () => {
+    if(postId){
+      let data = await getPostById(postId)
+      if(data){
+        console.log(data)
+        setPostData(data)
+      }
+    }
+  },[postId]);
 
   useEffect(async () => {
     if( userData && postId){
       console.log(postId)
-      let data = await getPostById(postId)
-      console.log(data)
+      let data = await getReviewsByPostId(postId)
+      
       if(data){
-        setPostData(data)
+        console.log(data)
+        setReviews(data)
       }
     }
   },[userData,postId]);
-
 
   useEffect( ()=>{
     if(reportReviewId != null){
@@ -244,13 +266,22 @@ const ProductView = (props) => {
     }
   },[openReport])
 
+const writeReview =async ( description, userRate) => {
+  let data = await addReview(userData.email, parseInt(postId), description, userRate);
+
+  if(data){
+
+  }
+
+}
+
   return (
 
       <div>
         <Header  userData={userData} setUserData={setUserData} />
         <div className={classes.mainDiv}>
           <Grid container className={classes.productContainer}>
-            <WriteReview open={open} setOpen={setOpen} />
+            <WriteReview open={open} setOpen={setOpen} writeReview={writeReview} />
             <ReportReview reportReviewId={reportReviewId} openReport={openReport} setOpenReport={setOpenReport} />
             {/* LHS */}
             <Grid item xs={12} md={5}>
@@ -263,11 +294,11 @@ const ProductView = (props) => {
                 <img style={{maxWidth:200, maxHeight:200}} src={Phone} />
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
-                  <Rating 
-                    value={postData.rate}
+                  <Rating
+                    value={parseFloat(postData.rate)}
                     name="byRating"
                     precision={0.25}
-                    readOnly
+                    // readOnly
                   />
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
@@ -307,7 +338,7 @@ const ProductView = (props) => {
                 </Tooltip>
                 </Grid>
                 <Grid item xs={9} direction="column">
-                  <Controls.Paper>Brand: {postData.brand}</Controls.Paper>
+                  <Controls.Paper>Brand: {postData['brand']}</Controls.Paper>
                   <Controls.Paper>Year:</Controls.Paper>
                   <Controls.Paper>Review count:{postData.reviewCount}</Controls.Paper>
                 </Grid>
@@ -340,42 +371,15 @@ const ProductView = (props) => {
                             paddingTop: "10px",
                           }}
                         >
-                          <Review
-                            setReportReviewId={setReportReviewId}
-                            reviewId={1}
-                            description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                                        elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                                        rerum inventore consectetur, neque doloribus, cupiditate
-                                        numquam dignissimos laborum fugiat deleniti? Eum quasi
-                                        quidem quibusdam."
-                          />
-                          <Review
-                            setReportReviewId={setReportReviewId}
-                            reviewId={2}
-                            description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                                        elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                                        rerum inventore consectetur, neque doloribus, cupiditate
-                                        numquam dignissimos laborum fugiat deleniti? Eum quasi
-                                        quidem quibusdam."
-                          />
-                          <Review
-                            setReportReviewId={setReportReviewId}
-                            reviewId={3}
-                            description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                                        elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                                        rerum inventore consectetur, neque doloribus, cupiditate
-                                        numquam dignissimos laborum fugiat deleniti? Eum quasi
-                                        quidem quibusdam."
-                          />
-                          <Review
-                            setReportReviewId={setReportReviewId}
-                            reviewId={4}
-                            description="body1. Lorem ipsum dolor sit amet, consectetur adipisicing
-                                        elit. Quos blanditiis tenetur unde suscipit, quam beatae
-                                        rerum inventore consectetur, neque doloribus, cupiditate
-                                        numquam dignissimos laborum fugiat deleniti? Eum quasi
-                                        quidem quibusdam."
-                          />
+                          { reviews.length !== 0 ? reviews.map( (review,i) => (
+                            <Review
+                              setReportReviewId={setReportReviewId}
+                              key={i}
+                              review={review}
+                            />
+                          )) : null }
+                          
+                          
                         </Grid>
                       </Grid>
                     </Grid>

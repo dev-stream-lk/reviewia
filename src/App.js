@@ -23,8 +23,7 @@ function App() {
     
       const [userData, setUserData] = useState({
         userData:{
-          ...initialUserData,
-          isLoggedIn: getCookie("isLoggedIn") == "true" ? true : false,
+          ...initialUserData
         },
         setUserData:changeUserContext
       });
