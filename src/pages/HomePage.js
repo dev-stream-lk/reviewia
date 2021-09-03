@@ -76,6 +76,12 @@ const useStyles = makeStyles( theme => ({
     },
     mostRecentCard:{
         cursor:"pointer",
+        "& .MuiCardHeader-title":{
+            fontSize:20
+        },
+        "& .MuiCardHeader-subheader":{
+            fontSize:14
+        },
     },
     boxClassName:{
         width:"100%",
@@ -159,7 +165,7 @@ const PopularcategoryItem = (props) => {
     return (
         <Controls.Paper boxClassName={classes.boxClassName} divClassName={classes.divClassName}>
             <Grid container justifyContent="flex-start">
-                <MuiLink to="/products/1" className={classes.PopularCategoryLink} underline="none" component={Link} {...others}>
+                <MuiLink to="/products/Electronics" className={classes.PopularCategoryLink} underline="none" component={Link} {...others}>
                     <ListItemText
                         primary={primary}
                         secondary="34553 posts"
