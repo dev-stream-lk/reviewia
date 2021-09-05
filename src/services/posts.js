@@ -5,25 +5,39 @@ const TOKEN = getCookie("token");
 
 // Create a new post
 export const createPost = (data) => {
-    const {title, description, type} = data;
-    const requestOptions = {
-        method:"GET",
-        headers:{
-          'Content-Type':"application/json",
-          'Authorization': `Bearer ${TOKEN}`
-        },
-        body:{
+    console.log(data)
+    const {title, email, brandName, subCategoryId, description, type, selectedImages} = data;
+    const formData = new FormData();
+    console.log(selectedImages)
+    selectedImages.map( img=>{
+        formData.append(
+            "image",
+            img["imageObj"],
+            img["imageObj"].name
+        );
+    } );
+
+    formData.append(
+        "post",
+        JSON.stringify({
             title,
             description,
             type
-        }
+        })
+    );
+
+    const requestOptions = {
+        method:"POST",
+        headers:{
+          'Authorization': `Bearer ${TOKEN}`
+        },
+        body: formData
     }
 
-    return fetch(HOST+'user/post/create', requestOptions )
+    return fetch(HOST+`user/post/create?email=${email}&subcategory=${subCategoryId}&brand=${brandName}`, requestOptions )
     .then( async res => {
         if(res.ok){
-            let data = await res.json()
-            return data;
+            return true;
         }
         return false;
     })

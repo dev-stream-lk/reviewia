@@ -8,7 +8,6 @@ import FavoriteBorderSharp from "@material-ui/icons/FavoriteBorderSharp";
 import CompareSharp from "@material-ui/icons/CompareSharp";
 import GroupAddSharp from "@material-ui/icons/GroupAddSharp";
 import Rating from "@material-ui/lab/Rating";
-import { Skeleton } from "@material-ui/lab";
 import { Link, useParams } from "react-router-dom";
 import Phone from '../static/img/j7.jpg';
 import {useForm, Form} from '../components/useForm';
@@ -16,7 +15,6 @@ import {requiredField, ratingFieldRequired} from '../components/Validators';
 import {UserContext} from '../context/UserContext';
 import {getPostById} from '../services/posts';
 import {getReviewsByPostId, addReview} from '../services/reviews';
-import { parse } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -232,26 +230,30 @@ const ProductView = (props) => {
   const [postId, setPostId] = useState(useParams().id);
   const [reviews, setReviews] = useState([])
 
-  useEffect(async () => {
+  const getPostInfo = async () =>{
     if(postId){
       let data = await getPostById(postId)
       if(data){
-        console.log(data)
         setPostData(data)
       }
     }
-  },[postId]);
+  }
 
   useEffect(async () => {
+    await getPostInfo()
+  },[postId]);
+
+  const getPostReviews = async () => {
     if( userData && postId){
-      console.log(postId)
       let data = await getReviewsByPostId(postId)
       
       if(data){
-        console.log(data)
         setReviews(data)
       }
     }
+  }
+  useEffect(async () => {
+    await getPostReviews()
   },[userData,postId]);
 
   useEffect( ()=>{
@@ -268,10 +270,8 @@ const ProductView = (props) => {
 
 const writeReview =async ( description, userRate) => {
   let data = await addReview(userData.email, parseInt(postId), description, userRate);
-
-  if(data){
-
-  }
+  await getPostInfo()
+  await getPostReviews()
 
 }
 
@@ -295,14 +295,14 @@ const writeReview =async ( description, userRate) => {
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
                   <Rating
-                    value={parseFloat(postData.rate)}
+                    value={parseFloat(Object.keys(postData).length !== 0 ? postData.rate:"0")}
                     name="byRating"
                     precision={0.25}
                     // readOnly
                   />
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
-                  <Typography variant="h5">{postData.rate}</Typography>
+                  <Typography variant="h5">{Object.keys(postData).length !== 0 ? postData.rate:""}</Typography>
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
                 <Tooltip title="Add to Favourites" aria-label="add" arrow>
@@ -337,10 +337,13 @@ const writeReview =async ( description, userRate) => {
                   </Link>
                 </Tooltip>
                 </Grid>
-                <Grid item xs={9} direction="column">
-                  <Controls.Paper>Brand: {postData['brand']}</Controls.Paper>
-                  <Controls.Paper>Year:</Controls.Paper>
-                  <Controls.Paper>Review count:{postData.reviewCount}</Controls.Paper>
+                <Grid item xs={12} sm={11} md={9} direction="column">
+                  <Controls.Paper>Title: {Object.keys(postData).length !== 0 ? postData.title:""}</Controls.Paper>
+                  <Controls.Paper>Categoty: {Object.keys(postData).length !== 0 ? postData.category:""}</Controls.Paper>
+                  <Controls.Paper>SubCategoty: {Object.keys(postData).length !== 0 ? postData.subCategory:""}</Controls.Paper>
+                  <Controls.Paper>Brand: {Object.keys(postData).length !== 0 ? postData.brand.name:""}</Controls.Paper>
+                  <Controls.Paper>Review count: {Object.keys(postData).length !== 0 ? postData.reviewCount:""}</Controls.Paper>
+                  <Controls.Paper>Description: {Object.keys(postData).length !== 0 ? postData.description:""}</Controls.Paper>
                 </Grid>
               </Grid>
             </Grid>
@@ -349,7 +352,7 @@ const writeReview =async ( description, userRate) => {
             <Grid item xs={12} md={7} className={classes.rhs} >
               <Grid container style={{ textAlign: "center" }}>
                 <Grid item xs={6}>
-                  <Typography variant="h5">Product Name</Typography>
+                  <Typography variant="h5">{Object.keys(postData).length !== 0 ? postData.title:""}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Controls.Button onClick={()=>setOpen(true)} variant="outlined">Write a review</Controls.Button>

@@ -2,7 +2,6 @@ import React from 'react';
 import {getCookie} from '../services/cookies';
 
 const token = getCookie("token")
-console.log(token)
 const initialUserData = {
     name: getCookie("name"),
     email: getCookie("email"),
