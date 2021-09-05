@@ -226,7 +226,6 @@ const SignUp =(props) => {
     const [error, setError] = useState("");
 
     const callback = (res) => {
-        console.log(res)
         if(res.status == 201){
             setSelected(0);
         }else{
@@ -257,7 +256,6 @@ const SignUp =(props) => {
             temp.cpassword = validatePassword(fieldValues.cpassword, values.password);
         if('termsAgree' in fieldValues){
             temp.termsAgree = fieldValues.termsAgree == true? "" : "You must agree to term and conditions.";
-            console.log("sdsds")
         }
 
         setErrors({

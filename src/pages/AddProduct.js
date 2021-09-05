@@ -4,7 +4,6 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
-  FormControl,
   FormLabel,
   Grid,
   IconButton,
@@ -14,7 +13,6 @@ import {
   Stepper,
   Typography,
 } from "@material-ui/core";
-import { CallReceived } from "@material-ui/icons";
 import React, { useContext, useEffect, useState } from "react";
 import Controls from "../components/Controls";
 import Footer from "../components/Footer";
@@ -29,11 +27,11 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import CompleteImage from "../static/img/complete.png";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { initialUserData, UserContext } from "../context/UserContext";
+import { UserContext } from "../context/UserContext";
 import { getCategoryWithSubCategory } from "../services/category";
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import {requiredField} from '../components/Validators'
-
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
+import { requiredField } from "../components/Validators";
+import { createPost } from "../services/posts";
 const useStyles = makeStyles((theme) => ({
   addProductWrapper: {
     marginTop: theme.spacing(5),
@@ -116,32 +114,38 @@ const SimillarProductCard = (props) => {
 
 const Step1 = (props) => {
   const classes = useStyles();
-  const { step1Data, setStep1Data, handleNext } = props;
+  const {
+    setCategoryName,
+    setSubCategoryName,
+    step1Data,
+    setStep1Data,
+    handleNext,
+  } = props;
 
-  const validate = (fieldValues= step1Data) => {
-      let temp = {}
-  
-      if('title' in fieldValues)
-        temp.title = requiredField(fieldValues.title);
-      if('type' in fieldValues)
-        temp.type = requiredField(fieldValues.type);
-      if('category' in fieldValues)
-        temp.category = requiredField(fieldValues.category);
-      if('subCategory' in fieldValues)
-        temp.subCategory = requiredField(fieldValues.subCategory);
-      if('brand' in fieldValues)
-        temp.brand = requiredField(fieldValues.brand);
-  
-      setErrors({
-          ...errors,
-          ...temp
-      })
-  
-      return Object.values(temp).every(x=> x=="");
-  }
+  const validate = (fieldValues = step1Data) => {
+    let temp = {};
 
-  const { values, setValues, handleInputChange, errors, setErrors } =
-    useForm(step1Data,true,validate);
+    if ("title" in fieldValues) temp.title = requiredField(fieldValues.title);
+    if ("type" in fieldValues) temp.type = requiredField(fieldValues.type);
+    if ("category" in fieldValues)
+      temp.category = requiredField(fieldValues.category);
+    if ("subCategory" in fieldValues)
+      temp.subCategory = requiredField(fieldValues.subCategory);
+    if ("brand" in fieldValues) temp.brand = requiredField(fieldValues.brand);
+
+    setErrors({
+      ...errors,
+      ...temp,
+    });
+
+    return Object.values(temp).every((x) => x == "");
+  };
+
+  const { values, setValues, handleInputChange, errors, setErrors } = useForm(
+    step1Data,
+    true,
+    validate
+  );
 
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -172,34 +176,35 @@ const Step1 = (props) => {
         setCategories({ products, services });
       }
     }
-  }, []);
+  }, [setStep1Data]);
 
   // call when product type changed
   useEffect(() => {
-    setValues({
-      ...values,
-      category: "",
-      subCategory: "",
-      brand: "",
-    });
+    // setValues({
+    //   ...values,
+    //   category: "",
+    //   subCategory: "",
+    //   brand: "",
+    // });
     setSubCategories([]);
   }, [values.type]);
 
   // call when category changed
   useEffect(() => {
-    setValues({
-      ...values,
-      subCategory: "",
-      brand: "",
-    });
-    // TODO: setBrands([])
-    if (values.category != "") {
+    // setValues({
+    //   ...values,
+    //   subCategory: "",
+    //   brand: "",
+    // });
+    setBrands([]);
+    console.log("dfdff");
+    if (values.category !== "" && categories.length !== 0) {
       let type = values.type == "p" ? "products" : "services";
       categories[`${type}`].forEach((item, index) => {
         if (values.category == item.id) {
+          values["categoryName"] = item.title;
           let subCategories = [];
           for (let i in item.subCategories) {
-            console.log(item.subCategories);
             subCategories.push({
               id: item.subCategories[i].subCategoryId,
               title: item.subCategories[i].subCategoryName,
@@ -210,17 +215,19 @@ const Step1 = (props) => {
         }
       });
     }
-  }, [values.category]);
+  }, [values.category, categories]);
 
   // call when subCategory changed
   useEffect(() => {
-    setValues({
-      ...values,
-      brand: "",
-    });
-    if (values.subCategory != "") {
+    // setValues({
+    //   ...values,
+    //   brand: "",
+    // });
+    if (values.subCategory != "" && subCategories.length !== 0) {
       subCategories.forEach((item, index) => {
         if (values.subCategory == item.id) {
+          values["subCategoryName"] = item.title;
+          console.log(values);
           let brands = [];
           for (let i in item.brands) {
             brands.push({
@@ -232,11 +239,25 @@ const Step1 = (props) => {
         }
       });
     }
-  }, [values.subCategory]);
+  }, [values.subCategory, subCategories]);
+
+  useEffect(() => {
+    brands.map((item, i) => {
+      if (item.id == values.brand) {
+        values["brandName"] = item.title;
+      }
+    });
+  }, [values.brand, brands]);
 
   // set form data to global scope
   const handleStep1Next = (e) => {
     setStep1Data(values);
+    // let type = values.type == "p" ? "products" : "services";
+    // categories[`${type}`].map((cat ,index) => {
+    //   if(step1Data.category === cat.id){
+    //     setCategoryName(cat.title)
+    //   }
+    // })
     handleNext(e);
   };
 
@@ -305,7 +326,7 @@ const Step1 = (props) => {
                         Sub Category
                       </FormLabel>
                       <Controls.Select
-                        value={values.subCategory}
+                        value={values["subCategory"]}
                         onChange={handleInputChange}
                         className={classes.input}
                         name="subCategory"
@@ -437,19 +458,17 @@ const DummyImage = (props) => {
 
 const ImageCard = (props) => {
   const classes = useStyles();
-  const { cardData,removeImage, index } = props;
+  const { cardData, removeImage, index } = props;
 
   return (
     <Controls.Card style={{ paddingTop: 10 }}>
       <CardMedia>
-        { removeImage ? (
-            <IconButton color="secondary" onClick={ e => removeImage(index)} >
-              <HighlightOffIcon/>
-            </IconButton>
-          ): null
-        }
+        {removeImage ? (
+          <IconButton color="secondary" onClick={(e) => removeImage(index)}>
+            <HighlightOffIcon />
+          </IconButton>
+        ) : null}
         <Grid container justifyContent="center">
-          
           <img
             src={URL.createObjectURL(cardData.imageObj)}
             className={classes.uploadImagePreveiwImage}
@@ -467,10 +486,8 @@ const ImageCard = (props) => {
   );
 };
 
-
 const ImageInfo = (props) => {
-
-  const {selectedImages, handleImageAdd} = props;
+  const { selectedImages, handleImageAdd } = props;
   const [localTitle, setLocalTitle] = useState("");
   const [localDescription, setLocalDescription] = useState("");
 
@@ -478,8 +495,7 @@ const ImageInfo = (props) => {
     handleImageAdd(localTitle, localDescription);
     setLocalTitle("");
     setLocalDescription("");
-  }
-
+  };
 
   return (
     <>
@@ -501,20 +517,22 @@ const ImageInfo = (props) => {
         />
       </Grid>
       <Grid container justifyContent="flex-end">
-        <Controls.Button disabled={ selectedImages.length == 3 ? true:false} onClick={handleLocalImageAdd}>
+        <Controls.Button
+          disabled={selectedImages.length == 3 ? true : false}
+          onClick={handleLocalImageAdd}
+        >
           <AddIcon /> Add
         </Controls.Button>
       </Grid>
     </>
-  )
-}
-
+  );
+};
 
 const Step2 = (props) => {
   const classes = useStyles();
   const { selectedImages, setSelectedImages, handleNext, handleBack } = props;
   const [newSelectedImage, setNewSelectedImage] = useState(null);
-  const [error,setError] = useState("");
+  const [error, setError] = useState("");
   const [lastRemoved, setLastRemoved] = useState(null);
 
   const handleNewImage = (e) => {
@@ -523,33 +541,29 @@ const Step2 = (props) => {
   };
 
   const handleImageAdd = (title, description) => {
-    if (!newSelectedImage){
-      setError("Please select image")
-      return
+    if (!newSelectedImage) {
+      setError("Please select image");
+      return;
     }
-    if( error != ""){
-      setError("")
+    if (error != "") {
+      setError("");
     }
-    let images = Array.from( selectedImages)
-    images.push(
-      {
-        imageObj: newSelectedImage,
-        title: title ? title : "New caption",
-        description: description ? description : "new Description",
-      }
-    )
+    let images = Array.from(selectedImages);
+    images.push({
+      imageObj: newSelectedImage,
+      title: title ? title : "New caption",
+      description: description ? description : "new Description",
+    });
     setNewSelectedImage(null);
-    setSelectedImages(
-     images 
-    );
+    setSelectedImages(images);
   };
 
   const removeImage = (index) => {
     let images = selectedImages;
-    let remImg = images.splice(index,1)
-    setLastRemoved(remImg)
-    setSelectedImages(images)
-  }
+    let remImg = images.splice(index, 1);
+    setLastRemoved(remImg);
+    setSelectedImages(images);
+  };
 
   return (
     <>
@@ -562,12 +576,19 @@ const Step2 = (props) => {
                   You should add at least one photo before publishing your post.
                 </Typography>
                 <Grid container>
-                  { error ? (
-                      <Grid container justifyContent="center">
-                        <span style={{textAlign:"center", color:"red", paddingBottom:10}} >{error}</span>
-                      </Grid>
-                    ) : null
-                  }
+                  {error ? (
+                    <Grid container justifyContent="center">
+                      <span
+                        style={{
+                          textAlign: "center",
+                          color: "red",
+                          paddingBottom: 10,
+                        }}
+                      >
+                        {error}
+                      </span>
+                    </Grid>
+                  ) : null}
                   <Grid item xs={12} sm={6}>
                     <Grid container justifyContent="center">
                       <div className={classes.step2AddImage}>
@@ -600,7 +621,10 @@ const Step2 = (props) => {
                     </Grid>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <ImageInfo selectedImages={selectedImages} handleImageAdd={handleImageAdd} />
+                    <ImageInfo
+                      selectedImages={selectedImages}
+                      handleImageAdd={handleImageAdd}
+                    />
                   </Grid>
                 </Grid>
               </Controls.Paper>
@@ -613,12 +637,16 @@ const Step2 = (props) => {
                     if (selectedImages.length - i >= 0) {
                       return (
                         <Grid item xs={4}>
-                          <ImageCard index={i-1} removeImage={removeImage} cardData={selectedImages[i - 1]} />
+                          <ImageCard
+                            index={i - 1}
+                            removeImage={removeImage}
+                            cardData={selectedImages[i - 1]}
+                          />
                         </Grid>
                       );
                     } else {
                       return (
-                        <Grid index={i-1} item xs={4}>
+                        <Grid index={i - 1} item xs={4}>
                           <DummyImage />
                         </Grid>
                       );
@@ -652,7 +680,10 @@ const Step2 = (props) => {
                   >
                     <ArrowBackIosIcon /> Back
                   </Controls.Button>
-                  <Controls.Button disabled={selectedImages.length === 0? true:false} onClick={handleNext}>
+                  <Controls.Button
+                    disabled={selectedImages.length === 0 ? true : false}
+                    onClick={handleNext}
+                  >
                     Next <ArrowForwardIosIcon />
                   </Controls.Button>
                 </Grid>
@@ -667,7 +698,37 @@ const Step2 = (props) => {
 
 const Step3 = (props) => {
   const classes = useStyles();
-  const { step1Data, selectedImages, handleNext, handleBack } = props;
+  const {
+    setStep1Data,
+    setSelectedImages,
+    userData,
+    step1Data,
+    selectedImages,
+    handleNext,
+    handleBack,
+  } = props;
+  const [agreeTerms, setAgreeTerms] = useState(false);
+
+  const addPost = async () => {
+    console.log(step1Data);
+    let data = {
+      email: userData.email,
+      title: step1Data["title"],
+      type: step1Data["type"],
+      subCategoryId: step1Data.subCategory,
+      brandName: step1Data.brandName,
+      description: step1Data.description,
+      selectedImages,
+    };
+    let res = await createPost(data);
+    if (res) {
+      // setStep1Data([]);
+      // setSelectedImages([]);
+      handleNext();
+    } else {
+      console.log("error");
+    }
+  };
 
   return (
     <>
@@ -694,13 +755,17 @@ const Step3 = (props) => {
                                 <FormLabel className={classes.formLabel}>
                                   Title
                                 </FormLabel>
-                                <Typography>Samsung galaxy J7 Nxt</Typography>
+                                <Typography>{step1Data.title}</Typography>
                               </Grid>
                               <Grid container alignItems="center">
                                 <FormLabel className={classes.formLabel}>
                                   Type
                                 </FormLabel>
-                                <Typography>Product</Typography>
+                                <Typography>
+                                  {step1Data.type === "p"
+                                    ? "Product"
+                                    : "Service"}
+                                </Typography>
                               </Grid>
 
                               <Grid container alignItems="center">
@@ -708,7 +773,15 @@ const Step3 = (props) => {
                                   Category
                                 </FormLabel>
                                 <Typography>
-                                  Samsung galaxy J7 Electronics
+                                  {step1Data["categoryName"]}
+                                </Typography>
+                              </Grid>
+                              <Grid container alignItems="center">
+                                <FormLabel className={classes.formLabel}>
+                                  Sub Category
+                                </FormLabel>
+                                <Typography>
+                                  {step1Data["subCategoryName"]}
                                 </Typography>
                               </Grid>
                               <Grid container alignItems="center">
@@ -721,7 +794,9 @@ const Step3 = (props) => {
                                 <FormLabel className={classes.formLabel}>
                                   Brand
                                 </FormLabel>
-                                <Typography>Samsung</Typography>
+                                <Typography>
+                                  {step1Data["brandName"]}
+                                </Typography>
                               </Grid>
                               <Grid container alignItems="center">
                                 <FormLabel className={classes.formLabel}>
@@ -733,46 +808,11 @@ const Step3 = (props) => {
                                   rows={10}
                                   size="small"
                                   name="titile"
-                                  value="
-                                                                    NETWORK	Technology	GSM / HSPA / LTE
-                                                                    LAUNCH	Announced	2017, July
-                                                                    Status	Available. Released 2017, July
-                                                                    BODY	Dimensions	152.4 x 78.6 x 7.6 mm (6.00 x 3.09 x 0.30 in)
-                                                                    Weight	170 g (6.00 oz)
-                                                                    Build	Glass front, plastic back, plastic frame
-                                                                    SIM	Dual SIM (Micro-SIM, dual stand-by)
-                                                                    DISPLAY	Type	Super AMOLED
-                                                                    Size	5.5 inches, 83.4 cm2 (~69.6% screen-to-body ratio)
-                                                                    Resolution	720 x 1280 pixels, 16:9 ratio (~267 ppi density)
-                                                                    PLATFORM	OS	Android 7.0 (Nougat), upgradable to Android 9.0 (Pie), One UI
-                                                                    Chipset	Exynos 7870 Octa (14 nm)
-                                                                    CPU	Octa-core 1.6 GHz Cortex-A53
-                                                                    GPU	Mali-T830 MP1
-                                                                    MEMORY	Card slot	microSDXC (dedicated slot)
-                                                                    Internal	16GB 2GB RAM, 32GB 3GB RAM
-                                                                         eMMC 5.1
-                                                                    MAIN CAMERA	Single	13 MP, f/1.9, 28mm (wide), AF
-                                                                    Features	LED flash, panorama
-                                                                    Video	1080p@30fps
-                                                                    SELFIE CAMERA	Single	5 MP, f/2.2, 23mm (wide)
-                                                                    Features	LED flash
-                                                                    Video	
-                                                                    SOUND	Loudspeaker	Yes
-                                                                    3.5mm jack	Yes
-                                                                    COMMS	WLAN	Wi-Fi 802.11 b/g/n, Wi-Fi Direct, hotspot
-                                                                    Bluetooth	4.1, A2DP, LE
-                                                                    GPS	Yes, with A-GPS, GLONASS
-                                                                    NFC	No
-                                                                    Radio	FM radio, RDS, recording
-                                                                    USB	microUSB 2.0
-                                                                    FEATURES	Sensors	Accelerometer, proximity
-                                                                         ANT+
-                                                                    BATTERY	Type	Li-Ion 3000 mAh, removable
-                                                                    MISC	Colors	Black, Gold
-                                                                    Models	SM-J701F, SM-J701F, SM-J701M, SM-J701MT
-                                                                    SAR	0.61 W/kg (head)    
-                                                                    SAR EU	0.52 W/kg (head)     1.39 W/kg (body)    
-                                                                    "
+                                  value={
+                                    step1Data["description"]
+                                      ? step1Data["description"]
+                                      : "No description was provided..."
+                                  }
                                 ></Controls.Input>
                               </Grid>
                             </Grid>
@@ -787,21 +827,24 @@ const Step3 = (props) => {
                       <Typography variant="h6">Post Images</Typography>
                       <Controls.Paper>
                         <Grid container spacing={2}>
-                        {[1, 2, 3].map((i) => {
-                          if (selectedImages.length - i >= 0) {
-                            return (
-                              <Grid item xs={4}>
-                                <ImageCard index={i-1} cardData={selectedImages[i - 1]} />
-                              </Grid>
-                            );
-                          } else {
-                            return (
-                              <Grid index={i-1} item xs={4}>
-                                <DummyImage />
-                              </Grid>
-                            );
-                          }
-                        })}
+                          {[1, 2, 3].map((i) => {
+                            if (selectedImages.length - i >= 0) {
+                              return (
+                                <Grid item xs={4}>
+                                  <ImageCard
+                                    index={i - 1}
+                                    cardData={selectedImages[i - 1]}
+                                  />
+                                </Grid>
+                              );
+                            } else {
+                              return (
+                                <Grid index={i - 1} item xs={4}>
+                                  <DummyImage />
+                                </Grid>
+                              );
+                            }
+                          })}
                         </Grid>
                       </Controls.Paper>
                     </Controls.Paper>
@@ -814,7 +857,7 @@ const Step3 = (props) => {
                           <Typography variant="h6">
                             Agreement Section
                           </Typography>
-                          <Grid container>
+                          {/* <Grid container>
                             <div
                               style={{
                                 display: "flex",
@@ -828,7 +871,7 @@ const Step3 = (props) => {
                                 product or service post once it is submitted.
                               </Typography>
                             </div>
-                          </Grid>
+                          </Grid> */}
                           <Grid container>
                             <div
                               style={{
@@ -837,12 +880,17 @@ const Step3 = (props) => {
                                 marginTop: 10,
                               }}
                             >
-                              <Controls.Checkbox />
+                              <Controls.Checkbox
+                                onChange={(e) => setAgreeTerms(!agreeTerms)}
+                                checked={agreeTerms}
+                              />
                               <Typography align="left" variant="subtitle2">
                                 You will agree to follow the{" "}
-                                <a href="">Terms & Conditions </a> and refrain
-                                from adding any sort of inapprpriate, plagarized
-                                or invalid details.
+                                <a target="_blank" href="/TermsOfService">
+                                  Terms & Conditions{" "}
+                                </a>{" "}
+                                and refrain from adding any sort of
+                                inapprpriate, plagarized or invalid details.
                               </Typography>
                             </div>
                           </Grid>
@@ -857,7 +905,10 @@ const Step3 = (props) => {
                             >
                               <ArrowBackIosIcon /> Back
                             </Controls.Button>
-                            <Controls.Button onClick={handleNext}>
+                            <Controls.Button
+                              disabled={agreeTerms ? false : true}
+                              onClick={addPost}
+                            >
                               Finish <ArrowForwardIosIcon />
                             </Controls.Button>
                           </Grid>
@@ -891,8 +942,10 @@ export default function AddProduct(props) {
   const steps = getSteps();
   const history = useHistory();
   const { userData, setUserData } = useContext(UserContext);
-  const [step1Data, setSet1Data] = useState(initialPostData);
+  const [step1Data, setStep1Data] = useState(initialPostData);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [categoryName, setCategoryName] = useState("");
+  const [subCategoryName, setSubCategoryName] = useState("");
 
   // useEffect( ()=>{
   //     if(userData){
@@ -945,8 +998,10 @@ export default function AddProduct(props) {
               <>
                 <Step1
                   step1Data={step1Data}
-                  setStep1Data={setSet1Data}
+                  setStep1Data={setStep1Data}
                   handleNext={handleNext}
+                  setCategoryName={setCategoryName}
+                  setSubCategoryName={setSubCategoryName}
                 />
               </>
             ) : null}
@@ -964,7 +1019,15 @@ export default function AddProduct(props) {
 
             {activeStep === 2 ? (
               <>
-                <Step3 selectedImages={selectedImages} step1Data={step1Data} handleNext={handleNext} handleBack={handleBack} />
+                <Step3
+                  setStep1Data={setStep1Data}
+                  setSelectedImages={setSelectedImages}
+                  userData={userData}
+                  selectedImages={selectedImages}
+                  step1Data={step1Data}
+                  handleNext={handleNext}
+                  handleBack={handleBack}
+                />
               </>
             ) : null}
 

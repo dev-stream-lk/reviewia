@@ -13,8 +13,6 @@ export default function Select(props) {
 
     const classes = useStyles();
     const {name, label, value, onChange,size="small", className, options,error=null, ...others} = props;
-
-
     return (
         <FormControl
             variant="outlined" size={size} className={`${classes.formControl} ${className}`}

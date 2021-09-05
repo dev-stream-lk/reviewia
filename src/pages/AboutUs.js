@@ -4,7 +4,7 @@ import Controls from "../components/Controls";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Image from "./../assets/1.png";
-import {UserContext} from '../context/UserContext';
+import { UserContext } from "../context/UserContext";
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -12,12 +12,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AboutUs = (props ) => {
+const AboutUs = (props) => {
   const classes = useStyles();
 
   return (
     <UserContext.Consumer>
-      { ({userData, setUserData}) => (
+      {({ userData, setUserData }) => (
         <>
           <Header userData={userData} setUserData={setUserData} />
           <Grid container>
@@ -40,22 +40,22 @@ const AboutUs = (props ) => {
                       alignItems="flex-start"
                     >
                       <Grid item xs={12}>
-                        <Typography variant="h4" style={{ marginBottom:20 }}>
+                        <Typography variant="h4" style={{ marginBottom: 20 }}>
                           About Us
                         </Typography>
                       </Grid>
                       <Grid item xs={12}>
                         <Typography align="left" variant="body1" gutterBottom>
                           body1. Lorem ipsum dolor sit amet, consectetur
-                          adipisicing elit. Quos blanditiis tenetur unde suscipit,
-                          quam beatae rerum inventore consectetur, neque
-                          doloribus, cupiditate numquam dignissimos laborum fugiat
-                          deleniti? Eum quasi quidem quibusdam. body1. Lorem ipsum
-                          dolor sit amet, consectetur adipisicing elit. Quos
-                          blanditiis tenetur unde suscipit, quam beatae rerum
-                          inventore consectetur, neque doloribus, cupiditate
-                          numquam dignissimos laborum fugiat deleniti? Eum quasi
-                          quidem quibusdam.
+                          adipisicing elit. Quos blanditiis tenetur unde
+                          suscipit, quam beatae rerum inventore consectetur,
+                          neque doloribus, cupiditate numquam dignissimos
+                          laborum fugiat deleniti? Eum quasi quidem quibusdam.
+                          body1. Lorem ipsum dolor sit amet, consectetur
+                          adipisicing elit. Quos blanditiis tenetur unde
+                          suscipit, quam beatae rerum inventore consectetur,
+                          neque doloribus, cupiditate numquam dignissimos
+                          laborum fugiat deleniti? Eum quasi quidem quibusdam.
                         </Typography>
                       </Grid>
                     </Grid>
@@ -66,7 +66,7 @@ const AboutUs = (props ) => {
           </Grid>
           <Footer />
         </>
-      ) }
+      )}
     </UserContext.Consumer>
   );
 };

@@ -58,7 +58,6 @@ const user_login = ({email, password},setUserData,history) => {
     .then ( data => {
         if( data){
             let token = data['token'].split("Bearer ")[1]
-            console.log(token)
             setCookie("token", token ,30);
             setCookie("email", email ,30);
             
@@ -78,7 +77,6 @@ const user_login = ({email, password},setUserData,history) => {
             })
             .then ( data => {
                 if( data){
-                    console.log(data)
                     setCookie("name", data['firstName'] + data['lastName'] ,30);
                 }
             })

@@ -58,7 +58,8 @@ const validateEmail = (email) => {
 }
 
 const requiredField = ( field ) => {
-    field = field.trim();
+    
+    field = `${field}`.trim();
 
     if(field.length === 0){
         return "A required field.";
