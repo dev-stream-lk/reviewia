@@ -21,6 +21,7 @@ import ProfilePic from "../static/img/Profile.png";
 import { useHistory } from "react-router-dom";
 import {UserContext} from '../context/UserContext';
 import {get_user_basic_info} from '../services/auth';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -44,6 +45,17 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 80,
     maxHeight: 150,
   },
+  profileCameraButton: {
+    width:30,
+    height:30,
+    position:"absolute",
+    bottom:0,
+    borderRadius:"50%",
+    opacity:0.6,
+    "&:hover":{
+      opacity:1
+    }
+  },
   productListItemHeader: {
     width: "100%",
     textAlign: "left",
@@ -64,11 +76,11 @@ const useStyles = makeStyles((theme) => ({
 const Profile = (props) => {
 
   const initialProfileData = {
-    id: 31,
-    firstName: "Chamith",
-    lastName: "Nimmitha",
-    email: "chamith123.cn@gmail.com",
-    role: "USER",
+    id: 0,
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "",
     favouriteList: []
   }
 
@@ -115,14 +127,22 @@ const Profile = (props) => {
                 md={12}
                 style={{ display: "flex", justifyContent: "center" }}
               >
-                <Grid container justify="center" className="pictureContainer">
+                <Grid container style={{position:"relative"}} justify="center" className="pictureContainer">
+                  <Controls.ActionButton className={classes.profileCameraButton}>
+                    <PhotoCameraIcon/>
+                  </Controls.ActionButton>
                   <img src={ProfilePic} className={classes.profilePicture} />
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={7} md={12} direction="column">
-                <Controls.Paper>Id:{profileData.id}</Controls.Paper>
-                <Controls.Paper>Name:{`${profileData.firstName} ${profileData.lastName}`}</Controls.Paper>
-                <Controls.Paper>Email:{profileData.email}</Controls.Paper>
+                <Controls.Paper>Id: {profileData.id}</Controls.Paper>
+                <Controls.Paper>Name: {`${profileData.firstName} ${profileData.lastName}`}</Controls.Paper>
+                <Controls.Paper>Email: {profileData.email}</Controls.Paper>
+                <Grid container justifyContent="flex-end" >
+                  <Controls.Button style={{marginRight:40}} color="secondary" variant="outlined" >
+                    Change Password
+                  </Controls.Button>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

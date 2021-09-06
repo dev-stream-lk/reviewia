@@ -26,6 +26,8 @@ import PlayStore from "../static/img/getPlayStore.png";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { getRecentPosts } from "../services/posts";
+import {CatContext} from '../context/CategorySubCategotyContext';
+
 
 const useStyles = makeStyles((theme) => ({
   headSection: {
@@ -144,7 +146,7 @@ const MostRecentCard = (props) => {
         style={{ textDecoration: "none" }}
       >
         <Controls.Card className={classes.mostRecentCard}>
-          <CardHeader title={post.title} subheader="34 Aug, 2021"></CardHeader>
+          <CardHeader title={post.title} subheader={new Date(post.createdAt).toDateString()}></CardHeader>
           <CardMedia title={post.title}>
             <img
               style={{ maxWidth: 200, maxHeight: 200 }}
@@ -168,35 +170,69 @@ const MostRecentCard = (props) => {
   );
 };
 
-const PopularcategoryItem = (props) => {
+const PopularcategorySection = () => {
   const classes = useStyles();
-  const { href = "", primary, ...others } = props;
+  const res = useContext(CatContext);
+  const [popularCatList, setPopularCatList] = useState([]);
+
+  function compare( a, b ) {
+    if ( a.postCount > b.postCount ){
+      return -1;
+    }
+    if ( a.postCount < b.postCount ){
+      return 1;
+    }
+    return 0;
+  }
+
+  useEffect(()=>{
+    if(res){
+      let allCat = res.products.concat(res.services)
+      allCat.sort( compare )
+      if( allCat.length > 6){
+        allCat = allCat.slice(0,6)
+      }
+      setPopularCatList(allCat);
+    }
+  },[res])
 
   return (
-    <Controls.Paper
-      boxClassName={classes.boxClassName}
-      divClassName={classes.divClassName}
-    >
-      <Grid container justifyContent="flex-start">
-        <MuiLink
-          to="/products/Electronic"
-          className={classes.PopularCategoryLink}
-          underline="none"
-          component={Link}
-          {...others}
-        >
-          <ListItemText
-            primary={primary}
-            secondary="34553 posts"
-            secondaryTypographyProps={{
-              style: { marginLeft: 30 },
-            }}
-          />
-          <ArrowForwardIcon
-            style={{ position: "absolute", top: 30, right: 30 }}
-          />
-        </MuiLink>
-      </Grid>
+    <Controls.Paper>
+      <Typography variant="h4" component="div">
+        Popular Categories
+      </Typography>
+
+      <List className={classes.list}>
+        { popularCatList && popularCatList.length !== 0 ? popularCatList.map((category, index) => (
+          <ListItem key={index}>
+            <Controls.Paper
+              boxClassName={classes.boxClassName}
+              divClassName={classes.divClassName}
+            >
+              <Grid container justifyContent="flex-start">
+                <MuiLink
+                  to={`/products/${category.categoryName}`}
+                  className={classes.PopularCategoryLink}
+                  underline="none"
+                  component={Link}
+                >
+                  <ListItemText
+                    primary={category.categoryName}
+                    secondary={`${category.postCount} posts`}
+                    secondaryTypographyProps={{
+                      style: { marginLeft: 30 },
+                    }}
+                  />
+                  <ArrowForwardIcon
+                    style={{ position: "absolute", top: 30, right: 30 }}
+                  />
+                </MuiLink>
+              </Grid>
+            </Controls.Paper>
+          </ListItem>
+          )) : null
+        }
+      </List>
     </Controls.Paper>
   );
 };
@@ -266,26 +302,7 @@ export default function HomePage(props) {
       <Grid container className={classes.trendingSection}>
         {/* Start Popular categories */}
         <Grid item xs={12} md={4}>
-          <Controls.Paper>
-            <Typography variant="h4" component="div">
-              Popular Categories
-            </Typography>
-
-            <List className={classes.list}>
-              {[
-                "Electronics",
-                "vehicle",
-                "category-01",
-                "category-02",
-                "category-03",
-                "category-04",
-              ].map((item, index) => (
-                <ListItem key={index}>
-                  <PopularcategoryItem href={index} primary={item} />
-                </ListItem>
-              ))}
-            </List>
-          </Controls.Paper>
+          <PopularcategorySection/>
         </Grid>
         {/* End Popular categories */}
 

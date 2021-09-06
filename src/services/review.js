@@ -139,7 +139,7 @@ const deleteReview = (id) => {
 }
 
 // get revirews by post id
-const addReview = (id) => {
+const getReview = (id) => {
     
     const requestOptions = {
         method:"GET",

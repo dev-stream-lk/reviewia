@@ -50,7 +50,8 @@ const useStyles = makeStyles( theme => ({
         }
     },
     title:{
-        color: `${theme.palette.primary.main} !important`
+        color: `${theme.palette.primary.main} !important`,
+        textDecoration:"none"
     }
 }))
 
@@ -438,7 +439,7 @@ export default function Login(props) {
             <Grid item xs={1} sm></Grid>
             <Grid item xs={false} className={classes.loginImage}  md={5}>
                 <Grid container justifyContent="center" style={{flexDirection:"column"}}>
-                    <Typography variant="h3" align="center" className={classes.title} >Reviewia</Typography>
+                    <Typography variant="h3" align="center" className={classes.title} component={Link} to="/" >Reviewia</Typography>
                     <img  src={MainImage} />
                 </Grid>
             </Grid>

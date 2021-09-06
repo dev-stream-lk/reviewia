@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    border:"2px solid #eee",
+    padding:10
   },
   image: {
     width: 128,

@@ -1,11 +1,11 @@
 import {getCookie, setCookie, checkCookie} from './cookies';
 import HOST from '../config/config';
 
-const TOKEN = getCookie("isLoggedIn");
+const TOKEN = getCookie("token");
 
 
 // Add to favourite list
-const addToFavouriteList = (data) => {
+export const addToFavouriteList = (data) => {
     const {email,id} = data;
     const requestOptions = {
         method:"POST",
@@ -15,7 +15,7 @@ const addToFavouriteList = (data) => {
         }
     }
 
-    return fetch(HOST+`user/post/favourite?email?email=${email}&id=${id}`, requestOptions )
+    return fetch(HOST+`user/post/favourite?email=${email}&id=${id}`, requestOptions )
     .then( res => {
         if(res.ok){
             return true;
@@ -26,7 +26,7 @@ const addToFavouriteList = (data) => {
 }
 
 // get  favourite list
-const getFavouriteList = (email) => {
+export const getFavouriteList = (email) => {
 
     const requestOptions = {
         method:"GET",
@@ -36,11 +36,10 @@ const getFavouriteList = (email) => {
         }
     }
 
-    return fetch(HOST+`user/post/favourite?email?email=${email}`, requestOptions )
+    return fetch(HOST+`user/post/favourite?email=${email}`, requestOptions )
     .then( async res => {
         if(res.ok){
-            data = await res.json()
-            return data;
+            return await res.json()
         }
         return false;
     })
@@ -48,7 +47,7 @@ const getFavouriteList = (email) => {
 }
 
 // Delete from favourite list
-const deleteFromFavouriteList = (data) => {
+export const removeFromFavouriteList = (data) => {
     const {email,id} = data;
     const requestOptions = {
         method:"DELETE",
@@ -58,7 +57,7 @@ const deleteFromFavouriteList = (data) => {
         }
     }
 
-    return fetch(HOST+`user/post/favourite?email?email=${email}&id=${id}`, requestOptions )
+    return fetch(HOST+`user/post/favourite?email=${email}&id=${id}`, requestOptions )
     .then( async res => {
         if(res.ok){
             return true;

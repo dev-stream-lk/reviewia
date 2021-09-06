@@ -460,7 +460,7 @@ const ProductCard = (props) => {
                 </IconButton>
               }
               title={post.title}
-              subheader={post.createdAt}
+              subheader={new Date(post.createdAt).toDateString()}
             />
           </Grid>
           <Grid container alignItems="center">

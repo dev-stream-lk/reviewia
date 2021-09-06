@@ -12,6 +12,7 @@ import Profile from "./Profile";
 import PasswordRecovery from "./PasswordRecovery";
 import TermsOfService from "./TermsOfService";
 import DashBoard from './admin_dashboard/DashBoard';
+import FavouriteList from './FavouriteList';
 
 
 export default function Router() {
@@ -68,6 +69,10 @@ export default function Router() {
           <Route exact path="/passwordRecovery">
             {" "}
             <PasswordRecovery/>{" "}
+          </Route>
+          <Route exact path="/favourite-list">
+            {" "}
+            <FavouriteList/>{" "}
           </Route>
           <Route exact path="/dashboard"> <DashBoard /> </Route>
         </Switch>
