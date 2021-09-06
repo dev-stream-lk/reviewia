@@ -13,8 +13,11 @@ import Phone from '../static/img/j7.jpg';
 import {useForm, Form} from '../components/useForm';
 import {requiredField, ratingFieldRequired} from '../components/Validators';
 import {UserContext} from '../context/UserContext';
+import {FavContext, addToFavContext, removeFromFavContext} from '../context/FavoriteList';
 import {getPostById} from '../services/posts';
 import {getReviewsByPostId, addReview} from '../services/reviews';
+import {addToFavouriteList, removeFromFavouriteList} from '../services/favouritelist';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -27,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   reviewContainer: {
-    margin: theme.spacing(2),
+    // margin: theme.spacing(2),
     padding: theme.spacing(2),
   },
   rhs:{
@@ -35,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("md")]:{
       margin:0
     }
+  },
+  ReviewsHeader:{
+    color: theme.palette.primary.main
   },
   productContainer: {
     textAlign: "start",
@@ -229,6 +235,8 @@ const ProductView = (props) => {
   const [postData, setPostData] = useState({})
   const [postId, setPostId] = useState(useParams().id);
   const [reviews, setReviews] = useState([])
+  const [inFavList, setInFavList] = useState(false);
+  const [favButtonLock, setFavButtonLock] = useState(false);
 
   const getPostInfo = async () =>{
     if(postId){
@@ -238,6 +246,19 @@ const ProductView = (props) => {
       }
     }
   }
+
+  // check if user already add to favourite list
+  var favList = useContext(FavContext);
+    
+  useEffect(()=>{
+    if(favList){
+      console.log(favList)
+      favList.forEach(post => {
+        if(post.postId == postId)
+          setInFavList(true)
+      });
+    }  
+  },[favList]);
 
   useEffect(async () => {
     await getPostInfo()
@@ -268,12 +289,46 @@ const ProductView = (props) => {
     }
   },[openReport])
 
-const writeReview =async ( description, userRate) => {
-  let data = await addReview(userData.email, parseInt(postId), description, userRate);
-  await getPostInfo()
-  await getPostReviews()
+  const writeReview =async ( description, userRate) => {
+    let data = await addReview(userData.email, parseInt(postId), description, userRate);
+    await getPostInfo()
+    await getPostReviews()
 
-}
+  }
+
+  // add to favourite list
+  const addToFavList = async () => {
+    setInFavList(true)
+    setFavButtonLock(true)
+    if(userData.email){
+      let res = await addToFavouriteList({email:userData.email,id:postId})
+      if(!res){
+        setInFavList(false)
+      }else{
+        addToFavContext(postData)
+      }
+    }else{
+      addToFavContext(postData)
+    }
+    setFavButtonLock(false)
+  }
+
+  // remove from favourite list
+  const removeFromFavList = async () => {
+    setInFavList(false)
+    setFavButtonLock(true)
+    if(userData.email){
+      let res = await removeFromFavouriteList({email:userData.email,id:postId})
+      if(!res){
+        setInFavList(true)
+      }else{
+        removeFromFavContext(postId)
+      }
+    }else{
+      removeFromFavContext(postId)
+    }
+    setFavButtonLock(false)
+  }
 
   return (
 
@@ -291,14 +346,14 @@ const writeReview =async ( description, userRate) => {
                   xs={12}
                   style={{ display: "flex", justifyContent: "center" }}
                 >
-                <img style={{maxWidth:200, maxHeight:200}} src={Phone} />
+                <img style={{maxWidth:200, maxHeight:200}} src={`${Object.keys(postData).length !== 0 ? postData.imgURL[0].url:""}`} />
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
                   <Rating
                     value={parseFloat(Object.keys(postData).length !== 0 ? postData.rate:"0")}
                     name="byRating"
                     precision={0.25}
-                    // readOnly
+                    readOnly
                   />
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
@@ -306,13 +361,26 @@ const writeReview =async ( description, userRate) => {
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
                 <Tooltip title="Add to Favourites" aria-label="add" arrow>
-                <IconButton
-                    color="primary"
-                    aria-label="Add to favourite"
-                    component="span"
-                  >
-                    <FavoriteBorderSharp />
-                  </IconButton>
+                  { inFavList ? 
+                    (
+                      <IconButton
+                        color="secondary"
+                        component="span"
+                        onClick={ !favButtonLock? removeFromFavList: () => {}}
+                      >
+                        <FavoriteIcon />
+                      </IconButton>
+                    ) : 
+                    (
+                      <IconButton
+                        color="primary"
+                        component="span"
+                        onClick={!favButtonLock? addToFavList: () => {}}
+                      >
+                        <FavoriteBorderSharp />
+                      </IconButton>
+                    )
+                  }
                 </Tooltip>
                 <Tooltip title="Compare" aria-label="add" arrow>
                 <Link to={{pathname:"/product/compare"}} >
@@ -360,8 +428,9 @@ const writeReview =async ( description, userRate) => {
                 <Grid item xs={12}>
                   <Controls.Paper className={useStyles.paper}>
                     <Grid container className={classes.reviewContainer}>
-                      <Grid item xs={1}>
-                        <Typography variant="h5">Reviews</Typography>
+                      <Grid item xs={12}>
+                        <Typography variant="h5" className={classes.ReviewsHeader} >Reviews</Typography>
+                        <hr/>
                       </Grid>
                       <Grid container>
                         <Grid

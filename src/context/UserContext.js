@@ -11,13 +11,8 @@ const initialUserData = {
 
 var UserContext = React.createContext(initialUserData)
 
-const login = (email, name, role, token) => {
-    
-}
-
 export {
     initialUserData,
     UserContext,
-    login
 };
 

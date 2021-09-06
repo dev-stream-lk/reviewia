@@ -16,6 +16,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Link as MuiLink,
+  Tooltip,
 } from "@material-ui/core";
 import { AccountCircle } from "@material-ui/icons";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
@@ -29,7 +30,8 @@ import { logout } from "../services/auth";
 import AddIcon from '@material-ui/icons/Add';
 import {UserContext} from '../context/UserContext';
 import {getCategoryWithSubCategory} from '../services/category'
-
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import {CatContext} from '../context/CategorySubCategotyContext';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -45,6 +47,14 @@ const useStyles = makeStyles((theme) => ({
   },
   navbar: {
     paddingRight: theme.spacing(10),
+  },
+  headerFavIcon:{
+    color:"white",
+    marginRight:10,
+    "&:hover": {
+      // color: theme.palette.secondary.main,
+      boxShadow:"0px 0px 1px 1px white"
+    },
   },
   categoryMenu: {
     morgin: 0,
@@ -139,15 +149,22 @@ export default function Header(props) {
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
   
-
-  useEffect( async () => {
-    if(userData){
-      let res = await getCategoryWithSubCategory()
-      if(res){
-        setCategories(res)
-      }
+  const res = useContext(CatContext)
+  
+  useEffect(()=>{
+    if(res){
+      setCategories(res)
     }
-  },[userData])
+  },[res])
+
+  // useEffect( async () => {
+  //   if(userData){
+  //     let res = await getCategoryWithSubCategory()
+  //     if(res){
+  //       setCategories(res)
+  //     }
+  //   }
+  // },[userData])
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -283,7 +300,7 @@ export default function Header(props) {
                     ):null
                   }
                   <MenuItem component={Link} to="/profile" >Profile</MenuItem>
-                  <MenuItem>Favorite list</MenuItem>
+                  <MenuItem component={Link} to="/favourite-list" >Favorite list</MenuItem>
                   <MenuItem>Instant Groups</MenuItem>
                   <MenuItem onClick={handleLogout} >Logout</MenuItem>
                 </Menu>
@@ -292,6 +309,16 @@ export default function Header(props) {
             :
             (
               <div>
+                <Link to={{pathname: "/favourite-list", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
+                  <Tooltip title="Favourite List" aria-label="add" arrow>
+                    <IconButton
+                      className={classes.headerFavIcon}
+                      component="span"
+                    >
+                      <FavoriteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Link>
                 <Link to={{pathname: "/login", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
                   <Controls.Button style={{marginRight:10}}>
                     Login
