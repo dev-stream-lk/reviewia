@@ -1,6 +1,6 @@
-import {getCookie, setCookie, checkCookie} from './cookies';
 import HOST from '../config/config';
-
+import {getItem, setItem} from '../services/localStorage';
+import {refreshContext} from '../context/FavoriteList';
 
 const user_register = (data) => {
     const {firstName, lastName, email, password} = data;
@@ -58,9 +58,9 @@ const user_login = ({email, password},setUserData,history) => {
     .then ( data => {
         if( data){
             let token = data['token'].split("Bearer ")[1]
-            setCookie("token", token ,30);
-            setCookie("email", email ,30);
-            
+            setItem("token", token);
+            setItem("email", email);
+            refreshContext()
             const requestOptions = {
                 method:"GET",
                 headers:{
@@ -77,7 +77,7 @@ const user_login = ({email, password},setUserData,history) => {
             })
             .then ( data => {
                 if( data){
-                    setCookie("name", data['firstName'] + data['lastName'] ,30);
+                    setItem("name", data['firstName'] + data['lastName']);
                 }
             })
             .catch( err => console.error(err));
@@ -111,11 +111,10 @@ const get_user_basic_info = (token, email) => {
 }
 
 const logout = (setUserData,history) => {
-    setUserData( userData=> { return { userData:{...userData.userData,token:"",isLoggedIn:false}, setUserData:userData.setUserData }})
-    setCookie("isLoggedIn", false, -7);
-    setCookie("email", "", -7 );
-    setCookie("token","", -7);
-    setCookie("name","", -7);
+    setUserData( userData=> { return { userData:{...userData.userData,name:"",token:"",isLoggedIn:false}, setUserData:userData.setUserData }})
+    let list = getItem("favList");
+    localStorage.clear();
+    setItem("favList", list);
     history.push("/login");
 }
 

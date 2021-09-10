@@ -1,7 +1,7 @@
-import {getCookie, setCookie, checkCookie} from './cookies';
 import HOST from '../config/config';
+import {getItem, setItem} from '../services/localStorage';
 
-const TOKEN = getCookie("token");
+const TOKEN = getItem("token");
 
 // get all posts
 export const getReviewsByPostId = (id) => {

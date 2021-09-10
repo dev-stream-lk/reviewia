@@ -22,14 +22,15 @@ import { useHistory } from "react-router-dom";
 import {UserContext} from '../context/UserContext';
 import {get_user_basic_info} from '../services/auth';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import {PreLoader} from '../components/basic/PreLoader';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
     margin: theme.spacing(5),
   },
   reviewContainer: {
-    margin: theme.spacing(2),
     padding: theme.spacing(2),
+    paddingRight:0
   },
   productContainer: {
     textAlign: "start",
@@ -72,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
 const Profile = (props) => {
 
   const initialProfileData = {
@@ -85,10 +85,11 @@ const Profile = (props) => {
   }
 
   const classes = useStyles();
-  const [active, setActive] = useState("GroupList");
+  const [active, setActive] = useState("ProductList");
   const {userData, setUserData} = useContext(UserContext);
   const [profileData, setProfileData] = useState({});
   const history = useHistory();
+  const [pageLoading, setPageLoading] = useState(true);
 
   useEffect( async ()=>{
     if(userData){
@@ -96,12 +97,13 @@ const Profile = (props) => {
       if (data){
         setProfileData(data);
       }
+      setPageLoading(false);
     }
   }, [userData])
 
   useEffect( ()=>{
     if(userData){
-        if(userData.isLoggedIn == false){
+        if(userData.token == ""){
             history.push("/login")
         }
     }
@@ -111,7 +113,8 @@ const Profile = (props) => {
     <div>
       <Header />
       <div className={classes.mainDiv}>
-        <Grid container className={classes.productContainer}>
+        <Grid container className={classes.productContainer} style={{position:"relative"}}>
+          <PreLoader loading={pageLoading} opacity={1}/>
           {/* LHS */}
           <Grid item xs={12} md={5}>
             <Grid
@@ -135,9 +138,9 @@ const Profile = (props) => {
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={7} md={12} direction="column">
-                <Controls.Paper>Id: {profileData.id}</Controls.Paper>
-                <Controls.Paper>Name: {`${profileData.firstName} ${profileData.lastName}`}</Controls.Paper>
-                <Controls.Paper>Email: {profileData.email}</Controls.Paper>
+                <Controls.Paper>Id: {profileData.id && profileData.id }</Controls.Paper>
+                <Controls.Paper>Name: {profileData.firstName && `${profileData.firstName} ${profileData.lastName}`}</Controls.Paper>
+                <Controls.Paper>Email: {profileData.email && profileData.email}</Controls.Paper>
                 <Grid container justifyContent="flex-end" >
                   <Controls.Button style={{marginRight:40}} color="secondary" variant="outlined" >
                     Change Password

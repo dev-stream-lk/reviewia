@@ -27,6 +27,9 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { getRecentPosts } from "../services/posts";
 import {CatContext} from '../context/CategorySubCategotyContext';
+import {getDate} from '../utils/dateTime';
+import NotFoundImage from '../assets/not-found.svg';
+import {PreLoader} from '../components/basic/PreLoader';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -133,6 +136,10 @@ const useStyles = makeStyles((theme) => ({
       2
     )}px ${theme.spacing(2)}px`,
   },
+  notFoundImage:{
+    width:"100%",
+    maxWidth:"150px"
+  }
 }));
 
 const MostRecentCard = (props) => {
@@ -146,7 +153,7 @@ const MostRecentCard = (props) => {
         style={{ textDecoration: "none" }}
       >
         <Controls.Card className={classes.mostRecentCard}>
-          <CardHeader title={post.title} subheader={new Date(post.createdAt).toDateString()}></CardHeader>
+          <CardHeader title={post.title} subheader={getDate(post.createdAt)}></CardHeader>
           <CardMedia title={post.title}>
             <img
               style={{ maxWidth: 200, maxHeight: 200 }}
@@ -170,10 +177,11 @@ const MostRecentCard = (props) => {
   );
 };
 
-const PopularcategorySection = () => {
+const PopularcategorySection = (props) => {
   const classes = useStyles();
   const res = useContext(CatContext);
   const [popularCatList, setPopularCatList] = useState([]);
+  const [popularCatListLoading, setPopularCatListLoading] = useState(true);
 
   function compare( a, b ) {
     if ( a.postCount > b.postCount ){
@@ -193,11 +201,17 @@ const PopularcategorySection = () => {
         allCat = allCat.slice(0,6)
       }
       setPopularCatList(allCat);
+      setPopularCatListLoading(false)
     }
   },[res])
 
   return (
-    <Controls.Paper>
+    <Controls.Paper style={{minHeight:"50vh", position:"relative"}}>
+      {popularCatListLoading ? 
+        <PreLoader loading={true}/> :
+        null
+      }
+      
       <Typography variant="h4" component="div">
         Popular Categories
       </Typography>
@@ -230,7 +244,14 @@ const PopularcategorySection = () => {
               </Grid>
             </Controls.Paper>
           </ListItem>
-          )) : null
+          )) : (
+            <Grid container alignItems="center" style={{marginTop:20, flexDirection:"column"}}>
+              {/* <Typography>
+                Categories not found.
+              </Typography> */}
+              <img src={NotFoundImage} className={classes.notFoundImage} />
+            </Grid>
+          )
         }
       </List>
     </Controls.Paper>
@@ -241,7 +262,7 @@ export default function HomePage(props) {
   const classes = useStyles();
   const [search, setSearch] = useState("");
   const { userData, setUserData } = useContext(UserContext);
-
+  const [updateListLoading, setUpdateListLoading] = useState(true);
   const [recentPosts, setRecentPosts] = useState([]);
 
   useEffect(async () => {
@@ -250,6 +271,7 @@ export default function HomePage(props) {
       if (data) {
         setRecentPosts(data);
       }
+      setUpdateListLoading(false);
     }
   }, [userData]);
 
@@ -308,18 +330,30 @@ export default function HomePage(props) {
 
         {/* Start Most view  */}
         <Grid item xs={12} md={8}>
-          <Controls.Paper>
+          <Controls.Paper style={{minHeight:"50vh", position:"relative"}}>
+            {updateListLoading ? 
+              <PreLoader loading={true}/> :
+              null
+            }
             <Grid container spacing={2}>
               <Grid container justifyContent="center">
                 <Typography variant="h4" component="div">
-                  Most Recent Posts
+                  Most Recent Updates
                 </Typography>
               </Grid>
               {recentPosts.length !== 0
                 ? recentPosts.map((item, i) => (
                     <MostRecentCard key={i} post={item} />
                   ))
-                : null}
+                : (
+                  <Grid container alignItems="center" style={{marginTop:20, flexDirection:"column"}}>
+                    {/* <Typography>
+                      Updates not found.
+                    </Typography> */}
+                    <img src={NotFoundImage} className={classes.notFoundImage} />
+                  </Grid>
+                )
+              }
             </Grid>
           </Controls.Paper>
         </Grid>

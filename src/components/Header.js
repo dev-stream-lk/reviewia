@@ -32,6 +32,7 @@ import {UserContext} from '../context/UserContext';
 import {getCategoryWithSubCategory} from '../services/category'
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import {CatContext} from '../context/CategorySubCategotyContext';
+import NotFoundImage from '../assets/not-found.svg';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -104,6 +105,11 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
+  notFoundImage:{
+    width:"100%",
+    height:"100%",
+    maxWidth:"150px"
+  }
 }));
 
 const GenerateList = (props) => {
@@ -113,7 +119,7 @@ const GenerateList = (props) => {
 
   return (
     <div className={classes.accordination}  {...others}>
-        {list.map((category, i) => (
+        { list.length !==0 ? list.map((category, i) => (
             <Accordion key={i}>
                 <AccordionSummary
                  className={classes.accordinationSummary}
@@ -133,7 +139,15 @@ const GenerateList = (props) => {
                     </List>
                 </AccordionDetails>
             </Accordion>
-        ))}
+        )):
+        (
+          <Grid container alignItems="center" style={{marginTop:20, flexDirection:"column"}}>
+            {/* <Typography>
+              Categories not found.
+            </Typography> */}
+            <img src={NotFoundImage} className={classes.notFoundImage} />
+          </Grid>
+        )}
     </div>
   );
 };

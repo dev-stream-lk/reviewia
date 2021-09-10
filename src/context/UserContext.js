@@ -1,16 +1,15 @@
 import React from 'react';
-import {getCookie} from '../services/cookies';
+import {getItem, setItem} from '../services/localStorage';
 
-const token = getCookie("token")
+const token = getItem("token")
 const initialUserData = {
-    name: getCookie("name"),
-    email: getCookie("email"),
-    token: getCookie("token"),
+    name: getItem("name"),
+    email: getItem("email"),
+    token: getItem("token"),
     isLoggedIn: token != "" ? true : false
 }
 
 var UserContext = React.createContext(initialUserData)
-
 export {
     initialUserData,
     UserContext,

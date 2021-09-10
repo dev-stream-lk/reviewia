@@ -1,7 +1,6 @@
-import {getCookie, setCookie, checkCookie} from './cookies';
 import HOST from '../config/config';
-
-const TOKEN = getCookie("isLoggedIn");
+import {getItem, setItem} from '../services/localStorage';
+const TOKEN = getItem("token");
 
 
 // Add to new review

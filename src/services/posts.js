@@ -1,7 +1,7 @@
-import {getCookie, setCookie, checkCookie} from './cookies';
 import HOST from '../config/config';
+import {getItem, setItem} from '../services/localStorage';
 
-const TOKEN = getCookie("token");
+const TOKEN = getItem("token");
 
 // Create a new post
 export const createPost = (data) => {
@@ -222,3 +222,24 @@ export const getPopularCategory = () => {
     .catch( err=> console.error(err));
 }
 
+// get user own posts
+export const getUserPosts = (email) => {
+    const requestOptions = {
+        method:"GET",
+        headers:{
+          'Content-Type':"application/json",
+          'Authorization': `Bearer ${TOKEN}`
+        }
+    }
+
+    return fetch(HOST+`user/posts?email=${email}`, requestOptions )
+    .then( async res => {
+        if(res.ok){
+            let data = await res.json()
+            return data;
+        }
+        return false;
+        
+    })
+    .catch( err=> console.error(err));
+}
