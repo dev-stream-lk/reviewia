@@ -17,6 +17,7 @@ import {user_login,user_register} from '../services/auth';
 import MainImage from '../static/img/login_img.svg';
 import {getCookie, getCookies, setCookie, setCookies} from '../services/cookies';
 import {UserContext} from '../context/UserContext';
+import {PreLoader} from '../components/basic/PreLoader';
 
 const useStyles = makeStyles( theme => ({
 
@@ -63,8 +64,7 @@ const SignIN = (props) => {
     const history = useHistory();
     const [visibility, setVisibility] = useState(false);
     const [showError, setShowError] = useState("");
-    const {commonMsg, setCommonMsg} = props;
-
+    const {commonMsg, setCommonMsg, setLoading} = props;
 
     const initialValues = {
         email:"",
@@ -110,14 +110,14 @@ const SignIN = (props) => {
             }
         }
         
-        return isValid
+        return isValid;
     }
     const { values, setValues, handleInputChange, errors, setErrors } = useForm(initialValues, true, validate);
 
     const  handleOnSubmit = async (e) => {
+        setLoading(true)
         e.preventDefault();
         setCommonMsg({});
-
         if(values.rememberMe){
             setCookie('password', values.password,30);
         }
@@ -133,6 +133,7 @@ const SignIN = (props) => {
         }else{
             setShowError("Invalid email or password")
         }
+        setLoading(false)
 
     }
 
@@ -221,7 +222,7 @@ const SignUp =(props) => {
     const classes = useStyles();
     const  [disableSubmit, setDisabledSubmit] = useState(true);
     const {userData, setUserData} = useContext(UserContext);
-    const { setSelected, commonMsg, setCommonMsg} = props;
+    const { setSelected, commonMsg, setCommonMsg, setLoading} = props;
     const [visibility, setVisibility] = useState(false);
     const history = useHistory();
     const [error, setError] = useState("");
@@ -287,7 +288,7 @@ const SignUp =(props) => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-
+        setLoading(true);
         if( validate()){
             let res = await user_register({
                 firstName: values.firstName,
@@ -308,6 +309,7 @@ const SignUp =(props) => {
         }else{
             console.log("invalid")
         }
+        setLoading(false);
     }
 
     return (
@@ -418,6 +420,7 @@ export default function Login(props) {
     const location = useLocation();
     const {userData, setUserData} = useContext(UserContext);
     const [commonMsg, setCommonMsg] = useState({for:"",isError:false,msg:""});
+    const [loading, setLoading] = useState(false);
     var register = 0;
     if( location.state){
         register = location.state.register;
@@ -444,7 +447,8 @@ export default function Login(props) {
                 </Grid>
             </Grid>
             <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
-                <Controls.Paper className={classes.paper} divClassName={classes.paperDiv}>
+                <Controls.Paper className={classes.paper} divClassName={classes.paperDiv} style={{position:"relative"}}>
+                    <PreLoader loading={loading} />
                     <Grid container alignItems="center">
                         <Grid item xs={6} style={selected===0 ? {backgroundColor:"#236CC7"}: {boxShadow:"0px 2px 2px 1px rgba(0,0,0,0.21)",}}>
                             <Controls.ActionButton
@@ -471,11 +475,11 @@ export default function Login(props) {
                     </Grid>
                     { selected===0 ?
                         (
-                            <SignIN commonMsg={commonMsg} setCommonMsg={setCommonMsg} />
+                            <SignIN setLoading={setLoading} commonMsg={commonMsg} setCommonMsg={setCommonMsg} />
                         )
                         :
                         (
-                            <SignUp commonMsg={commonMsg} setCommonMsg={setCommonMsg} setSelected={setSelected} />
+                            <SignUp setLoading={setLoading} commonMsg={commonMsg} setCommonMsg={setCommonMsg} setSelected={setSelected} />
                         )
                     }
                    

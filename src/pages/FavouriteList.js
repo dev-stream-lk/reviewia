@@ -6,7 +6,7 @@ import { Box, CardActions, CardContent, CardHeader, CardMedia, Grid, makeStyles,
 import { Link } from 'react-router-dom';
 import { Rating } from '@material-ui/lab';
 import {UserContext} from '../context/UserContext';
-import {FavContext, getContextFromDb} from '../context/FavoriteList';
+import {FavContext, refreshContext} from '../context/FavoriteList';
 import {getFavouriteList} from '../services/favouritelist';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 
@@ -66,11 +66,7 @@ export default function FavouriteList() {
 
     const classes = useStyles();
     const {userData, setUserData} = useContext(UserContext);
-    const favList = useContext(FavContext);
-    
-    useEffect(()=>{
-        console.log(favList)
-    },[favList])
+    var favList = useContext(FavContext);
 
     return (
         <div>

@@ -32,6 +32,8 @@ import { getCategoryWithSubCategory } from "../services/category";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import { requiredField } from "../components/Validators";
 import { createPost } from "../services/posts";
+import EditIcon from '@material-ui/icons/Edit';
+
 const useStyles = makeStyles((theme) => ({
   addProductWrapper: {
     marginTop: theme.spacing(5),
@@ -706,6 +708,7 @@ const Step3 = (props) => {
     selectedImages,
     handleNext,
     handleBack,
+    setActiveStep
   } = props;
   const [agreeTerms, setAgreeTerms] = useState(false);
 
@@ -746,7 +749,12 @@ const Step3 = (props) => {
                 <Grid container justifyContent="center">
                   <Grid item xs={12} sm={10} md={8}>
                     <Controls.Paper>
-                      <Typography variant="h6">Basic Information</Typography>
+                      <Grid container justifyContent="center" alignItems="center" style={{position:"relative"}}>
+                        <Typography variant="h6">Basic Information</Typography>
+                        <Controls.ActionButton color="default" onClick={()=>setActiveStep(0)} style={{fontSize:25, position:"absolute", right:20}}>
+                          <EditIcon color="primary"  />
+                        </Controls.ActionButton>
+                      </Grid>
                       <Grid container>
                         <Grid container>
                           <Grid item xs={12}>
@@ -824,7 +832,12 @@ const Step3 = (props) => {
 
                   <Grid item xs={12} sm={10} md={8}>
                     <Controls.Paper>
-                      <Typography variant="h6">Post Images</Typography>
+                      <Grid container style={{position:"relative"}} justifyContent="center" alignItems="center" >
+                        <Typography variant="h6">Selected Images</Typography>
+                        <Controls.ActionButton color="default" onClick={()=>setActiveStep(1)} style={{fontSize:25, position:"absolute", right:20}}>
+                          <EditIcon color="primary"  />
+                        </Controls.ActionButton>
+                      </Grid>
                       <Controls.Paper>
                         <Grid container spacing={2}>
                           {[1, 2, 3].map((i) => {
@@ -1027,6 +1040,7 @@ export default function AddProduct(props) {
                   step1Data={step1Data}
                   handleNext={handleNext}
                   handleBack={handleBack}
+                  setActiveStep={setActiveStep}
                 />
               </>
             ) : null}

@@ -1,9 +1,10 @@
 import HOST from '../config/config';
 import {getItem, setItem} from '../services/localStorage';
+
 const TOKEN = getItem("token");
 
-
-export const getUserDetails = (email) => {
+// get user own posts
+export const getUserGroups = (email) => {
     const requestOptions = {
         method:"GET",
         headers:{
@@ -12,13 +13,14 @@ export const getUserDetails = (email) => {
         }
     }
 
-    return fetch(HOST+`user/?email=${email}`, requestOptions )
+    return fetch(HOST+`user/group/all?email=${email}`, requestOptions )
     .then( async res => {
         if(res.ok){
-            data = await res.json()
+            let data = await res.json()
             return data;
         }
         return false;
+        
     })
     .catch( err=> console.error(err));
 }

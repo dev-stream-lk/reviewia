@@ -9,22 +9,24 @@ import { Rating, Skeleton } from "@material-ui/lab";
 import { IconButton } from "@material-ui/core";
 import ReportIcon from '@material-ui/icons/Report';
 import Controls from './Controls';
+import {getDateTime} from '../utils/dateTime';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    padding:0
   },
   typography: {
     textAlign: "start",
   },
   paper: {
-    height: 250,
     width: "100%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     border:"2px solid #eee",
-    padding:10
+    // padding:10,
+    margin:0
   },
   image: {
     width: 128,
@@ -36,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     maxHeight: "100%",
   },
+  reviewHeaderAndFooter:{
+    background:"#eee",
+    padding: "0px 10px"
+  }
 }));
 
 export default function Review(props) {
@@ -43,7 +49,7 @@ export default function Review(props) {
   const { setReportReviewId, review } = props;
 
   return (
-    <div className={classes.root}>      
+    <div className={classes.root}>
       <Grid container>
         <Grid item xs={12}>
           <Grid container>
@@ -51,26 +57,33 @@ export default function Review(props) {
               <Grid item xs={12}>
                 <Grid
                   container
-                  alignItems="center"
-                  justifyContent="space-between"
                 >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Skeleton
-                      animation="wave"
-                      variant="circle"
-                      width={40}
-                      height={40}
-                      style={{ margin: 10 }}
+                  <Grid container
+                    alignItems="center"
+                    justifyContent="space-between"
+                    className={classes.reviewHeaderAndFooter}
+                    >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Skeleton
+                        animation="wave"
+                        variant="circle"
+                        width={40}
+                        height={40}
+                        style={{ margin: 10 }}
+                      />
+                      <div style={{display:"flex", flexDirection:"column", paddingLeft:10}}>
+                        <Typography variant="h6" style={{fontSize:17,textAlign:"left"}}>{review.reviewedBy}</Typography>
+                        <Typography variant="caption">{getDateTime(review.createdAt)}</Typography>
+                      </div>
+                    </div>
+                    <Rating
+                      value={review.userRate}
+                      name="byRating"
+                      precision={0.25}
+                      readOnly
                     />
-                    <span variant="h6">{review.reviewedBy}</span>
-                  </div>
-                  <Rating
-                    value={review.userRate}
-                    name="byRating"
-                    precision={0.25}
-                    readOnly
-                  />
-                  <Grid item xs={12}>
+                  </Grid>
+                  <Grid item xs={12} style={{padding:"10px 20px"}}>
                     <Typography
                       variant="body1"
                       gutterBottom
@@ -80,36 +93,33 @@ export default function Review(props) {
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Grid container justifyContent="flex-end">
-                    <Grid item xs={2}>
-                        <IconButton
-                          color="secondary"
-                          aria-label="report"
-                          component="span"
-                          onClick={() => setReportReviewId(review.reviewId)}
-                        >
-                          <ReportIcon />
-                        </IconButton>
-                      </Grid>
-                      <Grid item xs={2}>
+                    <Grid container justifyContent="flex-end" className={classes.reviewHeaderAndFooter}>
+                      <IconButton
+                        color="secondary"
+                        aria-label="report"
+                        component="span"
+                        onClick={() => setReportReviewId(review.reviewId)}
+                        title="Report Review"
+                      >
+                        <ReportIcon />
+                      </IconButton>
                         <IconButton
                           color="primary"
                           aria-label="Like"
                           component="span"
+                          title="Like"
                         >
-                          <ThumbUp />
-                        </IconButton>
-                      </Grid>
+                        <ThumbUp />
+                      </IconButton>
 
-                      <Grid item xs={2}>
-                        <IconButton
-                          color="primary"
-                          aria-label="Dislike"
-                          component="span"
-                        >
-                          <ThumbDown />
-                        </IconButton>
-                      </Grid>
+                      <IconButton
+                        color="primary"
+                        aria-label="Dislike"
+                        component="span"
+                        title="Dislike"
+                      >
+                        <ThumbDown />
+                      </IconButton>
                     </Grid>
                   </Grid>
                 </Grid>

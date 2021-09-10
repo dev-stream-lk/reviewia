@@ -2,7 +2,6 @@ import { createTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import './App.css';
 import Router from './pages/Router';
 import {UserContext, initialUserData} from './context/UserContext';
-import {getCookie} from './services/cookies';
 import { useState } from 'react';
 
 const theme = createTheme({
@@ -12,8 +11,6 @@ const theme = createTheme({
         }
     }
 })
-
-
 
 function App() {
 

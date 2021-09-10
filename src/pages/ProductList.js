@@ -25,6 +25,8 @@ import AddIcon from "@material-ui/icons/Add";
 import { UserContext } from "../context/UserContext";
 import { getPostBySearch } from "../services/posts";
 import { getCategoryWithSubCategory } from "../services/category";
+import NotFoundImage from '../assets/not-found.svg';
+import {PreLoader} from '../components/basic/PreLoader';
 
 const drawerWidth = 280;
 
@@ -98,6 +100,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("md")]: {
       width: "70%",
     },
+  },
+  notFoundImage:{
+    width:"100%",
+    maxWidth:"150px"
   },
 }));
 
@@ -492,6 +498,7 @@ export default function ProductList(props) {
   const { userData, setUserData } = useContext(UserContext);
   const [filterData, setFilterData] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [postLoading, setPostLoading] = useState(true);
 
   useEffect(() => {
     let filters = {};
@@ -524,6 +531,7 @@ export default function ProductList(props) {
       if (data) {
         setPosts(data.posts);
       }
+      setPostLoading(false);
     }
   }, [filterData]);
 
@@ -603,7 +611,8 @@ export default function ProductList(props) {
               </Controls.Button>
             </Link>
           </Grid>
-          <Controls.Paper style={{ minHeight: "50vh" }}>
+          <Controls.Paper style={{ minHeight: "50vh",position:"relative" }}>
+            <PreLoader loading={postLoading} />
             <Grid container spacing={2}>
               {posts.length != 0 ? (
                 posts.map((item, index) => (
@@ -617,8 +626,11 @@ export default function ProductList(props) {
                   </Grid>
                 ))
               ) : (
-                <Grid container justifyContent="center">
-                  <span>Post Not found.</span>
+                <Grid item xs={12} alignItems="center" justifyContent="center" style={{height:"100%",display:"flex", flexDirection:"column"}}>
+                  <Typography variant="subtitle2" style={{marginBottom:20}}>
+                    <span>Post Not found.</span>
+                  </Typography>
+                  <img src={NotFoundImage} className={classes.notFoundImage} />
                 </Grid>
               )}
             </Grid>

@@ -1,18 +1,17 @@
 import React from 'react';
-import {getCookie, setCookie} from '../services/cookies';
 import {getFavouriteList} from '../services/favouritelist';
+import {getItem, setItem} from '../services/localStorage';
 
-
-const token = getCookie("token")
-const email = getCookie("email")
-var FavContext = [];
-
+const token = getItem("token")
+const email = getItem("email")
 var favList = []
+var FavContext = []
 
-export const getContextFromDb = () =>{
+export const getContextFromDb =  () =>{
     ( async () => {
         let data = await getFavouriteList(email)
         if(data){
+            favList = []
             data['posts'].forEach( (post) => {
                 favList.push(post);
             })
@@ -22,14 +21,12 @@ export const getContextFromDb = () =>{
         FavContext = React.createContext(favList)
     })();
 }
-
 export const addToFavContext = (post) => {
     favList.push(post);
-    console.log(favList)
     FavContext = React.createContext(favList)
 
     if(!token){
-        setCookie("favList", JSON.stringify(favList),365)
+        localStorage.setItem("favList", JSON.stringify(favList))
     }
 }
 
@@ -40,25 +37,27 @@ export const removeFromFavContext = (postId) => {
     })
     FavContext = React.createContext(favList)
     if(!token){
-        setCookie("favList", JSON.stringify(favList),365)
+        localStorage.setItem("favList", JSON.stringify(favList))
     }
 }
 
-if(token === ""){
-    let f = getCookie("favList")
-    if(f !== ""){
-        favList = JSON.parse(f)
-        favList = favList.map(item => {
-            return parseInt(item)
-        })
+export const refreshContext = () =>{
+    if(!token){
+        let f = getItem("favList")
+        if(f !== ""){
+            favList = JSON.parse(f)
+            favList = favList.map(item => {
+                return item
+            })
+        }else{
+            favList = []
+        }
+        FavContext = React.createContext(favList)
     }else{
-        favList = []
+        getContextFromDb()
     }
-}else{
-    getContextFromDb()    
 }
-
-
+refreshContext()
 export {
     FavContext
 }

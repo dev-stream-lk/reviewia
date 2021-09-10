@@ -1,10 +1,10 @@
 import React from 'react';
-import {getCookie, setCookie} from '../services/cookies';
-import {getCategoryWithSubCategory} from '../services/category'
+import {getCategoryWithSubCategory} from '../services/category';
+import {getItem, setItem} from '../services/localStorage';
 
-const token = getCookie("token");
+const token = getItem("token");
 var catContext = {"products":[], "services":[]};
-var CatContext = catContext
+var CatContext = catContext;
 
 const loadContext = () => {
     (async () => {

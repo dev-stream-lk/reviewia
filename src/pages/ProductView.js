@@ -8,7 +8,7 @@ import FavoriteBorderSharp from "@material-ui/icons/FavoriteBorderSharp";
 import CompareSharp from "@material-ui/icons/CompareSharp";
 import GroupAddSharp from "@material-ui/icons/GroupAddSharp";
 import Rating from "@material-ui/lab/Rating";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import Phone from '../static/img/j7.jpg';
 import {useForm, Form} from '../components/useForm';
 import {requiredField, ratingFieldRequired} from '../components/Validators';
@@ -237,12 +237,15 @@ const ProductView = (props) => {
   const [reviews, setReviews] = useState([])
   const [inFavList, setInFavList] = useState(false);
   const [favButtonLock, setFavButtonLock] = useState(false);
+  const history = useHistory();
 
   const getPostInfo = async () =>{
     if(postId){
       let data = await getPostById(postId)
       if(data){
         setPostData(data)
+      }else{
+        history.replace("/pagenotfound")
       }
     }
   }
@@ -252,7 +255,6 @@ const ProductView = (props) => {
     
   useEffect(()=>{
     if(favList){
-      console.log(favList)
       favList.forEach(post => {
         if(post.postId == postId)
           setInFavList(true)
