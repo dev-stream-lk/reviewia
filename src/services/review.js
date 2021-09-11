@@ -72,27 +72,6 @@ const addReviewsByEmail = (email) => {
     .catch( err=> console.error(err));
 }
 
-// TODO : Clarify this
-// get revirew like dislike
-const addReviewLike = (id) => {
-    
-    const requestOptions = {
-        method:"GET",
-        headers:{
-          'Content-Type':"application/json",
-          'Authorization': `Bearer ${TOKEN}`
-        }
-    }
-
-    return fetch(HOST+`user/review/${id}`, requestOptions )
-    .then( async res => {
-        if(res.ok){
-            return await res.json();
-        }
-        return false;
-    })
-    .catch( err=> console.error(err));
-}
 
 // block review
 const blockReview = (id) => {

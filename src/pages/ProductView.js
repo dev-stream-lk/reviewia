@@ -18,6 +18,8 @@ import {getPostById} from '../services/posts';
 import {getReviewsByPostId, addReview} from '../services/reviews';
 import {addToFavouriteList, removeFromFavouriteList} from '../services/favouritelist';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import ImageCarousel from '../components/ImageCarousel'
+
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -343,13 +345,9 @@ const ProductView = (props) => {
             {/* LHS */}
             <Grid item xs={12} md={5}>
               <Grid container justify="center">
-                <Grid
-                  item
-                  xs={12}
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                <img style={{maxWidth:200, maxHeight:200}} src={`${Object.keys(postData).length !== 0 ? postData.imgURL[0].url:""}`} />
-                </Grid>
+                <div style={{width:250, height:230}}>
+                  <ImageCarousel images={ postData.imgURL } />
+                </div>
                 <Grid item xs={12} style={{ textAlign: "center" }}>
                   <Rating
                     value={parseFloat(Object.keys(postData).length !== 0 ? postData.rate:"0")}

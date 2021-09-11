@@ -128,8 +128,9 @@ const SignIN = (props) => {
         })
         if(token){
             setUserData( { userData:{...userData,token:token,isLoggedIn:true}, setUserData })
-            setShowError("")
-            history.push("/")
+            setShowError("");
+            history.push("/");
+            window.location.reload();
         }else{
             setShowError("Invalid email or password")
         }

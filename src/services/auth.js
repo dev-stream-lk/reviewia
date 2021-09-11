@@ -116,6 +116,7 @@ const logout = (setUserData,history) => {
     localStorage.clear();
     setItem("favList", list);
     history.push("/login");
+    window.location.reload();
 }
 
 const passwordRecovery = ({email}) => {

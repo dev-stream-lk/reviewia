@@ -190,7 +190,7 @@ export const getRecentPosts = () => {
         }
     }
 
-    return fetch(HOST+'public/posts?page=0&size=8&sort=createdAt&order=desc', requestOptions )
+    return fetch(HOST+'public/posts?page=0&size=8&sort=updatedAt&order=desc', requestOptions )
     .then( async res => {
         if(res.ok){
             let data = await res.json()
