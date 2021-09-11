@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -10,11 +10,15 @@ import { IconButton } from "@material-ui/core";
 import ReportIcon from '@material-ui/icons/Report';
 import Controls from './Controls';
 import {getDateTime} from '../utils/dateTime';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import {addOrRemoveReviewReact} from '../services/reviews';
+import {UserContext} from '../context/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    padding:0
+    padding:"10px 0px"
   },
   typography: {
     textAlign: "start",
@@ -38,15 +42,147 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     maxHeight: "100%",
   },
-  reviewHeaderAndFooter:{
-    background:"#eee",
+  reviewHeader:{
+    background: theme.palette.grey[200],
     padding: "0px 10px"
+  },
+  reviewFooter:{
+    background: theme.palette.grey[100],
+    padding: "0px 10px 8px 0px"
   }
 }));
 
 export default function Review(props) {
   const classes = useStyles();
-  const { setReportReviewId, review } = props;
+  const { setReportReviewId} = props;
+  const [review, setReview] = useState(props.review);
+  const {userData} = useContext(UserContext);
+  var disabled = false;
+  var likeString = "";
+  var dislikeString = "";
+  const initialDislikeCount = review.dislikeCount;
+  const initialLikeCount = review.likeCount;
+  const [likeDislike, setLikeDislike] = useState({like:false, dislike:false});
+
+  useEffect(()=>{
+    if(userData){
+      review.likedList.forEach((user) => {
+        if(userData["email"] === user.email){
+          setLikeDislike({like:true, dislike:false});
+        }
+      })
+    
+      if(!likeDislike.like){
+        review.dislikedList.forEach((user) => {
+          if(userData["email"] === user.email){
+            setLikeDislike({like:false, dislike:true});
+          }
+        })
+      }
+    }
+  },[userData]);
+
+  console.log(review)
+  const getRoundedString = (num) => {
+    let numSufix = "";
+    if(num>1000){
+      num = (num/1000).toFixed(1)
+      numSufix = "K"
+    }
+
+    if(num>1000){
+      num = (num/1000).toFixed(1)
+      numSufix = "M"
+    }
+
+    if(num>1000){
+      num = (num/1000).toFixed(1)
+      numSufix = "B"
+    }
+
+    return num + numSufix;
+  }
+
+  const processReviewCounts = () => {
+    likeString = getRoundedString(review['likeCount'])
+    dislikeString = getRoundedString(review['dislikeCount'])
+  }
+
+  processReviewCounts();
+
+  const handleReviewReact = async (like,remove) => {
+    let data = {
+      id:review.reviewId,
+      email: userData['email'],
+      like,
+      remove
+    }
+
+    return addOrRemoveReviewReact(data);
+  }
+
+  const addLike = async (e) => {
+    disabled = true;
+    if(likeDislike.dislike){
+      review['dislikeCount'] = initialDislikeCount - 1;
+    }
+    review['likeCount'] = initialLikeCount + 1;
+    processReviewCounts();
+    let res = await handleReviewReact(true,false);
+    if(res){
+      setLikeDislike({
+        like:true,
+        dislike:false
+      });
+    }
+    disabled = false;
+  }
+
+  const addDislike = async (e) => {
+
+    disabled = true;
+    if(likeDislike.like){
+      review['likeCount'] = initialLikeCount -1;
+    }
+    review['dislikeCount'] = initialDislikeCount + 1;
+    processReviewCounts();
+    let res = await handleReviewReact(false,false);
+    if(res){
+      setLikeDislike({
+        like:false,
+        dislike:true
+      });
+    }
+    disabled = false;
+  }
+
+  const removeLike = async (e) => {
+    disabled = true;
+    review['likeCount'] = initialLikeCount - 1;
+    processReviewCounts();
+    let res = await handleReviewReact(true,true);
+    if(res){
+      setLikeDislike({
+        like:false,
+        dislike:false
+      });
+    }
+    disabled = false;
+  }
+
+  const removeDislike = async (e) => {
+    disabled = true;
+    review['dislikeCount'] = initialDislikeCount - 1;
+    processReviewCounts();
+    let res = await handleReviewReact(false,true);
+    if(res){
+      setLikeDislike({
+        like:false,
+        dislike:false
+      });
+    }
+    disabled = false;
+  }
 
   return (
     <div className={classes.root}>
@@ -61,7 +197,7 @@ export default function Review(props) {
                   <Grid container
                     alignItems="center"
                     justifyContent="space-between"
-                    className={classes.reviewHeaderAndFooter}
+                    className={classes.reviewHeader}
                     >
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Skeleton
@@ -93,7 +229,7 @@ export default function Review(props) {
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Grid container justifyContent="flex-end" className={classes.reviewHeaderAndFooter}>
+                    <Grid container justifyContent="flex-end" className={classes.reviewFooter}>
                       <IconButton
                         color="secondary"
                         aria-label="report"
@@ -102,24 +238,63 @@ export default function Review(props) {
                         title="Report Review"
                       >
                         <ReportIcon />
-                      </IconButton>
-                        <IconButton
-                          color="primary"
-                          aria-label="Like"
-                          component="span"
-                          title="Like"
-                        >
-                        <ThumbUp />
-                      </IconButton>
-
-                      <IconButton
-                        color="primary"
-                        aria-label="Dislike"
-                        component="span"
-                        title="Dislike"
-                      >
-                        <ThumbDown />
-                      </IconButton>
+                        </ IconButton>
+                      <div style={{display:"flex", flexDirection:"column", position:"relative"}}>
+                        {
+                          likeDislike.like ? 
+                          (
+                            <IconButton
+                              color="primary"
+                              aria-label="Like"
+                              component="span"
+                              title="Remove Like"
+                              onClick= { disabled ? () => {} : removeLike}
+                            >
+                              <ThumbUpIcon />
+                            </IconButton>
+                          ):
+                          (
+                            <IconButton
+                              color="primary"
+                              aria-label="Like"
+                              component="span"
+                              title="Like"
+                              onClick= {disabled ? () => {} : addLike}
+                            >
+                              <ThumbUp />
+                            </IconButton>
+                          )
+                        }
+                        <span style={{position:"absolute", bottom:-5, fontSize:14, width:"100%", textAlign:"center"}}>{likeString}</span>
+                      </div>
+                      <div style={{display:"flex", flexDirection:"column", position:"relative"}}>
+                        {
+                          likeDislike.dislike? 
+                          (
+                            <IconButton
+                              color="primary"
+                              aria-label="Dislike"
+                              component="span"
+                              title="Remove Dislike"
+                              onClick= {disabled ? () => {} : removeDislike}
+                            >
+                              <ThumbDownIcon />
+                            </IconButton>
+                          ):
+                          (
+                            <IconButton
+                              color="primary"
+                              aria-label="Dislike"
+                              component="span"
+                              title="Dislike"
+                              onClick= {disabled ? () => {} : addDislike}
+                            >
+                              <ThumbDown />
+                            </IconButton>
+                          )
+                        }
+                        <span style={{position:"absolute", bottom:-5, fontSize:14, width:"100%", textAlign:"center"}}>{dislikeString}</span>
+                      </div>
                     </Grid>
                   </Grid>
                 </Grid>

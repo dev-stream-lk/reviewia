@@ -98,6 +98,11 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiCardHeader-subheader": {
       fontSize: 14,
     },
+    height:"100%",
+    display:"flex",
+    flexDirection:"column",
+    alignItems:"center",
+    justifyContent:"space-between",
   },
   boxClassName: {
     width: "100%",
@@ -155,10 +160,12 @@ const MostRecentCard = (props) => {
         <Controls.Card className={classes.mostRecentCard}>
           <CardHeader title={post.title} subheader={getDate(post.createdAt)}></CardHeader>
           <CardMedia title={post.title}>
-            <img
-              style={{ maxWidth: 200, maxHeight: 200 }}
-              src={`${post.imgURL.length === 0 ? "" : post.imgURL[0].url}`}
-            />
+            <div style={{ width: 200, height: 200 }}>
+              <img
+                style={{ maxWidth: 200, maxHeight: 200 }}
+                src={`${post.imgURL.length === 0 ? "" : post.imgURL[0].url}`}
+              />
+            </div>
           </CardMedia>
           <CardContent>
             <Rating

@@ -52,10 +52,6 @@ const useStyles = makeStyles((theme) => ({
   headerFavIcon:{
     color:"white",
     marginRight:10,
-    "&:hover": {
-      // color: theme.palette.secondary.main,
-      boxShadow:"0px 0px 1px 1px white"
-    },
   },
   categoryMenu: {
     morgin: 0,
@@ -297,6 +293,17 @@ export default function Header(props) {
           {userData.isLoggedIn ? 
             (
               <>
+                <Link to={{pathname: "/favourite-list", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
+                  <Tooltip title="Favourite List" aria-label="add" arrow>
+                    <IconButton
+                      id="headeFavIcon"
+                      className={classes.headerFavIcon}
+                      component="span"
+                    >
+                      <FavoriteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Link>
                 <IconButton color="inherit" onClick={ handleMenu } >
                   <AccountCircle />
                 </IconButton>
@@ -314,7 +321,6 @@ export default function Header(props) {
                     ):null
                   }
                   <MenuItem component={Link} to="/profile" >Profile</MenuItem>
-                  <MenuItem component={Link} to="/favourite-list" >Favorite list</MenuItem>
                   <MenuItem>Instant Groups</MenuItem>
                   <MenuItem onClick={handleLogout} >Logout</MenuItem>
                 </Menu>
@@ -326,6 +332,7 @@ export default function Header(props) {
                 <Link to={{pathname: "/favourite-list", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
                   <Tooltip title="Favourite List" aria-label="add" arrow>
                     <IconButton
+                      id="headeFavIcon"
                       className={classes.headerFavIcon}
                       component="span"
                     >

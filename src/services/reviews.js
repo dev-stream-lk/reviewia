@@ -51,3 +51,26 @@ export const addReview = (email,postId, description, userRate) => {
     })
     .catch( err=> console.error(err));
 }
+
+// add revirew like dislike
+export const addOrRemoveReviewReact = (data) => {
+
+    const {id, email, like,remove} = data;
+    
+    const requestOptions = {
+        method:"GET",
+        headers:{
+          'Content-Type':"application/json",
+          'Authorization': `Bearer ${TOKEN}`
+        }
+    }
+
+    return fetch(HOST+`public/review/react?email=${email}&id=${id}&like=${like}&remove=${remove}`, requestOptions )
+    .then( async res => {
+        if(res.ok){
+            return true;
+        }
+        return false;
+    })
+    .catch( err=> console.error(err));
+}
