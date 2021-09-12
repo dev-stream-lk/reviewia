@@ -19,7 +19,10 @@ import {getReviewsByPostId, addReview} from '../services/reviews';
 import {addToFavouriteList, removeFromFavouriteList} from '../services/favouritelist';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ImageCarousel from '../components/ImageCarousel'
-
+import CustomSelect from '../components/basic/CustomSelect';
+import {createInstantGroup, getAllInstantGroup} from '../services/instantGroups'
+import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
+import GroupSharpIcon from '@material-ui/icons/GroupSharp';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -227,6 +230,86 @@ const WriteReview = (props) => {
   )
 }
 
+const CreateInstantGroup = (props) => {
+
+  const classes = useStyles();
+  const {open, setOpen, userData, postData} = props;
+  const [dataList, setDataList] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+
+  useEffect( async () => {
+    if(postData['reviews']){
+      let dataList = postData['reviews'].map((review, i) => {
+        return {title:review.reviewedBy, email:review.email}
+      });
+
+      // filter unique users
+      dataList = dataList.filter( (item, i, self) => {
+        if(userData.email == item.email){
+          return false;
+        }
+        return i === self.findIndex( (t) => (
+          t.email === item.email
+        ))
+      })
+      setDataList(dataList)
+    }
+    
+  }, [postData])
+  
+  const handleCreate = async (e) => {
+    
+    let emails = selectedUsers.map( (user, i) => {
+      return user.email
+    })
+
+    let data = {
+      email: userData.email,
+      post: postData.postId,
+      emails
+    }
+
+    let res = await createInstantGroup(data);
+    console.log(res)
+    if(res){
+      
+    }
+
+    setOpen(false);
+  }
+
+  const Actions = () => {
+
+    return (
+      <>
+        <Controls.Button
+          onClick={()=> setOpen(false)}
+          color="secondary"
+        >
+          Cancel
+        </Controls.Button>
+
+        <Controls.Button
+          onClick={handleCreate}
+          >
+          Create
+        </Controls.Button>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Controls.Popup title="Report Review" openPopup={open} setOpenPopup={setOpen} actions={<Actions/>} >
+        <Grid container className={classes.reportPopup} >
+          <Grid item xs={12} >
+            <CustomSelect setSelectedUsers={setSelectedUsers} dataList={dataList} wrapperStyles={{marginBottom:150}} />
+          </Grid>
+        </Grid>
+      </Controls.Popup>
+    </>
+  )
+}
 
 const ProductView = (props) => {
   const classes = useStyles();
@@ -240,6 +323,8 @@ const ProductView = (props) => {
   const [inFavList, setInFavList] = useState(false);
   const [favButtonLock, setFavButtonLock] = useState(false);
   const history = useHistory();
+  const [openCreateInstant, setOpenCreateInstant] = useState(false);
+  const [activeGroupId, setActiveGroupId] = useState(0);
 
   const getPostInfo = async () =>{
     if(postId){
@@ -248,6 +333,21 @@ const ProductView = (props) => {
         setPostData(data)
       }else{
         history.replace("/pagenotfound")
+      }
+    }
+  }
+
+  const getInstantGroup = async () => {
+    let res = await getAllInstantGroup(userData.email);
+    console.log(res)
+    if(res){
+      for(let i in res){
+        if(res[i]["postId"] == postId){
+          if(res[i]['active']){
+            setActiveGroupId(res[i]['id'])
+          }
+          break;
+        }
       }
     }
   }
@@ -265,7 +365,8 @@ const ProductView = (props) => {
   },[favList]);
 
   useEffect(async () => {
-    await getPostInfo()
+    getPostInfo()
+    getInstantGroup()
   },[postId]);
 
   const getPostReviews = async () => {
@@ -340,6 +441,7 @@ const ProductView = (props) => {
         <Header  userData={userData} setUserData={setUserData} />
         <div className={classes.mainDiv}>
           <Grid container className={classes.productContainer}>
+            <CreateInstantGroup postData={postData} userData={userData} open={openCreateInstant} setOpen={setOpenCreateInstant} />
             <WriteReview open={open} setOpen={setOpen} writeReview={writeReview} />
             <ReportReview reportReviewId={reportReviewId} openReport={openReport} setOpenReport={setOpenReport} />
             {/* LHS */}
@@ -393,9 +495,9 @@ const ProductView = (props) => {
                     </IconButton>
                   </Link>
                 </Tooltip>
-                <Tooltip title="Create Instant Group" aria-label="add" arrow>
-                <Link to={{pathname:"/product/instantGroup"}}>
-                  <IconButton
+                {/* <Tooltip title="Create Instant Group" aria-label="add" arrow>
+                  <Link to={{pathname:"/product/instantGroup"}}>
+                    <IconButton
                       color="primary"
                       aria-label="Add to favourite"
                       component="span"
@@ -403,7 +505,36 @@ const ProductView = (props) => {
                       <GroupAddSharp />
                     </IconButton>
                   </Link>
-                </Tooltip>
+                </Tooltip> */}
+
+                  {
+                    activeGroupId !== 0 ?
+                    (
+                      <Tooltip title="Goto Group Chat" aria-label="add" arrow>
+                        <Link to={{pathname:`/product/instantGroup/${postId}/${activeGroupId}`}}>
+                          <IconButton
+                            color="primary"
+                            aria-label="Goto Group Chat"
+                            component="span"
+                          >
+                            <GroupSharpIcon/>
+                          </IconButton>
+                        </Link>
+                      </Tooltip>
+                    ):
+                    (
+                      <Tooltip title="Create Instant Group" aria-label="add" arrow>
+                        <IconButton
+                          color="primary"
+                          aria-label="Create instant group"
+                          component="span"
+                          onClick={()=>{setOpenCreateInstant(true)}}
+                        >
+                          <GroupAddOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )
+                  }
                 </Grid>
                 <Grid item xs={12} sm={11} md={9} direction="column">
                   <Controls.Paper>Title: {Object.keys(postData).length !== 0 ? postData.title:""}</Controls.Paper>

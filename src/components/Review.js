@@ -82,7 +82,6 @@ export default function Review(props) {
     }
   },[userData]);
 
-  console.log(review)
   const getRoundedString = (num) => {
     let numSufix = "";
     if(num>1000){
