@@ -57,7 +57,7 @@ export default function Router() {
             {" "}
             <Login />{" "}
           </Route>
-          <Route exact path="/product/instantGroup">
+          <Route exact path="/product/instantGroup/:postId/:groupId">
             {" "}
             <InstantGroup />{" "}
           </Route>
