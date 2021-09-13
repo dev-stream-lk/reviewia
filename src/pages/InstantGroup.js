@@ -22,9 +22,11 @@ import { useHistory, useParams } from "react-router-dom";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import {UserContext} from '../context/UserContext';
-import {getGroupData, sendMessage} from '../services/instantGroups';
+import {getGroupData, sendMessage, addInstantGroupMemebers, removeInstantGroupMemebers, deleteInstantGroup} from '../services/instantGroups';
 import {getPostById} from '../services/posts';
-import {getDateTime} from '../utils/dateTime';
+import {getDateTime, getTimeRemains} from '../utils/dateTime';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import MultipleSelect from '../components/basic/MultipleSelect';
 
 const useStyles = makeStyles((theme) => ({
   titleLabel: {
@@ -77,7 +79,10 @@ const useStyles = makeStyles((theme) => ({
   },
   messageDiv:{
     padding:8
-  }
+  },
+  reportPopup:{
+    width:500
+  },
 }));
 
 const ProductCard = (props) => {
@@ -258,9 +263,189 @@ const NewMessage = (props) => {
   )
 }
 
+const DeleteGroup = (props) => {
+
+  const classes = useStyles();
+  const {open, setOpen, userData, setError, postData, groupData} = props;
+  const history = useHistory();
+
+  const deleteGroup = async () => {
+    let data = {id:groupData['id'],email:userData.email}
+    let res = await deleteInstantGroup(data);
+    if(res){
+      history.replace(`/product/view/${postData['postId']}`);
+    }else{
+      setError("Group deletion failed...")
+    }
+  }
+
+  const Actions = () => {
+
+    return (
+      <>
+        <Controls.Button
+          onClick={()=> setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+
+        <Controls.Button
+          onClick={deleteGroup}
+          color="secondary"
+          >
+          Delete Group
+        </Controls.Button>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Controls.Popup title="Report Review" openPopup={open} setOpenPopup={setOpen} actions={<Actions/>} >
+        <Grid container style={{width:"500"}} className={classes.reportPopup} >
+          <Grid item xs={12} >
+            <Typography>Are you sure?</Typography>
+          </Grid>
+        </Grid>
+      </Controls.Popup>
+    </>
+  )
+}
+
+const AddInstantGroupMembers = (props) => {
+
+  const classes = useStyles();
+  const {open, setOpen, userData, setError, postData, groupData} = props;
+  const [dataList, setDataList] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [initialUsers, setInitialUsers] = useState([]);
+  const history = useHistory();
+
+  useEffect(() => {
+    if(groupData['users']){
+      let dataList = groupData['users'].map((user, i) => {
+        return {title:`${user.firstName} ${user.lastName}`, email:user.email};
+      });
+      // remove current user
+      dataList = dataList.filter( (item, i, self) => {
+        if(userData.email == item.email){
+          return false;
+        }
+        return true
+      })
+      setInitialUsers(dataList);
+      setSelectedUsers(dataList);
+    }
+  },[groupData]);
+
+
+  useEffect( async () => {
+    if(postData['reviews']){
+      let dataList = postData['reviews'].map((review, i) => {
+        return {title:review.reviewedBy, email:review.email}
+      });
+
+      // filter unique users
+      dataList = dataList.filter( (item, i, self) => {
+        if(userData.email == item.email){
+          return false;
+        }
+        return i === self.findIndex( (t) => (
+          t.email === item.email
+        ))
+      })
+      setDataList(dataList)
+    }
+    
+  }, [postData])
+  
+  // add or remove group members
+  const handleSubmit = async (e) => {
+    
+    let selectedEmails = selectedUsers.map( (user, i) => {
+      return user.email
+    })
+
+    let initialEmails = initialUsers.map( (user, i) => {
+      return user.email
+    })
+
+    let newEmails = selectedEmails.filter(x => !initialEmails.includes(x))
+    let removedEmails = initialEmails.filter(x => !selectedEmails.includes(x))
+
+    let addRes = await addInstantGroupMemebers({id:groupData['id'], emails: newEmails});
+    let removeRes = await removeInstantGroupMemebers({id:groupData['id'], emails: removedEmails});
+    if(!addRes){
+      setError("Add new members failed.")
+    }
+    if(!removeRes){
+      setError("Remove members failed.")
+    }
+    window.location.reload(false)
+    setOpen(false);
+  }
+
+  const Actions = () => {
+
+    return (
+      <>
+        <Controls.Button
+          onClick={()=> setOpen(false)}
+          color="secondary"
+        >
+          Cancel
+        </Controls.Button>
+
+        <Controls.Button
+          onClick={handleSubmit}
+          >
+          Create
+        </Controls.Button>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Controls.Popup title="Report Review" openPopup={open} setOpenPopup={setOpen} actions={<Actions/>} >
+        <Grid container style={{width:"500"}} className={classes.reportPopup} >
+          <Grid item xs={12} >
+            <MultipleSelect label="Select Members" placeholder="Search" defaultValue={initialUsers} setSelectedUsers={setSelectedUsers} dataList={dataList} styles={{marginBottom:150}} />
+          </Grid>
+        </Grid>
+      </Controls.Popup>
+    </>
+  )
+}
+
+
+const RemainingTime = (props) => {
+
+  const [remains , setRemains] = useState("");
+  const {datetime} = props;
+
+  useEffect( () => {
+    if(datetime){
+      setInterval( async () => {
+        await getRemainTime(datetime)
+      },1000);
+    }
+  },[datetime])
+
+  const getRemainTime =  async (datetime) => {
+    if(datetime){
+      let d = getTimeRemains(datetime,7);
+      setRemains(`${d.d}d : ${d.h}h : ${d.m}m : ${d.s}s`)
+    }
+  }
+
+  return (
+    <Typography variant="h4">Instant Group( Remaining: {remains} )</Typography>
+  )
+}
+
 export default function InstantGroup(props) {
   const params = useParams();
-  console.log(params)
   const groupId = params['groupId'];
   const postId = params['postId'];
   const history = useHistory();
@@ -271,6 +456,9 @@ export default function InstantGroup(props) {
   const {userData, setUserData} = useContext(UserContext);
   const [postData, setPostData] = useState({});
   const [groupData, setGroupData] = useState({});
+  const [addMemberOpen, setAddMemberOpen] = useState(false);
+  const [deleteGroupOpen, setDeleteGroupOpen] = useState(false);
+  const [error, setError] = useState("");
 
   const scrollToBottom =  () => {
     let endOfChat = document.getElementById("endOfChat");
@@ -303,7 +491,6 @@ export default function InstantGroup(props) {
   // get chat group info
   useEffect( async ()=>{
     let res = await getGroupData(groupId,userData.email);
-    console.log(res);
     if(res){
       setGroupData(res);
     }else{
@@ -340,9 +527,11 @@ export default function InstantGroup(props) {
   return (
     <>
       <Header/>
+      <AddInstantGroupMembers setError={setError} groupData={groupData} open={addMemberOpen} setOpen={setAddMemberOpen} userData={userData} postData={postData} />
+      <DeleteGroup setError={setError} groupData={groupData} open={deleteGroupOpen} setOpen={setDeleteGroupOpen} userData={userData} postData={postData} />
       <Grid container className={"content"}>
         <Grid item xs={12} style={{ marginTop: 50 }}>
-          <Typography variant="h4">Instant Group(Remaining: 2 days)</Typography>
+          <RemainingTime datetime={groupData ? groupData['createdAt']: ""} />       
         </Grid>
         <Grid container style={{ marginTop: 30 }}>
           <Grid item xs={12} md={6} lg={4} style={{ padding: 20, paddingTop:0 }}>
@@ -352,17 +541,21 @@ export default function InstantGroup(props) {
             <Grid>
               <Card className={classes.root}>
                 <CardHeader
-                  avatar={
-                    <IconButton aria-label="addMembers">
-                      <PersonAddIcon />
-                    </IconButton>
-                  }
+                style={{paddingRight:50, paddingBottom:0}}
                   action={
-                    <IconButton aria-label="settings">
-                      <MoreVertIcon />
-                    </IconButton>
+                    <>
+                      <IconButton onClick={()=> setAddMemberOpen(true)} title="Add members" color="primary" aria-label="addMembers">
+                        <PersonAddIcon />
+                      </IconButton>
+                      <IconButton onClick={()=> setDeleteGroupOpen(true)} title="Delete group" color="secondary" aria-label="addMembers">
+                        <DeleteForeverIcon />
+                      </IconButton>
+                    </>
                   }
                 />
+                {!error && (
+                    <Typography variant="caption" color="secondary" >{error}</Typography>
+                  )}
                 <CardContent>
                   <Controls.Paper
                     boxClassName={classes.paperBoxStyles}

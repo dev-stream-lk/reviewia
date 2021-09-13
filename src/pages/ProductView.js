@@ -19,7 +19,7 @@ import {getReviewsByPostId, addReview} from '../services/reviews';
 import {addToFavouriteList, removeFromFavouriteList} from '../services/favouritelist';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ImageCarousel from '../components/ImageCarousel'
-import CustomSelect from '../components/basic/CustomSelect';
+import MultipleSelect from '../components/basic/MultipleSelect';
 import {createInstantGroup, getAllInstantGroup} from '../services/instantGroups'
 import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
 import GroupSharpIcon from '@material-ui/icons/GroupSharp';
@@ -270,9 +270,8 @@ const CreateInstantGroup = (props) => {
     }
 
     let res = await createInstantGroup(data);
-    console.log(res)
     if(res){
-      
+      window.location.reload()
     }
 
     setOpen(false);
@@ -303,7 +302,7 @@ const CreateInstantGroup = (props) => {
       <Controls.Popup title="Report Review" openPopup={open} setOpenPopup={setOpen} actions={<Actions/>} >
         <Grid container className={classes.reportPopup} >
           <Grid item xs={12} >
-            <CustomSelect setSelectedUsers={setSelectedUsers} dataList={dataList} wrapperStyles={{marginBottom:150}} />
+            <MultipleSelect setSelectedUsers={setSelectedUsers} dataList={dataList} wrapperStyles={{marginBottom:150}} />
           </Grid>
         </Grid>
       </Controls.Popup>
@@ -339,7 +338,6 @@ const ProductView = (props) => {
 
   const getInstantGroup = async () => {
     let res = await getAllInstantGroup(userData.email);
-    console.log(res)
     if(res){
       for(let i in res){
         if(res[i]["postId"] == postId){

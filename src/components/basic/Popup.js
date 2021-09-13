@@ -21,10 +21,10 @@ const useStyles = makeStyles( theme => ({
 export default function Popup(props) {
 
     const classes = useStyles();
-    const {title, children, openPopup, setOpenPopup, actions, dialogContent={}} = props;
+    const {title, children, openPopup, setOpenPopup, actions, dialogContent={}, ...others} = props;
 
     return (
-        <Dialog open={openPopup} classes={{ paper: classes.dialog}}>
+        <Dialog open={openPopup} classes={{ paper: classes.dialog}} {...others}>
             <DialogTitle className={classes.dialogTitle}>
                 <div style={{display:"flex"}}>
                     <Typography variant="h6" component="div" style={{flexGrow:1}}>
