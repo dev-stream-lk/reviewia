@@ -89,6 +89,7 @@ const useStyles = makeStyles((theme) => ({
   productListItemImage: {
     minHeight: 80,
     maxHeight: 150,
+    maxWidth:"100%"
   },
   productListItemHeader: {
     width: "100%",

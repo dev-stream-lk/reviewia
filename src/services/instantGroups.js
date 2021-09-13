@@ -104,3 +104,84 @@ export const sendMessage = (data) => {
     })
     .catch( err=> console.error(err));
 }
+
+
+// add members to instant group
+export const addInstantGroupMemebers = (data) => {
+
+    const {id, emails} = data;
+
+    const requestOptions = {
+        method:"POST",
+        headers:{
+          'Content-Type':"application/json",
+          'Authorization': `Bearer ${TOKEN}`
+        },
+        body: JSON.stringify({
+            emails
+        })
+    }
+
+    return fetch(HOST+`user/group/add?id=${id}`, requestOptions )
+    .then( res => {
+        if(res.ok){
+            return true;
+        }
+        return false;
+        
+    })
+    .catch( err=> console.error(err));
+}
+
+
+// remove members to instant group
+export const removeInstantGroupMemebers = (data) => {
+
+    const {id, emails} = data;
+
+    const requestOptions = {
+        method:"POST",
+        headers:{
+          'Content-Type':"application/json",
+          'Authorization': `Bearer ${TOKEN}`
+        },
+        body: JSON.stringify({
+            emails
+        })
+    }
+
+    return fetch(HOST+`user/group/remove?id=${id}`, requestOptions )
+    .then( res => {
+        if(res.ok){
+            return true;
+        }
+        return false;
+        
+    })
+    .catch( err=> console.error(err));
+}
+
+
+// delete  instant group
+export const deleteInstantGroup = (data) => {
+
+    const {id, email} = data;
+
+    const requestOptions = {
+        method:"GET",
+        headers:{
+          'Content-Type':"application/json",
+          'Authorization': `Bearer ${TOKEN}`
+        }
+    }
+
+    return fetch(HOST+`user/group/deactivate?email=${email}&id=${id}`, requestOptions )
+    .then( res => {
+        if(res.ok){
+            return true;
+        }
+        return false;
+        
+    })
+    .catch( err=> console.error(err));
+}
