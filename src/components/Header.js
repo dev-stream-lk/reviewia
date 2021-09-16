@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   AppBar,
   IconButton,
@@ -36,6 +36,7 @@ import {CatContext} from '../context/CategorySubCategotyContext';
 import NotFoundImage from '../assets/not-found.svg';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { getNotificationCount } from "../services/notifications";
+import NotificationPanel from './NotificationPanel'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -151,10 +152,13 @@ const GenerateList = (props) => {
   );
 };
 
-const HeadeNotificationIcon = (props) => {
+const HeaderNotificationIcon = (props) => {
   const classes = useStyles();
   const [count, setCount] = useState(0);
   const {userData} = props;
+  const iconRef = useRef(null);
+
+  console.log(iconRef)
 
   useEffect( () => {
     let interval = setInterval( async () => {
@@ -171,8 +175,10 @@ const HeadeNotificationIcon = (props) => {
   },[]);
 
   return (
-    <Tooltip title="Notifications" aria-label="add" arrow>
+    <>
+      <Tooltip title="Notifications" aria-label="add" arrow>
         <Badge
+          ref={iconRef}
           id="headeFavIcon"
           className={classes.headerFavIcon}
           color="secondary"
@@ -181,6 +187,9 @@ const HeadeNotificationIcon = (props) => {
           <NotificationsIcon />
         </Badge>
       </Tooltip>
+      <NotificationPanel iconRef={iconRef} />
+    </>
+
   )
 }
 
@@ -194,7 +203,7 @@ export default function Header(props) {
   const [ categories, setCategories]= useState({})
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
-  
+  console.log(userData)
   const res = useContext(CatContext)
   
   useEffect(()=>{
@@ -329,7 +338,7 @@ export default function Header(props) {
           {userData.isLoggedIn ? 
             (
               <>              
-                <HeadeNotificationIcon userData={userData} />
+                <NotificationPanel userData={userData} />
                 <Link to={{pathname: "/favourite-list", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
                   <Tooltip title="Favourite List" aria-label="add" arrow>
                     <IconButton
