@@ -16,8 +16,9 @@ import Controls from "../components/Controls";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import {Link} from 'react-router-dom';
 import { UserContext } from "../context/UserContext";
-import {getUserGroups} from '../services/group';
 import NotFoundImage from '../assets/not-found.svg';
+import { getAllInstantGroup } from "../services/instantGroups";
+import { getDateTime } from "../utils/dateTime";
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
   productListItemHeader: {
     width: "100%",
     textAlign: "left",
+    marginBottom:0
   },
   Button_grid: {
     margin: theme.spacing(2),
@@ -55,15 +57,22 @@ const useStyles = makeStyles((theme) => ({
   notFoundImage:{
     width:"100%",
     maxWidth:"150px"
-  }
+  },
+  groupListItemImage: {
+    height: 50,
+    width: 50,
+  },
 }));
+
 
 const GroupCard = (props) => {
   const classes = useStyles();
+  const {groupData, userData} = props;
+  console.log(groupData)
 
   return (
     <Grid container style={{position:"relative"}}>
-      <Link to="/product/view/1" style={{textDecoration:"none", width:"100%"}}>
+      <Link to={`/product/instantGroup/${groupData.postId}/${groupData.id}`} style={{textDecoration:"none", width:"100%"}}>
         <Controls.Card className={classes.productListcard}>
           <Grid container>
             <Grid container item xs={12}>
@@ -71,18 +80,34 @@ const GroupCard = (props) => {
                 <CardHeader
                   className={classes.productListItemHeader}
                   avatar={
-                    <Avatar aria-label="recipe">
-                      S
-                    </Avatar>
+                    <img
+                      src={`${groupData.createdBy.avatar}`}
+                      className={classes.groupListItemImage}
+                    />
                   }
-                  title="Saman Kumara"
-                  subheader="Creator"
+                  title={`${groupData.createdBy.firstName} ${groupData.createdBy.lastName}`}
+                  subheader={ groupData.createdBy.email === userData.email ? "Creator":"Member"}
                 />
               </Grid>
               <CardContent>
-                <Grid item xs={12}>
-                  <Typography variant="caption" display="block" gutterBottom>
-                    Create Date:2012/08/09
+                <Grid item xs={12}  >
+                  <Typography  variant="caption" display="block" gutterBottom>
+                    Created At : 
+                    {getDateTime(groupData.createdAt)}
+                  </Typography>
+                  <Typography style={{textAlign:"left"}}  variant="caption" display="block" gutterBottom>
+                    Message Count : 
+                    {groupData.messages.length}
+                  </Typography>
+                  <Typography style={{textAlign:"left"}}  variant="caption" display="block" gutterBottom>
+                    State : 
+                    {groupData.active ? (
+                        <span style={{color:"green", fontWeight:"bold"}}>Active</span>
+                      ):
+                      (
+                        <span style={{color:"red"}}>Expired</span>
+                      )
+                    }
                   </Typography>
                 </Grid>
               </CardContent>
@@ -102,10 +127,11 @@ export default function GroupListContainer() {
   const [myGroups, setMyGroups] = useState([]);
   const {userData, setUserData} = useContext(UserContext);
 
-  useEffect( async ()=> {
-    let data = await getUserGroups(userData.email)
-    if(data){
-      setMyGroups(data)
+
+  useEffect( async () => {
+    let res = await getAllInstantGroup(userData.email);
+    if(res){
+      setMyGroups(res);
     }
   },[])
 
@@ -125,7 +151,7 @@ export default function GroupListContainer() {
       { myGroups.length !== 0 ? myGroups.map((group, index) => 
         (
           <Grid key={index} item xs={12} md={12}>
-            <GroupCard />
+            <GroupCard groupData={group} userData={userData} />
           </Grid>
         )):
         (

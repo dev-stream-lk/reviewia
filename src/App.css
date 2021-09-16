@@ -40,3 +40,28 @@
         transform: rotate(360deg);
     }
 }
+
+@keyframes replyIconAnimation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-1440deg);
+    }
+}
+
+@keyframes favIconAnimation {
+    0% {
+        color:white;
+        transform: scale(1);
+    }
+    50%{
+        color:#f50057;
+        transform: scale(1.5);
+
+    }
+    100% {
+        color: white;
+        transform: scale(1);
+    }
+}

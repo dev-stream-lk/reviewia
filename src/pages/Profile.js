@@ -90,6 +90,7 @@ const Profile = (props) => {
   const [profileData, setProfileData] = useState({});
   const history = useHistory();
   const [pageLoading, setPageLoading] = useState(true);
+  
 
   useEffect( async ()=>{
     if(userData){
@@ -108,6 +109,7 @@ const Profile = (props) => {
         }
     }
   },[userData])
+
 
   return (
     <div>

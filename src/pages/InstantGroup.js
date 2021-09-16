@@ -12,8 +12,9 @@ import {
   Avatar,
   IconButton,
 } from "@material-ui/core";
+import "../App.css";
 import { Rating } from "@material-ui/lab";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Controls from "../components/Controls";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -27,6 +28,9 @@ import {getPostById} from '../services/posts';
 import {getDateTime, getTimeRemains} from '../utils/dateTime';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import MultipleSelect from '../components/basic/MultipleSelect';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import ReplayIcon from '@material-ui/icons/Replay';
+import { keyframes } from "styled-components";
 
 const useStyles = makeStyles((theme) => ({
   titleLabel: {
@@ -83,6 +87,10 @@ const useStyles = makeStyles((theme) => ({
   reportPopup:{
     width:500
   },
+  replyIcon:{
+    animation:"replyIconAnimation 4s infinite",
+  },
+
 }));
 
 const ProductCard = (props) => {
@@ -301,7 +309,7 @@ const DeleteGroup = (props) => {
 
   return (
     <>
-      <Controls.Popup title="Report Review" openPopup={open} setOpenPopup={setOpen} actions={<Actions/>} >
+      <Controls.Popup title="Delete Group" openPopup={open} setOpenPopup={setOpen} actions={<Actions/>} >
         <Grid container style={{width:"500"}} className={classes.reportPopup} >
           <Grid item xs={12} >
             <Typography>Are you sure?</Typography>
@@ -444,66 +452,20 @@ const RemainingTime = (props) => {
   )
 }
 
-export default function InstantGroup(props) {
-  const params = useParams();
-  const groupId = params['groupId'];
-  const postId = params['postId'];
-  const history = useHistory();
-  if(groupId == undefined){
-    history.push("/pageNotFound")
-  }
-  const classes = useStyles();
-  const {userData, setUserData} = useContext(UserContext);
-  const [postData, setPostData] = useState({});
+const MessageSection = (props) => {
+
+  const {userData, postId, groupId, postData} = props;
   const [groupData, setGroupData] = useState({});
+  const history = useHistory();
+  const [error, setError] = useState("");
+  const classes = useStyles();
   const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [deleteGroupOpen, setDeleteGroupOpen] = useState(false);
-  const [error, setError] = useState("");
+  const endOfChat = useRef();
+  const [refreshing, setRefreshing] = useState(true);
 
-  const scrollToBottom =  () => {
-    let endOfChat = document.getElementById("endOfChat");
-    if(endOfChat){
-      endOfChat.scrollIntoView();
-    }
-  }
-
-  // check user is login
-  useEffect(() => {
-    if (userData) {
-      if(userData.isLoggedIn == false){
-          history.push("/login")
-      }
-    }
-  }, [userData]);
-
-  // get post info
-  useEffect( async () => {
-    if(postId){
-      let data = await getPostById(postId)
-      if(data){
-        setPostData(data)
-      }else{
-        history.replace("/pagenotfound")
-      }
-    }
-  },[postId])
-
-  // get chat group info
-  useEffect( async ()=>{
-    let res = await getGroupData(groupId,userData.email);
-    if(res){
-      setGroupData(res);
-    }else{
-      history.replace("/product/view/"+postId);
-    }
-  }, [groupId]);
-
-  useEffect ( () => {
-    scrollToBottom()
-  },[groupData.messages])
-
-  // send new message
-  const sendNewMessage = async (message) => {
+   // send new message
+   const sendNewMessage = async (message) => {
     let data = {
       email: userData.email,
       group: groupId,
@@ -524,68 +486,184 @@ export default function InstantGroup(props) {
     return false;
   }
 
+  const scrollToBottom =  () => {
+    let endOfChat = document.getElementById("endOfChat");
+    let msgContainer = document.getElementById("msgContainer");
+    if(endOfChat){
+      var offset = endOfChat.offsetTop;
+      console.log(offset)
+      msgContainer.scrollTop = offset;
+    }
+  }
+
+  useEffect ( () => {
+    scrollToBottom()
+  },[groupData.messages])
+
+  // get chat group info
+  const getGroupInfo = async () => {
+    setRefreshing(true);
+    let res = await getGroupData(groupId,userData.email);
+    console.log(res)
+    if(res){
+      setGroupData(res);
+    }else{
+      history.replace("/product/view/"+postId);
+    }
+    setTimeout(()=> {
+      setRefreshing(false);
+    },1000)
+  }
+
+  useEffect( async ()=>{
+    getGroupInfo()
+  }, [groupId]);
+
+  return (
+    <>
+      <AddInstantGroupMembers setError={setError} groupData={groupData} open={addMemberOpen} setOpen={setAddMemberOpen} userData={userData} postData={postData} />
+      <DeleteGroup setError={setError} groupData={groupData} open={deleteGroupOpen} setOpen={setDeleteGroupOpen} userData={userData} postData={postData} />
+      <Grid>
+        <Card className={classes.root}>
+          <CardHeader
+          style={{paddingRight:50, paddingBottom:0}}
+          
+            action={
+              <>
+              <IconButton title="Refresh Chat" color="primary" aria-label="addMembers">
+                {
+                  refreshing ? (
+                    <ReplayIcon className={classes.replyIcon} />
+                  ): (
+                    <RefreshIcon  onClick={getGroupInfo} />
+                  )
+                }
+              </IconButton>
+              {
+                groupData['createdBy'] && groupData['createdBy']['email'] === userData.email && groupData.active == true ? 
+                (
+                  <>
+                    <IconButton onClick={()=> setAddMemberOpen(true)} title="Add members" color="primary" aria-label="addMembers">
+                      <PersonAddIcon />
+                    </IconButton>
+                    <IconButton onClick={()=> setDeleteGroupOpen(true)} title="Delete group" color="secondary" aria-label="addMembers">
+                      <DeleteForeverIcon />
+                    </IconButton>
+                  </>
+                )
+                :null
+              }
+              </>
+            }
+          />
+          {!error && (
+              <Typography variant="caption" color="secondary" >{error}</Typography>
+            )}
+          <CardContent>
+            <Controls.Paper
+              boxClassName={classes.paperBoxStyles}
+              className={classes.chatOuterPaper}
+              id="msgContainer" 
+            >
+              <Grid container   className={classes.messageContainer}>
+                {
+                  groupData && groupData.messages && groupData.messages.length !==0 ? 
+                  (
+                    groupData.messages.map((msg,i)=> (
+                      <Message key={i} message={msg} appUserEmail={userData.email} creatorEmail={groupData["createdBy"]['email']} />
+                    ))
+                  ):(
+                    <span>Messages not found</span>
+                  )
+                }
+                {
+                  groupData && groupData.messages && groupData.messages.length !==0 && (
+                    <div ref={endOfChat} id="endOfChat"></div>
+                  )
+                }
+              </Grid>
+            </Controls.Paper>
+          </CardContent>
+        </Card>
+      </Grid>
+      {
+        groupData.active == true && (
+          <Grid container>
+            <NewMessage sendNewMessage={sendNewMessage} />
+        </Grid>
+        )
+      }
+    </>
+  )
+}
+
+export default function InstantGroup(props) {
+  const params = useParams();
+  const groupId = params['groupId'];
+  const postId = params['postId'];
+  const history = useHistory();
+
+  
+  if(groupId == undefined){
+    history.push("/pageNotFound")
+  }
+  const classes = useStyles();
+  const {userData, setUserData} = useContext(UserContext);
+  const [postData, setPostData] = useState({});
+  const [groupData, setGroupData] = useState({});
+  const [error, setError] = useState("");
+
+  // check user is login
+  useEffect(() => {
+    if (userData) {
+      if(userData.isLoggedIn == false){
+          history.push("/login")
+      }
+    }
+  }, [userData]);
+
+  // get chat group info
+  useEffect( async ()=>{
+    let res = await getGroupData(groupId,userData.email);
+    if(res){
+      setGroupData(res);
+    }else{
+      history.replace("/product/view/"+postId);
+    }
+  }, [groupId]);
+
+  // get post info
+  useEffect( async () => {
+    if(postId){
+      let data = await getPostById(postId)
+      if(data){
+        setPostData(data)
+      }else{
+        history.replace("/pagenotfound")
+      }
+    }
+  },[postId])
+
   return (
     <>
       <Header/>
-      <AddInstantGroupMembers setError={setError} groupData={groupData} open={addMemberOpen} setOpen={setAddMemberOpen} userData={userData} postData={postData} />
-      <DeleteGroup setError={setError} groupData={groupData} open={deleteGroupOpen} setOpen={setDeleteGroupOpen} userData={userData} postData={postData} />
       <Grid container className={"content"}>
         <Grid item xs={12} style={{ marginTop: 50 }}>
-          <RemainingTime datetime={groupData ? groupData['createdAt']: ""} />       
+          {
+            groupData.active == true ? (
+              <RemainingTime datetime={groupData ? groupData['createdAt']: ""} />       
+            ):
+            (
+              <Typography variant="h4">Instant Group( Expired )</Typography>
+            )
+          }
         </Grid>
         <Grid container style={{ marginTop: 30 }}>
           <Grid item xs={12} md={6} lg={4} style={{ padding: 20, paddingTop:0 }}>
             <ProductCard  postData={postData} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-            <Grid>
-              <Card className={classes.root}>
-                <CardHeader
-                style={{paddingRight:50, paddingBottom:0}}
-                  action={
-                    <>
-                      <IconButton onClick={()=> setAddMemberOpen(true)} title="Add members" color="primary" aria-label="addMembers">
-                        <PersonAddIcon />
-                      </IconButton>
-                      <IconButton onClick={()=> setDeleteGroupOpen(true)} title="Delete group" color="secondary" aria-label="addMembers">
-                        <DeleteForeverIcon />
-                      </IconButton>
-                    </>
-                  }
-                />
-                {!error && (
-                    <Typography variant="caption" color="secondary" >{error}</Typography>
-                  )}
-                <CardContent>
-                  <Controls.Paper
-                    boxClassName={classes.paperBoxStyles}
-                    className={classes.chatOuterPaper}
-                  >
-                    <Grid container id="msgContainer"   className={classes.messageContainer}>
-                      {
-                        groupData && groupData.messages && groupData.messages.length !==0 ? 
-                        (
-                          groupData.messages.map((msg,i)=> (
-                            <Message key={i} message={msg} appUserEmail={userData.email} creatorEmail={groupData["createdBy"]['email']} />
-                          ))
-                        ):(
-                          <span>Messages not found</span>
-                        )
-                      }
-                      {
-                        groupData && groupData.messages && groupData.messages.length !==0 && (
-                          <div id="endOfChat"></div>
-                        )
-                      }
-                    </Grid>
-                  </Controls.Paper>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid container>
-                <NewMessage sendNewMessage={sendNewMessage} />
-            </Grid>
+            <MessageSection userData={userData} postData={postData} groupId={groupId} postId={postId} />
           </Grid>
         </Grid>
       </Grid>

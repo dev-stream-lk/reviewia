@@ -77,7 +77,7 @@ const user_login = ({email, password},setUserData,history) => {
             })
             .then ( data => {
                 if( data){
-                    setItem("name", data['firstName'] + data['lastName']);
+                    setItem("name", data['firstName'] +" "+ data['lastName']);
                 }
             })
             .catch( err => console.error(err));

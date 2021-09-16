@@ -33,6 +33,7 @@ import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import { requiredField } from "../components/Validators";
 import { createPost } from "../services/posts";
 import EditIcon from '@material-ui/icons/Edit';
+import { PreLoader } from "../components/basic/PreLoader";
 
 const useStyles = makeStyles((theme) => ({
   addProductWrapper: {
@@ -199,7 +200,6 @@ const Step1 = (props) => {
     //   brand: "",
     // });
     setBrands([]);
-    console.log("dfdff");
     if (values.category !== "" && categories.length !== 0) {
       let type = values.type == "p" ? "products" : "services";
       categories[`${type}`].forEach((item, index) => {
@@ -434,12 +434,12 @@ const DummyImage = (props) => {
                 justifyContent: "center",
               }}
             >
-              Image
+              No Image Selected
             </Skeleton>
           </Grid>
         </CardMedia>
         <CardContent>
-          <Grid container justifyContent="center">
+          {/* <Grid container justifyContent="center">
             <Skeleton style={{ marginTop: 10 }} width={100} variant="rect">
               Title
             </Skeleton>
@@ -451,7 +451,7 @@ const DummyImage = (props) => {
                 Desctiption{" "}
               </Skeleton>
             </p>
-          </Grid>
+          </Grid> */}
         </CardContent>
       </Controls.Card>
     </>
@@ -479,10 +479,10 @@ const ImageCard = (props) => {
       </CardMedia>
 
       <CardContent>
-        <Typography variant="subtitle1">{cardData.title}</Typography>
+        {/* <Typography variant="subtitle1">{cardData.title}</Typography>
         <Grid container justifyContent="center">
           <p>{cardData.description}</p>
-        </Grid>
+        </Grid> */}
       </CardContent>
     </Controls.Card>
   );
@@ -519,12 +519,7 @@ const ImageInfo = (props) => {
         />
       </Grid>
       <Grid container justifyContent="flex-end">
-        <Controls.Button
-          disabled={selectedImages.length == 3 ? true : false}
-          onClick={handleLocalImageAdd}
-        >
-          <AddIcon /> Add
-        </Controls.Button>
+        
       </Grid>
     </>
   );
@@ -542,7 +537,7 @@ const Step2 = (props) => {
     setNewSelectedImage(file);
   };
 
-  const handleImageAdd = (title, description) => {
+  const handleImageAdd = () => {
     if (!newSelectedImage) {
       setError("Please select image");
       return;
@@ -552,9 +547,7 @@ const Step2 = (props) => {
     }
     let images = Array.from(selectedImages);
     images.push({
-      imageObj: newSelectedImage,
-      title: title ? title : "New caption",
-      description: description ? description : "new Description",
+      imageObj: newSelectedImage
     });
     setNewSelectedImage(null);
     setSelectedImages(images);
@@ -591,7 +584,7 @@ const Step2 = (props) => {
                       </span>
                     </Grid>
                   ) : null}
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12}>
                     <Grid container justifyContent="center">
                       <div className={classes.step2AddImage}>
                         <input
@@ -621,12 +614,14 @@ const Step2 = (props) => {
                         </label>
                       </div>
                     </Grid>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <ImageInfo
-                      selectedImages={selectedImages}
-                      handleImageAdd={handleImageAdd}
-                    />
+                    <Grid container xs={12} justifyContent="flex-end" >
+                      <Controls.Button
+                        disabled={selectedImages.length == 3 ? true : false}
+                        onClick={handleImageAdd}
+                      >
+                        <AddIcon /> Add
+                      </Controls.Button>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Controls.Paper>
@@ -708,12 +703,14 @@ const Step3 = (props) => {
     selectedImages,
     handleNext,
     handleBack,
-    setActiveStep
+    setActiveStep,
+    setNewPostId
   } = props;
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const addPost = async () => {
-    console.log(step1Data);
+    setLoading(true);
     let data = {
       email: userData.email,
       title: step1Data["title"],
@@ -723,19 +720,24 @@ const Step3 = (props) => {
       description: step1Data.description,
       selectedImages,
     };
+
     let res = await createPost(data);
+    console.log(res)
     if (res) {
-      // setStep1Data([]);
-      // setSelectedImages([]);
-      handleNext();
+      setStep1Data([]);
+      setSelectedImages([]);
+      setNewPostId(res['postId']);
+      // handleNext();
     } else {
       console.log("error");
     }
+    setLoading(false);
   };
 
   return (
     <>
-      <Grid container>
+      <Grid container style={{position:"relative"}}>
+        <PreLoader loading={loading}/>
         <Grid item xs={12}>
           <Controls.Paper>
             <Typography
@@ -959,6 +961,7 @@ export default function AddProduct(props) {
   const [selectedImages, setSelectedImages] = useState([]);
   const [categoryName, setCategoryName] = useState("");
   const [subCategoryName, setSubCategoryName] = useState("");
+  const [newPostId, setNewPostId] = useState(undefined);
 
   // useEffect( ()=>{
   //     if(userData){
@@ -1041,6 +1044,7 @@ export default function AddProduct(props) {
                   handleNext={handleNext}
                   handleBack={handleBack}
                   setActiveStep={setActiveStep}
+                  setNewPostId={setNewPostId}
                 />
               </>
             ) : null}
@@ -1061,7 +1065,7 @@ export default function AddProduct(props) {
                       Post Published Successfully.
                     </Typography>
                     <Link
-                      to={{ pathname: "/product/view/1" }}
+                      to={{ pathname: `/product/view/${newPostId}` }}
                       style={{ textDecoration: "none" }}
                     >
                       <Controls.Button style={{ marginTop: 20 }}>

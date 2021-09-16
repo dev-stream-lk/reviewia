@@ -17,6 +17,7 @@ import {
   AccordionDetails,
   Link as MuiLink,
   Tooltip,
+  Badge,
 } from "@material-ui/core";
 import { AccountCircle } from "@material-ui/icons";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
@@ -33,6 +34,8 @@ import {getCategoryWithSubCategory} from '../services/category'
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import {CatContext} from '../context/CategorySubCategotyContext';
 import NotFoundImage from '../assets/not-found.svg';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import { getNotificationCount } from "../services/notifications";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -147,6 +150,39 @@ const GenerateList = (props) => {
     </div>
   );
 };
+
+const HeadeNotificationIcon = (props) => {
+  const classes = useStyles();
+  const [count, setCount] = useState(0);
+  const {userData} = props;
+
+  useEffect( () => {
+    let interval = setInterval( async () => {
+       let res = await getNotificationCount(userData.email);
+       console.log(res)
+       if(res){
+         setCount(res)
+       }
+    }, 5000 )
+
+    return () => {
+      clearInterval(interval);
+    }
+  },[]);
+
+  return (
+    <Tooltip title="Notifications" aria-label="add" arrow>
+        <Badge
+          id="headeFavIcon"
+          className={classes.headerFavIcon}
+          color="secondary"
+          badgeContent={count}
+        >
+          <NotificationsIcon />
+        </Badge>
+      </Tooltip>
+  )
+}
 
 export default function Header(props) {
   const classes = useStyles();
@@ -292,7 +328,8 @@ export default function Header(props) {
           </div>
           {userData.isLoggedIn ? 
             (
-              <>
+              <>              
+                <HeadeNotificationIcon userData={userData} />
                 <Link to={{pathname: "/favourite-list", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
                   <Tooltip title="Favourite List" aria-label="add" arrow>
                     <IconButton
@@ -300,7 +337,7 @@ export default function Header(props) {
                       className={classes.headerFavIcon}
                       component="span"
                     >
-                      <FavoriteIcon />
+                      <FavoriteIcon  id="headerHeartIcon" />
                     </IconButton>
                   </Tooltip>
                 </Link>

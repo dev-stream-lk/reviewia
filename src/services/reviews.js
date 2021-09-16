@@ -25,7 +25,7 @@ export const getReviewsByPostId = (id) => {
 }
 
 // add review
-export const addReview = (email,postId, description, userRate) => {
+export const addReview = (email, name, postId, description, userRate) => {
     const requestOptions = {
         method:"POST",
         headers:{
@@ -33,7 +33,7 @@ export const addReview = (email,postId, description, userRate) => {
           'Authorization': `Bearer ${TOKEN}`
         },
         body: JSON.stringify({
-            reviewedBy:"Chamith",
+            reviewedBy: name,
             postId,
             description,
             userRate
@@ -44,7 +44,6 @@ export const addReview = (email,postId, description, userRate) => {
     .then( async res => {
         if(res.ok){
             let data = await res.json()
-            console.log(data)
             return data;
         }
         return false;

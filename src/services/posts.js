@@ -5,7 +5,6 @@ const TOKEN = getItem("token");
 
 // Create a new post
 export const createPost = (data) => {
-    console.log(data)
     const {title, email, brandName, subCategoryId, description, type, selectedImages} = data;
     const formData = new FormData();
     console.log(selectedImages)
@@ -33,8 +32,12 @@ export const createPost = (data) => {
         },
         body: formData
     }
+    let url = HOST+`user/post/create?email=${email}&subcategory=${subCategoryId}`
+    if(brandName){
+        url +=`&brand${brandName}`;
+    }
 
-    return fetch(HOST+`user/post/create?email=${email}&subcategory=${subCategoryId}&brand=${brandName}`, requestOptions )
+    return fetch(url, requestOptions )
     .then( async res => {
         if(res.ok){
             return true;
