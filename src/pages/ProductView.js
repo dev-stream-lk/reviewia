@@ -23,6 +23,7 @@ import MultipleSelect from '../components/basic/MultipleSelect';
 import {createInstantGroup, getAllInstantGroup} from '../services/instantGroups'
 import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
 import GroupSharpIcon from '@material-ui/icons/GroupSharp';
+import '../App.css';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -343,8 +344,8 @@ const ProductView = (props) => {
         if(res[i]["postId"] == postId){
           if(res[i]['active']){
             setActiveGroupId(res[i]['id'])
+            break;
           }
-          break;
         }
       }
     }
@@ -392,8 +393,9 @@ const ProductView = (props) => {
     }
   },[openReport])
 
+  console.log(userData)
   const writeReview =async ( description, userRate) => {
-    let data = await addReview(userData.email, parseInt(postId), description, userRate);
+    let data = await addReview(userData.email, userData.name, parseInt(postId), description, userRate);
     await getPostInfo()
     await getPostReviews()
 
@@ -402,15 +404,18 @@ const ProductView = (props) => {
   // add to favourite list
   const addToFavList = async () => {
     setInFavList(true)
+    let headerHeartIcon = document.getElementById("headerHeartIcon");
     setFavButtonLock(true)
     if(userData.email){
       let res = await addToFavouriteList({email:userData.email,id:postId})
       if(!res){
         setInFavList(false)
       }else{
+        headerHeartIcon.style.animation = "favIconAnimation 3s";
         addToFavContext(postData)
       }
     }else{
+      headerHeartIcon.style.animation = "favIconAnimation 3s";
       addToFavContext(postData)
     }
     setFavButtonLock(false)
@@ -420,6 +425,8 @@ const ProductView = (props) => {
   const removeFromFavList = async () => {
     setInFavList(false)
     setFavButtonLock(true)
+    let headerHeartIcon = document.getElementById("headerHeartIcon");
+    headerHeartIcon.style.animation = "";
     if(userData.email){
       let res = await removeFromFavouriteList({email:userData.email,id:postId})
       if(!res){

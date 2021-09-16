@@ -11,6 +11,7 @@ import {
   CardMedia,
   CardContent,
   Box,
+  TextField,
 } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import Controls from "../components/Controls";
@@ -30,6 +31,8 @@ import {CatContext} from '../context/CategorySubCategotyContext';
 import {getDate} from '../utils/dateTime';
 import NotFoundImage from '../assets/not-found.svg';
 import {PreLoader} from '../components/basic/PreLoader';
+import { Autocomplete } from "@material-ui/lab";
+import {getPostBySearch} from '../services/posts';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -144,8 +147,76 @@ const useStyles = makeStyles((theme) => ({
   notFoundImage:{
     width:"100%",
     maxWidth:"150px"
+  },
+  homeSearch : {
+    width:"100%",
   }
 }));
+
+const HomeSearch = () => {
+
+  const classes = useStyles();
+  const [search, setSearch] = useState("");
+  const [dataSet, setDataSet] = useState([]);
+
+  useEffect( async () => {
+    if(search){
+      let res = await getPostBySearch({'title':search});
+      console.log(res)
+      if(res){
+         setDataSet(res['posts']);
+      }
+    }else{
+      if(dataSet !== []){
+        setDataSet([]);
+      }
+    }
+  }, [search]);
+
+  return (
+    <>
+      <Autocomplete
+        freeSolo
+        className={classes.homeSearch}
+        id="free-solo-2-demo"
+        disableClearable
+        getOptionLabel={(option) => option.title}
+        options={dataSet && dataSet}
+        renderOption={(option, { selected }) => (
+          <React.Fragment>
+            <Link to={`products/${option.category}/${option.subCategory}`} style={{display:"flex", alignItems:"center", color:"black", textDecoration:"none"}} > 
+              <div style={{height:30}}>
+                <img src={`${option.imgURL[0].url}`}  style={{maxWidth:30, maxHeight:30, marginRight:16}} />
+              </div>
+              <span>
+                {option.title}
+              </span>
+            </Link>
+          </React.Fragment>
+        )}
+        ListboxProps = {{
+          style:{
+            overflowY:"scroll",
+            maxHeight:300
+          }
+        }}
+        renderInput={(params) => (
+          <Controls.Input
+            {...params}
+            endAdornment={<SearchIcon />}
+            fullWidth={true}
+            size="medium"
+            className={classes.headSearchInput}
+            placeholder="What are you looking for..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          ></Controls.Input>
+        )}
+      />
+    </>
+  )
+
+}
 
 const MostRecentCard = (props) => {
   const classes = useStyles();
@@ -267,7 +338,6 @@ const PopularcategorySection = (props) => {
 
 export default function HomePage(props) {
   const classes = useStyles();
-  const [search, setSearch] = useState("");
   const { userData, setUserData } = useContext(UserContext);
   const [updateListLoading, setUpdateListLoading] = useState(true);
   const [recentPosts, setRecentPosts] = useState([]);
@@ -313,15 +383,7 @@ export default function HomePage(props) {
             </Grid>
           </Grid>
           <Grid container justifyContent="center">
-            <Controls.Input
-              endAdornment={<SearchIcon />}
-              fullWidth={true}
-              size="medium"
-              className={classes.headSearchInput}
-              placeholder="What are you looking for..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            ></Controls.Input>
+            <HomeSearch />
           </Grid>
         </Grid>
       </div>

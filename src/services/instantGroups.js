@@ -66,7 +66,7 @@ export const getGroupData = (id, email) => {
         }
     }
 
-    return fetch(HOST+`user/group?id=${id}&email=${email}`, requestOptions )
+    return fetch(HOST+`user/group/${id}`, requestOptions )
     .then( async res => {
         if(res.ok){
             return await res.json();

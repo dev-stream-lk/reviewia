@@ -3,8 +3,11 @@ import {getItem, setItem} from '../services/localStorage';
 
 const TOKEN = getItem("token");
 
-// get user own posts
-export const getUserGroups = (email) => {
+
+// get user notifications
+export const getNotificationCount = (email) => {
+
+
     const requestOptions = {
         method:"GET",
         headers:{
@@ -13,11 +16,10 @@ export const getUserGroups = (email) => {
         }
     }
 
-    return fetch(HOST+`user/group/all?email=${email}`, requestOptions )
+    return fetch(HOST+`user/notification/count?email=${email}`, requestOptions )
     .then( async res => {
         if(res.ok){
-            let data = await res.json()
-            return data;
+            return await res.json();
         }
         return false;
         
