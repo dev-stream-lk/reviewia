@@ -18,7 +18,7 @@ import Controls from "../components/Controls";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { Form } from "../components/useForm";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+// import MoreVertIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from "@material-ui/icons/Search";
 import { Link, useLocation, useParams } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
@@ -27,6 +27,7 @@ import { getPostBySearch } from "../services/posts";
 import { getCategoryWithSubCategory } from "../services/category";
 import NotFoundImage from '../assets/not-found.svg';
 import {PreLoader} from '../components/basic/PreLoader';
+import { Pagination } from "@material-ui/lab";
 
 const drawerWidth = 280;
 
@@ -111,9 +112,9 @@ const useStyles = makeStyles((theme) => ({
 const FiltersMenu = (props) => {
   const classes = useStyles();
   const params = useParams();
+  const {handlePagination, setFilterData} = props;
   const [handleCollapseByRating, setHandleCollapseByRating] = useState(true);
   const [byRating, setByRating] = useState(0);
-  const [categorySortBy, setCategorySortBy] = useState("higher");
   const [handleCollapseByCategory, setHandleCollapseByCategory] =
     useState(true);
   const [handleCollapseByDates, setHandleCollapseByDates] = useState(true);
@@ -127,7 +128,10 @@ const FiltersMenu = (props) => {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [values, setValues] = useState({});
+  const [values, setValues] = useState({
+    ratingOperator:">",
+    rating:2
+  });
 
   // get all categories, subCategories and brands only one time
   useEffect(async () => {
@@ -162,7 +166,8 @@ const FiltersMenu = (props) => {
         subCategory: params.subCategoryId ? params.subCategoryId : "all",
         brand: "",
       };
-      setValues(initialCatValues);
+      console.log({products})
+      setValues({...values,...initialCatValues});
       setCategories({ products, services });
     }
   }, []);
@@ -236,6 +241,27 @@ const FiltersMenu = (props) => {
     });
   }, [values.brand, brands]);
 
+  useEffect (() => {
+    if(values){
+      // let others =  {
+      // rating:byRating,
+      // ratingOperator: ratingOperator
+      // }
+
+      let d;
+      setFilterData((data) => {
+        d ={
+          ...data,
+          ...values
+        };
+        console.log(d)
+        return d
+        }
+      );
+      handlePagination(1, d);
+    }
+  },[values, byRating])
+
   // const [categoryOptions, setCategoryOptions] = useState([
   //     {id:"all", title:"All"},
   //     {id: "1", title:"Electronics"},
@@ -287,14 +313,33 @@ const FiltersMenu = (props) => {
         </Grid>
         <Grid container>
           <Collapse in={handleCollapseByRating} timeout="auto">
-            <Rating
-              className={classes.filterCollapseInputGroup}
-              value={byRating}
-              name="byRating"
-              precision={0.25}
-              onChange={(e, value) => setByRating(value)}
-            ></Rating>
+            <Grid container>
+              <Controls.RadioGroup
+                name="ratingOperator"
+                label="Sort By"
+                items={[
+                  { id: ">", title: "greater" },
+                  { id: "<", title: "less" }
+                ]}
+                value={values.ratingOperator}
+                className={classes.filterCollapseInputGroup}
+                onChange={(e, value) => setValues({...values, ratingOperator:value})}
+                className={classes.radioGroup}
+              ></Controls.RadioGroup>
+            </Grid>
+            <div style={{paddingLeft:10, display:"flex", alignItems:"center"}}>
+              <Rating
+                value={values.rating}
+                name="byRating"
+                precision={0.25}
+                onChange={(e, value) => setValues({...values, rating:value})}
+              />
+              <span>
+              ( {values.rating} )
+              </span>
+            </div>
           </Collapse>
+
         </Grid>
       </ListItem>
 
@@ -352,18 +397,6 @@ const FiltersMenu = (props) => {
             className={classes.filterCollapse}
             timeout="auto"
           >
-            <Controls.RadioGroup
-              name="byCaregorySort"
-              label="Sort By"
-              items={[
-                { id: "lower", title: "Lower" },
-                { id: "higher", title: "Higher" },
-              ]}
-              value={categorySortBy}
-              className={classes.filterCollapseInputGroup}
-              onChange={(e, value) => setCategorySortBy(value)}
-              className={classes.radioGroup}
-            ></Controls.RadioGroup>
             <Typography variant="subtitle1" style={{ color: "gray" }}>
               Select type
             </Typography>
@@ -460,12 +493,14 @@ const ProductCard = (props) => {
           <Grid container>
             <CardHeader
               className={classes.productListItemHeader}
-              avatar={<Avatar aria-label="recipe">R</Avatar>}
-              action={
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
-              }
+              // avatar={<Avatar aria-label="recipe">R</Avatar>}
+              // action={
+              //   <IconButton aria-label="settings">
+              //     <MoreVertIcon />
+              //   </IconButton>
+              // }
+              titleTypographyProps={{ style: {fontSize:22, whiteSpace: "normal" } }}
+              subheaderTypographyProps={{style:{fontSize:13}}}
               title={post.title}
               subheader={new Date(post.createdAt).toDateString()}
             />
@@ -495,11 +530,12 @@ export default function ProductList(props) {
   const params = useParams();
   const [isMobile, setIsMobile] = useState(false);
   const [openMobileDrawer, setOpenMobileDrawer] = useState(false);
-  const [productSearch, setProductSearch] = useState("");
   const { userData, setUserData } = useContext(UserContext);
   const [filterData, setFilterData] = useState([]);
   const [posts, setPosts] = useState([]);
   const [postLoading, setPostLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [maxPages, setMaxPages] = useState(1);
 
   useEffect(() => {
     let filters = {};
@@ -514,7 +550,7 @@ export default function ProductList(props) {
 
   const handleDisplaySize = () => {
     let width = window.innerWidth;
-    if (width < 800) {
+    if (width < 960) {
       setIsMobile(true);
     } else {
       setIsMobile(false);
@@ -526,13 +562,21 @@ export default function ProductList(props) {
     window.addEventListener("resize", handleDisplaySize);
   });
 
+  const handlePagination= async (page=1, filters=filterData) => {
+    setPostLoading(true);
+    setCurrentPage(page);
+    console.log(filters)
+    let data = await getPostBySearch(filters, currentPage-1,20);
+    if (data) {
+      setMaxPages(data.totalPages)
+      setPosts(data.posts);
+    }
+    setPostLoading(false);
+  }
+
   useEffect(async () => {
     if (filterData) {
-      let data = await getPostBySearch(filterData);
-      if (data) {
-        setPosts(data.posts);
-      }
-      setPostLoading(false);
+      await handlePagination();
     }
   }, [filterData]);
 
@@ -561,7 +605,7 @@ export default function ProductList(props) {
             Filter Products
           </Typography>
           <Form className={classes.filterForm}>
-            <FiltersMenu />
+            <FiltersMenu handlePagination={handlePagination} setFilterData={setFilterData} />
           </Form>
         </Drawer>
         {/* End Drawer */}
@@ -580,7 +624,7 @@ export default function ProductList(props) {
             Filter Products
           </Typography>
           <Form className={classes.filterForm}>
-            <FiltersMenu />
+            <FiltersMenu handlePagination={handlePagination} setFilterData={setFilterData} />
           </Form>
         </Drawer>
 
@@ -594,15 +638,18 @@ export default function ProductList(props) {
               endAdornment={<SearchIcon />}
               className={classes.productListSearch}
               placeholder="Find Product or service"
-              value={productSearch}
-              onChange={(e) => setProductSearch(e.target.value)}
+              value={filterData.title}
+              onChange={(e) => setFilterData({...filterData, title: (e.target.value)})}
             ></Controls.Input>
           </Grid>
           <Grid
             container
-            style={{ paddingRight: 50 }}
-            justifyContent="flex-end"
+            style={{ paddingRight: 50, marginTop:40, marginBottom:16 }}
+            justifyContent="space-between"
           >
+            <div style={{paddingLeft:50}}>
+              <Pagination onChange={(e, page)=> handlePagination(page)} page={currentPage} count={maxPages} variant="outlined" shape="rounded"  />
+            </div>
             <Link
               to={{ pathname: "/product/add" }}
               style={{ textDecoration: "none" }}
@@ -636,6 +683,11 @@ export default function ProductList(props) {
               )}
             </Grid>
           </Controls.Paper>
+          <Grid container style={{marginTop:20, marginBottom:50}} >
+            <div style={{paddingLeft:50}}>
+              <Pagination onChange={(e, page)=> handlePagination(page)} page={currentPage} count={maxPages} variant="outlined" shape="rounded"  />
+            </div>
+          </Grid>
         </div>
         {/* End ProductList */}
       </Grid>

@@ -20,7 +20,7 @@ const user_register = (data) => {
 
     return fetch(HOST+'registration', requestOptions)
     .then( res => { 
-        if (res.status == 201){
+        if (res.status === 201){
             return true
         }else{
             return res.json()

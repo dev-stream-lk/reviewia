@@ -1,5 +1,5 @@
 import HOST from '../config/config';
-import {getItem, setItem} from '../services/localStorage';
+import {getItem} from '../services/localStorage';
 
 const TOKEN = getItem("token");
 
@@ -39,7 +39,6 @@ export const addReview = (email, name, postId, description, userRate) => {
             userRate
         })
     }
-    let e = new URLSearchParams({email})
     return fetch(HOST+`user/review?email=${email}`, requestOptions )
     .then( async res => {
         if(res.ok){
@@ -68,6 +67,27 @@ export const addOrRemoveReviewReact = (data) => {
     .then( async res => {
         if(res.ok){
             return true;
+        }
+        return false;
+    })
+    .catch( err=> console.error(err));
+}
+
+
+// get review by id
+export const getReviewById = (id) => {
+    const requestOptions = {
+        method:"GET",
+        headers:{
+          'Content-Type':"application/json",
+          'Authorization': `Bearer ${TOKEN}`
+        }
+    }
+
+    return fetch(HOST+`user/review/${id}`, requestOptions )
+    .then( async res => {
+        if(res.ok){
+            return await res.json();
         }
         return false;
     })

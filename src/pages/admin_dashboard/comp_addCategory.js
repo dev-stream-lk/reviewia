@@ -19,7 +19,7 @@ import {
   TextField,
   DialogActions,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import Controls from "../../components/Controls";
 import ProductCategory from "./productCategory";
 import ServiceCategory from "./serviceCategory";

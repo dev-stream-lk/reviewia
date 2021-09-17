@@ -7,7 +7,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import Controls from "../../components/Controls";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";

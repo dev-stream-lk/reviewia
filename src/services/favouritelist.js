@@ -1,5 +1,5 @@
 import HOST from '../config/config';
-import {getItem, setItem} from '../services/localStorage';
+import {getItem} from '../services/localStorage';
 const TOKEN = getItem("token");
 
 

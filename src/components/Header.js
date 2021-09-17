@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   headerFavIcon:{
     color:"white",
-    marginRight:10,
+    marginLeft:10,
   },
   categoryMenu: {
     morgin: 0,
@@ -203,7 +203,6 @@ export default function Header(props) {
   const [ categories, setCategories]= useState({})
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
-  console.log(userData)
   const res = useContext(CatContext)
   
   useEffect(()=>{
@@ -339,7 +338,7 @@ export default function Header(props) {
             (
               <>              
                 <NotificationPanel userData={userData} />
-                <Link to={{pathname: "/favourite-list", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
+                <Link to={{pathname: "/favourite-list"}} style={{textDecoration:"none"}} underline="none" >
                   <Tooltip title="Favourite List" aria-label="add" arrow>
                     <IconButton
                       id="headeFavIcon"
@@ -375,7 +374,7 @@ export default function Header(props) {
             :
             (
               <div>
-                <Link to={{pathname: "/favourite-list", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
+                <Link to={{pathname: "/favourite-list"}} style={{textDecoration:"none"}} underline="none" >
                   <Tooltip title="Favourite List" aria-label="add" arrow>
                     <IconButton
                       id="headeFavIcon"

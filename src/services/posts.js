@@ -1,5 +1,5 @@
 import HOST from '../config/config';
-import {getItem, setItem} from '../services/localStorage';
+import {getItem} from '../services/localStorage';
 
 const TOKEN = getItem("token");
 
@@ -7,8 +7,7 @@ const TOKEN = getItem("token");
 export const createPost = (data) => {
     const {title, email, brandName, subCategoryId, description, type, selectedImages} = data;
     const formData = new FormData();
-    console.log(selectedImages)
-    selectedImages.map( img=>{
+    selectedImages.foreEach( img =>{
         formData.append(
             "image",
             img["imageObj"],
@@ -115,7 +114,7 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
 
     let search_url = "";
     let isEmpty = true;
-    if ("title" in filters && filters.title != ""){
+    if ("title" in filters && filters.title !== ""){
         search_url += `title:${filters.title}`
         isEmpty = false
     }
@@ -126,14 +125,14 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
             search_url += "rate";
         isEmpty = false
         
-        if( "ratingOperator" in filters && filters.rating != ""){
+        if( "ratingOperator" in filters && filters.rating !== ""){
             search_url += filters.ratingOperator;
         }else{
             search_url += ":";
         }
         search_url += `${filters.rating}`;
     }
-    if ("category" in filters && filters.category != ""){
+    if ("category" in filters && (filters.category !== "" && filters.category !== "all")){
         if( !isEmpty)
             search_url += ",category";
         else
@@ -142,7 +141,7 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
         isEmpty = false
         search_url += `:${filters.category}`
     }
-    if ("subCategory" in filters && filters.subCategory != ""){
+    if ("subCategory" in filters && (filters.subCategory !== "" && filters.subCategory !== "all")){
         if( !isEmpty)
             search_url += ",subCategory";
         else
@@ -151,7 +150,7 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
         search_url += `:${filters.subCategory}`
     }
 
-    if ("brand" in filters && filters.brand != ""){
+    if ("brand" in filters && (filters.brand !== "" && filters.subCategory !== "all")){
         if( !isEmpty)
             search_url += ",brand";
         else

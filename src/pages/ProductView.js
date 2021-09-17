@@ -393,7 +393,6 @@ const ProductView = (props) => {
     }
   },[openReport])
 
-  console.log(userData)
   const writeReview =async ( description, userRate) => {
     let data = await addReview(userData.email, userData.name, parseInt(postId), description, userRate);
     await getPostInfo()

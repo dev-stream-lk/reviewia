@@ -2,15 +2,8 @@ import {
   Grid,
   makeStyles,
   Typography,
-  Button,
-  IconButton,
-  Tooltip,
-  CardMedia,
-  CardHeader,
-  Avatar,
-  CardContent,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import Controls from "../../components/Controls";
 
 const useStyles = makeStyles((theme) => ({
