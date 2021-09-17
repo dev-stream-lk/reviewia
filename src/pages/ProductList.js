@@ -118,9 +118,7 @@ const FiltersMenu = (props) => {
   const [handleCollapseByCategory, setHandleCollapseByCategory] =
     useState(true);
   const [handleCollapseByDates, setHandleCollapseByDates] = useState(true);
-  // const [filterByCategory, setFilterByCategory] = useState();
-  // const [filterBySubCategory, setFilterBySubCategory] = useState("all");
-  // const [filterBrand, setFilterBrand] = useState("all");
+
   const [filterStartDate, setFilterStartDate] = useState("");
   const [filterEndDate, setFilterEndDate] = useState("");
   const [byState, setByState] = useState("new");
@@ -130,7 +128,11 @@ const FiltersMenu = (props) => {
   const [brands, setBrands] = useState([]);
   const [values, setValues] = useState({
     ratingOperator:">",
-    rating:2
+    rating:2,
+    category: params.categoryId || "all",
+    subCategory: params.subCategoryId || "all",
+    type: "all",
+    brand: "all"
   });
 
   // get all categories, subCategories and brands only one time
@@ -174,22 +176,22 @@ const FiltersMenu = (props) => {
 
   // call when product type changed
   useEffect(() => {
-    // setValues({
-    //   ...values,
-    //   category: "",
-    //   subCategory: "",
-    //   brand: "",
-    // });
+    setValues({
+      ...values,
+      category: "all",
+      subCategory: "all",
+      brand: "all"
+    });
     setSubCategories([]);
   }, [values.type]);
 
   // call when category changed
   useEffect(() => {
-    // setValues({
-    //   ...values,
-    //   subCategory: "",
-    //   brand: "",
-    // });
+    setValues({
+      ...values,
+      subCategory: "all",
+      brand: "all"
+    });
     setBrands([]);
     if (values.category !== "" && categories.length !== 0) {
       let type = values.type == "p" ? "products" : "services";
@@ -212,10 +214,6 @@ const FiltersMenu = (props) => {
 
   // call when subCategory changed
   useEffect(() => {
-    // setValues({
-    //   ...values,
-    //   brand: "",
-    // });
     if (values.subCategory != "" && subCategories.length !== 0) {
       subCategories.forEach((item, index) => {
         if (values.subCategory == item.id) {
@@ -260,7 +258,7 @@ const FiltersMenu = (props) => {
       );
       handlePagination(1, d);
     }
-  },[values, byRating])
+  },[values])
 
   // const [categoryOptions, setCategoryOptions] = useState([
   //     {id:"all", title:"All"},
@@ -405,6 +403,7 @@ const FiltersMenu = (props) => {
                 name="type"
                 // label="Select a Category"
                 options={[
+                  { id: "all", title: "All" },
                   { id: "p", title: "Product" },
                   { id: "s", title: "Service" },
                 ]}
@@ -427,12 +426,12 @@ const FiltersMenu = (props) => {
                   categories.length != 0
                     ? values.type == "p"
                       ? categories.products.length != 0
-                        ? categories.products
-                        : [{ id: "none", title: "Not Found" }]
+                        ? [{ id: "all", title: "All" },...categories.products]
+                        : [{ id: "all", title: "Not Found" }]
                       : categories.services.length != 0
                       ? categories.services
-                      : [{ id: "none", title: "Not Found" }]
-                    : [{ id: "none", title: "Not Found" }]
+                      : [{ id: "all", title: "Not Found" }]
+                    : [{ id: "all", title: "Not Found" }]
                 }
                 // options ={[]}
               ></Controls.Select>
@@ -443,7 +442,11 @@ const FiltersMenu = (props) => {
             <FormGroup className={classes.filterCollapseInputGroup}>
               <Controls.Select
                 name="subCategory"
-                options={subCategories}
+                options={
+                  subCategories.length !== 0 ?
+                  [{ id: "all", title: "All" },...subCategories] :
+                  [{ id: "all", title: "Not Found" }]
+                }
                 value={values.subCategory}
                 onChange={(e) =>
                   setValues({ ...values, subCategory: e.target.value })
@@ -457,7 +460,11 @@ const FiltersMenu = (props) => {
             <FormGroup className={classes.filterCollapseInputGroup}>
               <Controls.Select
                 name="brand"
-                options={brands}
+                options={
+                  brands.length !== 0 ?
+                  [{ id: "all", title: "All" }, ...brands] :
+                  [{ id: "all", title: "Not Found" }]
+                }
                 value={values.brand}
                 onChange={(e) =>
                   setValues({ ...values, brand: e.target.value })

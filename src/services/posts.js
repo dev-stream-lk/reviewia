@@ -150,13 +150,22 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
         search_url += `:${filters.subCategory}`
     }
 
-    if ("brand" in filters && (filters.brand !== "" && filters.subCategory !== "all")){
+    if ("brand" in filters && (filters.brand !== "" && filters.brand !== "all")){
         if( !isEmpty)
             search_url += ",brand";
         else
             search_url += "brand";
         isEmpty = false
         search_url += `:${filters.brand}`
+    }
+
+    if ("type" in filters && (filters.type !== "" && filters.type !== "all")){
+        if( !isEmpty)
+            search_url += ",type";
+        else
+            search_url += "type";
+        isEmpty = false
+        search_url += `:${filters.type}`
     }
 
     // add paging options

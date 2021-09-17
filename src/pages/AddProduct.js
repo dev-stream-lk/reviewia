@@ -18,7 +18,6 @@ import Controls from "../components/Controls";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useForm, Form } from "../components/useForm";
-import Phone from "../static/img/j7.jpg";
 import Rating from "@material-ui/lab/Rating";
 import AddIcon from "@material-ui/icons/Add";
 import { Skeleton } from "@material-ui/lab";
@@ -31,9 +30,11 @@ import { UserContext } from "../context/UserContext";
 import { getCategoryWithSubCategory } from "../services/category";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import { requiredField } from "../components/Validators";
-import { createPost } from "../services/posts";
+import { createPost, getPostBySearch } from "../services/posts";
 import EditIcon from '@material-ui/icons/Edit';
 import { PreLoader } from "../components/basic/PreLoader";
+import { getDate } from "../utils/dateTime";
+import NotFoundImage from '../assets/not-found.svg';
 
 const useStyles = makeStyles((theme) => ({
   addProductWrapper: {
@@ -84,6 +85,24 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 100,
     maxWidth: 100,
   },
+  notFoundImage:{
+    width:"100%",
+    maxWidth:"150px"
+  },
+  similarCard: {
+    cursor: "pointer",
+    "& .MuiCardHeader-title": {
+      fontSize: 20,
+    },
+    "& .MuiCardHeader-subheader": {
+      fontSize: 14,
+    },
+    height:"100%",
+    display:"flex",
+    flexDirection:"column",
+    alignItems:"center",
+    justifyContent:"space-between",
+  },
 }));
 
 function getSteps() {
@@ -92,26 +111,38 @@ function getSteps() {
 
 const SimillarProductCard = (props) => {
   const classes = useStyles();
-  let { value = 4.75 } = props;
+  let { postData } = props;
 
   return (
-    <Controls.Card className={classes.similarProductCard}>
-      <CardHeader title="Samsung J7 nxt" subheader="34 Aug, 2021"></CardHeader>
-      <CardMedia title="Samsung Galaxy j7 Nxt">
-        <img src={Phone} />
-      </CardMedia>
-      <CardContent>
-        <Rating
-          name="phone"
-          value={value}
-          precision={0.25}
-          getLabelText={(val) => `${val} Heart${val !== 1 ? "s" : ""}`}
-          readOnly
-        />
-        <Box>{value}</Box>
-      </CardContent>
-      <CardActions></CardActions>
-    </Controls.Card>
+    <>
+      <Link
+        to={`/product/view/${postData.postId}`}
+        style={{ textDecoration: "none" }}
+      >
+        <Controls.Card className={classes.similarCard}>
+          <CardHeader title={postData.title} subheader={getDate(postData.createdAt)}></CardHeader>
+          <CardMedia title={postData.title}>
+            <div style={{ width: 200, height: 200 }}>
+              <img
+                style={{ maxWidth: 200, maxHeight: 200 }}
+                src={`${postData.imgURL.length === 0 ? "" : postData.imgURL[0].url}`}
+              />
+            </div>
+          </CardMedia>
+          <CardContent>
+            <Rating
+              name="phone"
+              value={postData.rate}
+              precision={0.25}
+              getLabelText={(val) => `${val} Heart${val !== 1 ? "s" : ""}`}
+              readOnly
+            />
+            <Box>{postData.rate}</Box>
+          </CardContent>
+          <CardActions></CardActions>
+        </Controls.Card>
+      </Link>
+    </>
   );
 };
 
@@ -149,10 +180,12 @@ const Step1 = (props) => {
     true,
     validate
   );
-
+  
+  const [similarPosts, setSimilarPosts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  var others = {};
 
   // get all categories, subCategories and brands only one time
   useEffect(async () => {
@@ -183,28 +216,29 @@ const Step1 = (props) => {
 
   // call when product type changed
   useEffect(() => {
-    // setValues({
-    //   ...values,
-    //   category: "",
-    //   subCategory: "",
-    //   brand: "",
-    // });
+    setValues({
+      ...values,
+      category: "",
+      subCategory: "",
+      brand: "",
+    });
     setSubCategories([]);
   }, [values.type]);
 
   // call when category changed
   useEffect(() => {
-    // setValues({
-    //   ...values,
-    //   subCategory: "",
-    //   brand: "",
-    // });
+    setValues({
+      ...values,
+      subCategory: "",
+      brand: "",
+    });
     setBrands([]);
     if (values.category !== "" && categories.length !== 0) {
       let type = values.type == "p" ? "products" : "services";
       categories[`${type}`].forEach((item, index) => {
         if (values.category == item.id) {
           values["categoryName"] = item.title;
+          others["category"] = item.title;
           let subCategories = [];
           for (let i in item.subCategories) {
             subCategories.push({
@@ -221,14 +255,11 @@ const Step1 = (props) => {
 
   // call when subCategory changed
   useEffect(() => {
-    // setValues({
-    //   ...values,
-    //   brand: "",
-    // });
     if (values.subCategory != "" && subCategories.length !== 0) {
       subCategories.forEach((item, index) => {
         if (values.subCategory == item.id) {
           values["subCategoryName"] = item.title;
+          others["subCategory"] = item.title;
           console.log(values);
           let brands = [];
           for (let i in item.brands) {
@@ -247,19 +278,33 @@ const Step1 = (props) => {
     brands.map((item, i) => {
       if (item.id == values.brand) {
         values["brandName"] = item.title;
+        others["brand"] = item.title;
       }
     });
   }, [values.brand, brands]);
 
+  // get similar posts
+  useEffect( async () => {
+    if(!others.category){
+      others['category'] = "";
+    }
+    if(!others.subCategory){
+      others['subCategory'] = "";
+    }
+    if(!others.brand){
+      others['brand'] = "";
+    }
+    let d = {...values, ...others};
+    let res = await getPostBySearch(d, 0, 4);
+    console.log(res)
+    if(res){
+      setSimilarPosts(res.posts)
+    }
+  },[values])
+
   // set form data to global scope
   const handleStep1Next = (e) => {
     setStep1Data(values);
-    // let type = values.type == "p" ? "products" : "services";
-    // categories[`${type}`].map((cat ,index) => {
-    //   if(step1Data.category === cat.id){
-    //     setCategoryName(cat.title)
-    //   }
-    // })
     handleNext(e);
   };
 
@@ -391,25 +436,28 @@ const Step1 = (props) => {
           </Form>
         </Grid>
         <Grid item xs={12}>
-          <Controls.Paper>
+          <Controls.Paper style={{minHeight:"40vh"}}>
             <Grid container spacing={2}>
-              <Grid container justifyContent="center">
+              <Grid container justifyContent="center" style={{marginBottom:24}}>
                 <Typography variant="h4" component="div">
                   Similar Products/Services
                 </Typography>
               </Grid>
-              <Grid item xs={6} sm={4} lg={3}>
-                <SimillarProductCard />
-              </Grid>
-              <Grid item xs={6} sm={4} lg={3}>
-                <SimillarProductCard />
-              </Grid>
-              <Grid item xs={6} sm={4} lg={3}>
-                <SimillarProductCard />
-              </Grid>
-              <Grid item xs={6} sm={4} lg={3}>
-                <SimillarProductCard />
-              </Grid>
+              {
+                similarPosts.length !== 0 ? similarPosts.map( (post,i) => (
+                  <Grid key={i} item xs={6} sm={4} lg={3}>
+                    <SimillarProductCard postData={post} />
+                  </Grid>
+                )):
+                (
+                  <Grid container alignItems="center" style={{marginTop:20, flexDirection:"column"}}>
+                    {/* <Typography>
+                      Updates not found.
+                    </Typography> */}
+                    <img src={NotFoundImage} className={classes.notFoundImage} />
+                  </Grid>
+                )
+              }
             </Grid>
           </Controls.Paper>
         </Grid>
