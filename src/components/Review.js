@@ -228,73 +228,80 @@ export default function Review(props) {
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Grid container justifyContent="flex-end" className={classes.reviewFooter}>
-                      <IconButton
-                        color="secondary"
-                        aria-label="report"
-                        component="span"
-                        onClick={() => setReportReviewId(review.reviewId)}
-                        title="Report Review"
-                      >
-                        <ReportIcon />
-                        </ IconButton>
-                      <div style={{display:"flex", flexDirection:"column", position:"relative"}}>
-                        {
-                          likeDislike.like ? 
-                          (
+                    {
+                      userData.isLoggedIn && (
+                        <>
+                          <Grid container justifyContent="flex-end" className={classes.reviewFooter}>
                             <IconButton
-                              color="primary"
-                              aria-label="Like"
+                              color="secondary"
+                              aria-label="report"
                               component="span"
-                              title="Remove Like"
-                              onClick= { disabled ? () => {} : removeLike}
+                              onClick={() => setReportReviewId(review.reviewId)}
+                              title="Report Review"
                             >
-                              <ThumbUpIcon />
-                            </IconButton>
-                          ):
-                          (
-                            <IconButton
-                              color="primary"
-                              aria-label="Like"
-                              component="span"
-                              title="Like"
-                              onClick= {disabled ? () => {} : addLike}
-                            >
-                              <ThumbUp />
-                            </IconButton>
-                          )
-                        }
-                        <span style={{position:"absolute", bottom:-5, fontSize:14, width:"100%", textAlign:"center"}}>{likeString}</span>
-                      </div>
-                      <div style={{display:"flex", flexDirection:"column", position:"relative"}}>
-                        {
-                          likeDislike.dislike? 
-                          (
-                            <IconButton
-                              color="primary"
-                              aria-label="Dislike"
-                              component="span"
-                              title="Remove Dislike"
-                              onClick= {disabled ? () => {} : removeDislike}
-                            >
-                              <ThumbDownIcon />
-                            </IconButton>
-                          ):
-                          (
-                            <IconButton
-                              color="primary"
-                              aria-label="Dislike"
-                              component="span"
-                              title="Dislike"
-                              onClick= {disabled ? () => {} : addDislike}
-                            >
-                              <ThumbDown />
-                            </IconButton>
-                          )
-                        }
-                        <span style={{position:"absolute", bottom:-5, fontSize:14, width:"100%", textAlign:"center"}}>{dislikeString}</span>
-                      </div>
-                    </Grid>
+                              <ReportIcon />
+                            </ IconButton>
+                            <div style={{display:"flex", flexDirection:"column", position:"relative"}}>
+                              {
+                                likeDislike.like ? 
+                                (
+                                  <IconButton
+                                    color="primary"
+                                    aria-label="Like"
+                                    component="span"
+                                    title="Remove Like"
+                                    onClick= { disabled ? () => {} : removeLike}
+                                  >
+                                    <ThumbUpIcon />
+                                  </IconButton>
+                                ):
+                                (
+                                  <IconButton
+                                    color="primary"
+                                    aria-label="Like"
+                                    component="span"
+                                    title="Like"
+                                    onClick= {disabled ? () => {} : addLike}
+                                  >
+                                    <ThumbUp />
+                                  </IconButton>
+                                )
+                              }
+                              <span style={{position:"absolute", bottom:-5, fontSize:14, width:"100%", textAlign:"center"}}>{likeString}</span>
+                            </div>
+                            <div style={{display:"flex", flexDirection:"column", position:"relative"}}>
+                              {
+                                likeDislike.dislike? 
+                                (
+                                  <IconButton
+                                    color="primary"
+                                    aria-label="Dislike"
+                                    component="span"
+                                    title="Remove Dislike"
+                                    onClick= {disabled ? () => {} : removeDislike}
+                                  >
+                                    <ThumbDownIcon />
+                                  </IconButton>
+                                ):
+                                (
+                                  <IconButton
+                                    color="primary"
+                                    aria-label="Dislike"
+                                    component="span"
+                                    title="Dislike"
+                                    onClick= {disabled ? () => {} : addDislike}
+                                  >
+                                    <ThumbDown />
+                                  </IconButton>
+                                )
+                              }
+                              <span style={{position:"absolute", bottom:-5, fontSize:14, width:"100%", textAlign:"center"}}>{dislikeString}</span>
+                            </div>
+                          </Grid>    
+                        </>
+                      )
+                    }
+                    
                   </Grid>
                 </Grid>
               </Grid>

@@ -11,6 +11,10 @@ import {
   Card,
   Avatar,
   IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
 } from "@material-ui/core";
 import "../App.css";
 import { Rating } from "@material-ui/lab";
@@ -64,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   chatOuterPaper: {
-    height: "70vh",
+    height: "100vh",
     overflowY: "scroll",
     marginBottom: theme.spacing(0),
   },
@@ -452,6 +456,59 @@ const RemainingTime = (props) => {
   )
 }
 
+const GroupMembersSection = (props) => {
+
+  const {groupData, postData} = props;
+  const {userData} = useContext(UserContext);
+  const classes = useStyles();
+  const [addMemberOpen, setAddMemberOpen] = useState(false);
+  const [error, setError] = useState("");
+
+  return (
+    <Grid container>
+      <AddInstantGroupMembers setError={setError} groupData={groupData} open={addMemberOpen} setOpen={setAddMemberOpen} userData={userData} postData={postData} />
+      <div style={{width:"100%", maxHeight:"50vh", overflowY:"scroll"}}>
+        <Controls.Paper >
+          {
+             groupData['createdBy'] &&  groupData.createdBy.email === userData.email && (
+              <Grid container style={{marginTop:8, marginBottm:8}} justifyContent="flex-end">
+                <IconButton onClick={()=> setAddMemberOpen(true)} title="Add members" color="primary" aria-label="addMembers">
+                  <PersonAddIcon />
+                </IconButton>
+              </Grid>
+            )
+          }
+
+          <List dense={true}>
+            { 
+              groupData.users && groupData.users.map( (member,i) => {
+                {
+                  return  member.email !== userData.email ? (
+                <>
+                  <div >
+                    <ListItem style={{background:"#eee", marginBottom:8}}>
+                      <ListItemAvatar>
+                        <div style={{maxWidth:40, maxHeight:40}}>
+                          <img src={`${member.avatar}`} style={{width:"100%", borderRadius:"50%"}}/>
+                        </div>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={`${member.firstName} ${member.lastName} `}
+                        secondary={'Secondary text'}
+                      />
+                    </ListItem>
+                  </div>
+                </>) : null
+                }
+              })
+            }
+            </List>
+        </Controls.Paper>
+      </div>
+    </Grid>
+  )
+}
+
 const MessageSection = (props) => {
 
   const {userData, postId, groupId, postData} = props;
@@ -459,7 +516,6 @@ const MessageSection = (props) => {
   const history = useHistory();
   const [error, setError] = useState("");
   const classes = useStyles();
-  const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [deleteGroupOpen, setDeleteGroupOpen] = useState(false);
   const endOfChat = useRef();
   const [refreshing, setRefreshing] = useState(true);
@@ -491,7 +547,6 @@ const MessageSection = (props) => {
     let msgContainer = document.getElementById("msgContainer");
     if(endOfChat){
       var offset = endOfChat.offsetTop;
-      console.log(offset)
       msgContainer.scrollTop = offset;
     }
   }
@@ -502,26 +557,35 @@ const MessageSection = (props) => {
 
   // get chat group info
   const getGroupInfo = async () => {
-    setRefreshing(true);
-    let res = await getGroupData(groupId,userData.email);
-    console.log(res)
-    if(res){
-      setGroupData(res);
-    }else{
-      history.replace("/product/view/"+postId);
+    if(groupId){
+      setRefreshing(true);
+      let res = await getGroupData(groupId,userData.email);
+      if(res){
+        setGroupData(res);
+      }else{
+        history.replace("/product/view/"+postId);
+      }
+      setTimeout(()=> {
+        setRefreshing(false);
+      },1000)
     }
-    setTimeout(()=> {
-      setRefreshing(false);
-    },1000)
   }
 
-  useEffect( async ()=>{
-    getGroupInfo()
-  }, [groupId]);
+  useEffect( ()=>{ 
+    if(groupId){
+      getGroupInfo();
+      var infiniteRefresh = setInterval( () => {
+        getGroupInfo();
+      },10000);
+  
+      return () => {
+        clearInterval(infiniteRefresh);
+      }
+    }
+  }, []);
 
   return (
     <>
-      <AddInstantGroupMembers setError={setError} groupData={groupData} open={addMemberOpen} setOpen={setAddMemberOpen} userData={userData} postData={postData} />
       <DeleteGroup setError={setError} groupData={groupData} open={deleteGroupOpen} setOpen={setDeleteGroupOpen} userData={userData} postData={postData} />
       <Grid>
         <Card className={classes.root}>
@@ -543,9 +607,6 @@ const MessageSection = (props) => {
                 groupData['createdBy'] && groupData['createdBy']['email'] === userData.email && groupData.active == true ? 
                 (
                   <>
-                    <IconButton onClick={()=> setAddMemberOpen(true)} title="Add members" color="primary" aria-label="addMembers">
-                      <PersonAddIcon />
-                    </IconButton>
                     <IconButton onClick={()=> setDeleteGroupOpen(true)} title="Delete group" color="secondary" aria-label="addMembers">
                       <DeleteForeverIcon />
                     </IconButton>
@@ -660,7 +721,12 @@ export default function InstantGroup(props) {
         </Grid>
         <Grid container style={{ marginTop: 30 }}>
           <Grid item xs={12} md={6} lg={4} style={{ padding: 20, paddingTop:0 }}>
-            <ProductCard  postData={postData} />
+            <Grid container>
+              <ProductCard  postData={postData} />
+            </Grid>
+            <Grid container style={{marginTop:20}}>
+              <GroupMembersSection postData={postData} groupData={groupData} />
+            </Grid>
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
             <MessageSection userData={userData} postData={postData} groupId={groupId} postId={postId} />

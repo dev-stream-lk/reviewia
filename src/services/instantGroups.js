@@ -1,5 +1,5 @@
 import HOST from '../config/config';
-import {getItem, setItem} from '../services/localStorage';
+import {getItem} from '../services/localStorage';
 
 const TOKEN = getItem("token");
 
@@ -55,7 +55,7 @@ export const getAllInstantGroup = (email) => {
 }
 
 // get group data
-export const getGroupData = (id, email) => {
+export const getGroupData = (id) => {
 
 
     const requestOptions = {

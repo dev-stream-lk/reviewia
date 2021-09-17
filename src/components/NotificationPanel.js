@@ -15,12 +15,16 @@ import {
 } from "../services/notifications";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import ChatIcon from "@material-ui/icons/Chat";
-import AddCommentIcon from "@material-ui/icons/AddComment";
-import LocalPostOfficeIcon from "@material-ui/icons/LocalPostOffice";
-import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
-import GroupAddIcon from "@material-ui/icons/GroupAdd";
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import GroupIcon from '@material-ui/icons/Group';
 import PublicIcon from "@material-ui/icons/Public";
 import {getDateTime} from '../utils/dateTime';
+import { getReviewById } from "../services/reviews";
+import { useHistory } from "react-router-dom";
+import {PreLoader} from './basic/PreLoader';
+import { getGroupData } from "../services/instantGroups";
+import {markAsRead} from "../services/notifications";
 
 const useStyles = makeStyles((theme) => ({
   headerFavIcon: {
@@ -37,7 +41,7 @@ const StyledMenu = withStyles({
     marginTop: 20,
     border: "1px solid #d3d4d5",
     width: 400,
-    maxHeight: 500,
+    maxHeight: "60vh",
     overflowY: "scroll",
   },
   list: {
@@ -76,14 +80,20 @@ export default function NotificationPanel(props) {
   const [count, setCount] = useState(0);
   const { userData } = props;
   const [notifiList, setNotifiList] = useState([]);
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    let interval = setInterval(async () => {
-      let res = await getNotificationCount(userData.email);
-      console.log(res);
+  const getCount = async () => {
+    let res = await getNotificationCount(userData.email);
       if (res) {
         setCount(res);
       }
+  }
+
+  useEffect(() => {
+    getCount();
+    let interval = setInterval(async () => {
+      await getCount();
     }, 5000);
 
     return () => {
@@ -92,11 +102,12 @@ export default function NotificationPanel(props) {
   }, []);
 
   useEffect(async () => {
+    setLoading(true);
     let res = await getNotifications(userData.email);
-    console.log(res);
     if (res) {
       setNotifiList(res);
     }
+    setLoading(false);
   }, [anchorEl]);
 
   const handleClick = (event) => {
@@ -106,6 +117,33 @@ export default function NotificationPanel(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleGoToReview = async (notifi) => {
+    setLoading(true);
+    let res = await getReviewById(notifi.targetId);
+    if(res){
+      let mark = await markAsRead(notifi.id)
+      history.push(`/product/view/${res['postId']}`)
+    }
+    handleClose();
+    setLoading(false);
+  }
+
+  const handleGoToPost = (notifi) => {
+    handleClose();
+    history.push(`/product/view/${notifi.targetId}`)
+  }
+
+  const handleGoToGroup = async (notifi) => {
+    setLoading(true);
+    let res = await getGroupData(notifi.targetId);
+    if(res){
+      let mark = await markAsRead(notifi.id)
+      history.push(`/product/instantGroup/${res.postId}/${notifi.targetId}`)
+    }
+    handleClose();
+    setLoading(false);
+  }
 
   return (
     <div>
@@ -120,6 +158,7 @@ export default function NotificationPanel(props) {
           <NotificationsIcon />
         </Badge>
       </Tooltip>
+      <div style={{position:"relative"}}>
       <StyledMenu
         id="customized-menu"
         anchorEl={anchorEl}
@@ -127,13 +166,59 @@ export default function NotificationPanel(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        <PreLoader loading={loading} />
         {notifiList.map((notifi, i) => {
           let markAsRead = notifi.markAsRead;
           if (notifi.type == "REVIEW") {
             return (
               <>
-                <StyledMenuItem className={!markAsRead && classes.unreadNotifi}>
-                  <ListItemIcon title="Review">
+                <StyledMenuItem  onClick={ () => handleGoToReview(notifi)} className={!markAsRead && classes.unreadNotifi}>
+                  {
+                    notifi.content.search("disliked") === -1 ?
+                    (
+                      <ListItemIcon title="Review liked">
+                        <ThumbUpIcon fontSize="small" />
+                      </ListItemIcon>
+                    ):
+                    (
+                      <ListItemIcon title="Review disliked">
+                        <ThumbDownIcon fontSize="small" />
+                      </ListItemIcon>
+                    )
+
+                  }
+                  <ListItemText
+                    primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
+                    secondaryTypographyProps={{style:{fontSize:13}}}
+                    primary={notifi.content}
+                    secondary={getDateTime(notifi.createdAt)}
+                  />
+                </StyledMenuItem>
+                <Divider />
+              </>
+            );
+          } else if (notifi.type === "GROUP") {
+            return (
+              <>
+                <StyledMenuItem onClick={() => handleGoToGroup(notifi)} className={!markAsRead && classes.unreadNotifi}>
+                  <ListItemIcon title="Instant Group Notification">
+                    <GroupIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
+                    secondaryTypographyProps={{style:{fontSize:13}}}
+                    primary={notifi.content}
+                    secondary={getDateTime(notifi.createdAt)}
+                  />
+                </StyledMenuItem>
+                <Divider />
+              </>
+            );
+          } else if (notifi.type === "POST") {
+            return (
+              <>
+                <StyledMenuItem onClick={() => handleGoToPost(notifi)} className={!markAsRead && classes.unreadNotifi}>
+                  <ListItemIcon title="New Review">
                     <ChatIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText
@@ -146,49 +231,18 @@ export default function NotificationPanel(props) {
                 <Divider />
               </>
             );
-          } else if (notifi.type === "MESSAGE") {
-            return (
-              <>
-                <StyledMenuItem className={!markAsRead && classes.unreadNotifi}>
-                  <ListItemIcon title="Message">
-                    <LocalPostOfficeIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
-                    secondaryTypographyProps={{style:{fontSize:13}}}
-                    primary="Message"
-                  />
-                </StyledMenuItem>
-                <Divider />
-              </>
-            );
-          } else if (notifi.type === "GROUP") {
-            return (
-              <>
-                <StyledMenuItem className={!markAsRead && classes.unreadNotifi}>
-                  <ListItemIcon title="Group Notification">
-                    <GroupAddIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
-                    secondaryTypographyProps={{style:{fontSize:13}}}
-                    primary="Group add"
-                  />
-                </StyledMenuItem>
-                <Divider />
-              </>
-            );
-          } else if (notifi.type === "LIKE") {
+          }else if (notifi.type === "USER") {
             return (
               <>
                 <StyledMenuItem className={!markAsRead && classes.unreadNotifi}>
                   <ListItemIcon title="Like/Dislike">
-                    <ThumbsUpDownIcon fontSize="small" />
+                    <ChatIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText
                     primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
                     secondaryTypographyProps={{style:{fontSize:13}}}
-                    primary="Like DisLike"
+                    primary={notifi.content}
+                    secondary={getDateTime(notifi.createdAt)}
                   />
                 </StyledMenuItem>
                 <Divider />
@@ -204,7 +258,8 @@ export default function NotificationPanel(props) {
                   <ListItemText
                     primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
                     secondaryTypographyProps={{style:{fontSize:13}}}
-                    primary="Like DisLike"
+                    primary={notifi.content}
+                    secondary={getDateTime(notifi.createdAt)}
                   />
                 </StyledMenuItem>
                 <Divider />
@@ -213,6 +268,7 @@ export default function NotificationPanel(props) {
           }
         })}
       </StyledMenu>
+      </div>
     </div>
   );
 }

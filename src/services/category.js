@@ -1,5 +1,5 @@
 import HOST from '../config/config';
-import {getItem, setItem} from '../services/localStorage';
+import {getItem} from '../services/localStorage';
 
 const TOKEN = getItem("token");
 
@@ -218,7 +218,7 @@ export const getCategoryWithSubCategory = () => {
             let services = []
             let products = []
             data.forEach( x => {
-                if( x.type == 'p'){
+                if( x.type === 'p'){
                     products.push(x)
                 }else{
                     services.push(x)
