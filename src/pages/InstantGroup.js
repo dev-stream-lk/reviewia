@@ -411,7 +411,7 @@ const AddInstantGroupMembers = (props) => {
         <Controls.Button
           onClick={handleSubmit}
           >
-          Create
+          Save
         </Controls.Button>
       </>
     )
