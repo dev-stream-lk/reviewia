@@ -1,22 +1,16 @@
 import {
   Grid,
   makeStyles,
-  Typography,
   List,
   ListItem,
   ListItemText,
   Button,
   IconButton,
-  Tooltip,
-  CardMedia,
-  CardHeader,
-  Avatar,
-  CardContent,
   ListItemSecondaryAction,
   Divider,
-  DialogContentText
+  DialogContentText,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Controls from "../../components/Controls";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -44,32 +38,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function SubCategory() {
   const classes = useStyles();
 
-   const [subCategories, setcategory] = useState([
-     { mainId: 1, title: "TV", id: 1 },
-     { mainId: 1, title: "Laptop", id: 2 },
-     { mainId: 1, title: "Mobile Phone", id: 3 },
-     { mainId: 1, title: "Washing machine", id: 4 },
-   ]);
+  const [subCategories, setcategory] = useState([
+    { mainId: 1, title: "TV", id: 1 },
+    { mainId: 1, title: "Laptop", id: 2 },
+    { mainId: 1, title: "Mobile Phone", id: 3 },
+    { mainId: 1, title: "Washing machine", id: 4 },
+  ]);
 
-   const [ openAddSubCategory, setOpenAddSubCategory ] = useState(false)
+  const [openAddSubCategory, setOpenAddSubCategory] = useState(false);
 
-   const handleClickOpen = () => {
-      setOpenAddSubCategory(true);
-    };
+  const handleClickOpen = () => {
+    setOpenAddSubCategory(true);
+  };
 
-    const handleClose = () => {
-      setOpenAddSubCategory(false);
-    }
+  const handleClose = () => {
+    setOpenAddSubCategory(false);
+  };
 
   return (
     <>
       <Controls.Popup
         title="Add new Sub Category"
-        openPopup = {openAddSubCategory}
+        openPopup={openAddSubCategory}
         setOpenPopup={setOpenAddSubCategory}
         actions={
           <>
@@ -82,11 +75,10 @@ export default function SubCategory() {
           </>
         }
       >
-        <DialogContentText>Add Your Sub Category for Electronics.</DialogContentText>
-        <Controls.Input
-          disabled={true}
-          value={"Category : Electronic"}
-        />
+        <DialogContentText>
+          Add Your Sub Category for Electronics.
+        </DialogContentText>
+        <Controls.Input disabled={true} value={"Category : Electronic"} />
         <Controls.Input
           autoFocus
           margin="dense"

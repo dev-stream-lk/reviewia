@@ -4,14 +4,12 @@ import Controls from "../components/Controls";
 import { useForm, Form } from "../components/useForm";
 import EmailIcon from "@material-ui/icons/Email";
 import { Typography } from "@material-ui/core";
-import Footer from '../components/Footer';
-import {
-  validateEmail,
-} from "../components/Validators";
-import MainImage from '../static/img/login_img.svg';
-import { Link as RouterLink} from "react-router-dom";
-import {Link} from '@material-ui/core'
-import { passwordRecovery } from '../services/auth'
+import Footer from "../components/Footer";
+import { validateEmail } from "../components/Validators";
+import MainImage from "../static/img/login_img.svg";
+import { Link as RouterLink } from "react-router-dom";
+import { Link } from "@material-ui/core";
+import { passwordRecovery } from "../services/auth";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -39,57 +37,53 @@ const useStyles = makeStyles((theme) => ({
     width: 250,
     minHeight: 50,
   },
-  loginImage:{
-    display:"none",
-    [theme.breakpoints.up("md")]:{
-        display:"inherit"
-    }
+  loginImage: {
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+      display: "inherit",
+    },
   },
-  title:{
-    color: `${theme.palette.primary.main} !important`
-  }
+  title: {
+    color: `${theme.palette.primary.main} !important`,
+  },
 }));
 
 const RecoveryForm = (props) => {
   const classes = useStyles();
-  const {userData, setUserData} = props;
+  const { userData, setUserData } = props;
   const initialState = {
-    email:""
-  }
+    email: "",
+  };
 
-  const validate = (fieldValues= values) => {
-    let temp = {}
-    
-    if('email' in fieldValues)
-        temp.email = validateEmail(fieldValues.email);
+  const validate = (fieldValues = values) => {
+    let temp = {};
+
+    if ("email" in fieldValues) temp.email = validateEmail(fieldValues.email);
 
     setErrors({
-        ...errors,
-        ...temp
-    })
-    let isValid = Object.values(temp).every(x=> x=="");
-    return isValid
-}
+      ...errors,
+      ...temp,
+    });
+    let isValid = Object.values(temp).every((x) => x == "");
+    return isValid;
+  };
 
-  const {
-    values,
-    setValues,
-    handleInputChange,
-    errors,
-    setErrors
-  } = useForm(initialState, true, validate);
-
+  const { values, setValues, handleInputChange, errors, setErrors } = useForm(
+    initialState,
+    true,
+    validate
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const result = await passwordRecovery({
       email: values.email,
-    })
-    if(result){
-        setUserData( { ...userData,isLoggedIn:true })
+    });
+    if (result) {
+      setUserData({ ...userData, isLoggedIn: true });
     }
-  }
+  };
 
   return (
     <Form>
@@ -124,68 +118,90 @@ export default function PasswordRecovery() {
 
   return (
     <>
-    <Grid container style={{marginBottom:40}}>
-      <Grid item xs={1} sm></Grid>
-      <Grid item xs={false} className={classes.loginImage} style={{marginTop:50}} md={5}>
-          <Grid container justifyContent="center" style={{flexDirection:"column"}} >
-              <Typography variant="h3" align="center" className={classes.title} >Reviewia</Typography>
-              <img src={MainImage} />
-          </Grid>
-      </Grid>
-      <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
-        <Controls.Paper
-          className={classes.paper}
-          divClassName={classes.paperDiv}
+      <Grid container style={{ marginBottom: 40 }}>
+        <Grid item xs={1} sm></Grid>
+        <Grid
+          item
+          xs={false}
+          className={classes.loginImage}
+          style={{ marginTop: 50 }}
+          md={5}
         >
-          <Grid container alignItems="center">
-            <Grid
-              item
-              xs={12}
-              style={{
-                backgroundColor: "#236CC7",
-                boxShadow: "0px 2px 2px 1px rgba(0,0,0,0.21)",
-                minHeight: 50,
-              }}
-            >
-              <Typography
-                variant="h6"
-                align="center"
-                style={{
-                  marginTop: "10px",
-                  fontWeight: 600,
-                  color:"white"
-                }}
-              >
-                Forgot Password?
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography
-                variant="h7"
-                align="left"
-                style={{
-                  marginTop: "20px",
-                  marginLeft: 40,
-                  marginRight: 40,
-                  fontWeight: 600,
-                }}
-                component="div"
-              >
-                Enter the email address associated with your account and we will
-                send you a link to reset your password.
-              </Typography>
-            </Grid>
+          <Grid
+            container
+            justifyContent="center"
+            style={{ flexDirection: "column" }}
+          >
+            <Typography variant="h3" align="center" className={classes.title}>
+              Reviewia
+            </Typography>
+            <img src={MainImage} />
           </Grid>
-          <RecoveryForm />
+        </Grid>
+        <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
+          <Controls.Paper
+            className={classes.paper}
+            divClassName={classes.paperDiv}
+          >
+            <Grid container alignItems="center">
+              <Grid
+                item
+                xs={12}
+                style={{
+                  backgroundColor: "#236CC7",
+                  boxShadow: "0px 2px 2px 1px rgba(0,0,0,0.21)",
+                  minHeight: 50,
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  align="center"
+                  style={{
+                    marginTop: "10px",
+                    fontWeight: 600,
+                    color: "white",
+                  }}
+                >
+                  Forgot Password?
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography
+                  variant="h7"
+                  align="left"
+                  style={{
+                    marginTop: "20px",
+                    marginLeft: 40,
+                    marginRight: 40,
+                    fontWeight: 600,
+                  }}
+                  component="div"
+                >
+                  Enter the email address associated with your account and we
+                  will send you a link to reset your password.
+                </Typography>
+              </Grid>
+            </Grid>
+            <RecoveryForm />
 
-          <Grid container justify="center" style={{ marginTop: "10px" }}>
-            <span>Back to <Link component={RouterLink} to={{pathname:"/login"}} underline="hover" > Sign In</Link></span>
-          </Grid>
-        </Controls.Paper>
+            <Grid container justify="center" style={{ marginTop: "10px" }}>
+              <span>
+                Back to{" "}
+                <Link
+                  component={RouterLink}
+                  to={{ pathname: "/login" }}
+                  underline="hover"
+                >
+                  {" "}
+                  Sign In
+                </Link>
+              </span>
+            </Grid>
+          </Controls.Paper>
+        </Grid>
+        <Grid item xs={1} sm></Grid>
       </Grid>
-      <Grid item xs={1} sm></Grid>
-    </Grid>
-    <Footer/>
+      <Footer />
     </>
   );
 }

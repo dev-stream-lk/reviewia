@@ -27,13 +27,12 @@ import PlayStore from "../static/img/getPlayStore.png";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { getRecentPosts } from "../services/posts";
-import {CatContext} from '../context/CategorySubCategotyContext';
-import {getDate} from '../utils/dateTime';
-import NotFoundImage from '../assets/not-found.svg';
-import {PreLoader} from '../components/basic/PreLoader';
+import { CatContext } from "../context/CategorySubCategotyContext";
+import { getDate } from "../utils/dateTime";
+import NotFoundImage from "../assets/not-found.svg";
+import { PreLoader } from "../components/basic/PreLoader";
 import { Autocomplete } from "@material-ui/lab";
-import {getPostBySearch} from '../services/posts';
-
+import { getPostBySearch } from "../services/posts";
 
 const useStyles = makeStyles((theme) => ({
   headSection: {
@@ -101,11 +100,11 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiCardHeader-subheader": {
       fontSize: 14,
     },
-    height:"100%",
-    display:"flex",
-    flexDirection:"column",
-    alignItems:"center",
-    justifyContent:"space-between",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   boxClassName: {
     width: "100%",
@@ -144,30 +143,29 @@ const useStyles = makeStyles((theme) => ({
       2
     )}px ${theme.spacing(2)}px`,
   },
-  notFoundImage:{
-    width:"100%",
-    maxWidth:"150px"
+  notFoundImage: {
+    width: "100%",
+    maxWidth: "150px",
   },
-  homeSearch : {
-    width:"100%",
-  }
+  homeSearch: {
+    width: "100%",
+  },
 }));
 
 const HomeSearch = () => {
-
   const classes = useStyles();
   const [search, setSearch] = useState("");
   const [dataSet, setDataSet] = useState([]);
 
-  useEffect( async () => {
-    if(search){
-      let res = await getPostBySearch({'title':search});
-      console.log(res)
-      if(res){
-         setDataSet(res['posts']);
+  useEffect(async () => {
+    if (search) {
+      let res = await getPostBySearch({ title: search });
+      console.log(res);
+      if (res) {
+        setDataSet(res["posts"]);
       }
-    }else{
-      if(dataSet !== []){
+    } else {
+      if (dataSet !== []) {
         setDataSet([]);
       }
     }
@@ -184,21 +182,30 @@ const HomeSearch = () => {
         options={dataSet && dataSet}
         renderOption={(option, { selected }) => (
           <React.Fragment>
-            <Link to={`products/${option.category}/${option.subCategory}`} style={{display:"flex", alignItems:"center", color:"black", textDecoration:"none"}} > 
-              <div style={{height:30}}>
-                <img src={`${option.imgURL[0].url}`}  style={{maxWidth:30, maxHeight:30, marginRight:16}} />
+            <Link
+              to={`products/${option.category}/${option.subCategory}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                color: "black",
+                textDecoration: "none",
+              }}
+            >
+              <div style={{ height: 30 }}>
+                <img
+                  src={`${option.imgURL[0].url}`}
+                  style={{ maxWidth: 30, maxHeight: 30, marginRight: 16 }}
+                />
               </div>
-              <span>
-                {option.title}
-              </span>
+              <span>{option.title}</span>
             </Link>
           </React.Fragment>
         )}
-        ListboxProps = {{
-          style:{
-            overflowY:"scroll",
-            maxHeight:300
-          }
+        ListboxProps={{
+          style: {
+            overflowY: "scroll",
+            maxHeight: 300,
+          },
         }}
         renderInput={(params) => (
           <Controls.Input
@@ -214,9 +221,8 @@ const HomeSearch = () => {
         )}
       />
     </>
-  )
-
-}
+  );
+};
 
 const MostRecentCard = (props) => {
   const classes = useStyles();
@@ -229,7 +235,10 @@ const MostRecentCard = (props) => {
         style={{ textDecoration: "none" }}
       >
         <Controls.Card className={classes.mostRecentCard}>
-          <CardHeader title={post.title} subheader={getDate(post.createdAt)}></CardHeader>
+          <CardHeader
+            title={post.title}
+            subheader={getDate(post.createdAt)}
+          ></CardHeader>
           <CardMedia title={post.title}>
             <div style={{ width: 200, height: 200 }}>
               <img
@@ -261,76 +270,78 @@ const PopularcategorySection = (props) => {
   const [popularCatList, setPopularCatList] = useState([]);
   const [popularCatListLoading, setPopularCatListLoading] = useState(true);
 
-  function compare( a, b ) {
-    if ( a.postCount > b.postCount ){
+  function compare(a, b) {
+    if (a.postCount > b.postCount) {
       return -1;
     }
-    if ( a.postCount < b.postCount ){
+    if (a.postCount < b.postCount) {
       return 1;
     }
     return 0;
   }
 
-  useEffect(()=>{
-    if(res){
-      let allCat = res.products.concat(res.services)
-      allCat.sort( compare )
-      if( allCat.length > 6){
-        allCat = allCat.slice(0,6)
+  useEffect(() => {
+    if (res) {
+      let allCat = res.products.concat(res.services);
+      allCat.sort(compare);
+      if (allCat.length > 6) {
+        allCat = allCat.slice(0, 6);
       }
       setPopularCatList(allCat);
-      setPopularCatListLoading(false)
+      setPopularCatListLoading(false);
     }
-  },[res])
+  }, [res]);
 
   return (
-    <Controls.Paper style={{minHeight:"50vh", position:"relative"}}>
-      {popularCatListLoading ? 
-        <PreLoader loading={true}/> :
-        null
-      }
-      
+    <Controls.Paper style={{ minHeight: "50vh", position: "relative" }}>
+      {popularCatListLoading ? <PreLoader loading={true} /> : null}
+
       <Typography variant="h4" component="div">
         Popular Categories
       </Typography>
 
       <List className={classes.list}>
-        { popularCatList && popularCatList.length !== 0 ? popularCatList.map((category, index) => (
-          <ListItem key={index}>
-            <Controls.Paper
-              boxClassName={classes.boxClassName}
-              divClassName={classes.divClassName}
-            >
-              <Grid container justifyContent="flex-start">
-                <MuiLink
-                  to={`/products/${category.categoryName}`}
-                  className={classes.PopularCategoryLink}
-                  underline="none"
-                  component={Link}
-                >
-                  <ListItemText
-                    primary={category.categoryName}
-                    secondary={`${category.postCount} posts`}
-                    secondaryTypographyProps={{
-                      style: { marginLeft: 30 },
-                    }}
-                  />
-                  <ArrowForwardIcon
-                    style={{ position: "absolute", top: 30, right: 30 }}
-                  />
-                </MuiLink>
-              </Grid>
-            </Controls.Paper>
-          </ListItem>
-          )) : (
-            <Grid container alignItems="center" style={{marginTop:20, flexDirection:"column"}}>
-              {/* <Typography>
+        {popularCatList && popularCatList.length !== 0 ? (
+          popularCatList.map((category, index) => (
+            <ListItem key={index}>
+              <Controls.Paper
+                boxClassName={classes.boxClassName}
+                divClassName={classes.divClassName}
+              >
+                <Grid container justifyContent="flex-start">
+                  <MuiLink
+                    to={`/products/${category.categoryName}`}
+                    className={classes.PopularCategoryLink}
+                    underline="none"
+                    component={Link}
+                  >
+                    <ListItemText
+                      primary={category.categoryName}
+                      secondary={`${category.postCount} posts`}
+                      secondaryTypographyProps={{
+                        style: { marginLeft: 30 },
+                      }}
+                    />
+                    <ArrowForwardIcon
+                      style={{ position: "absolute", top: 30, right: 30 }}
+                    />
+                  </MuiLink>
+                </Grid>
+              </Controls.Paper>
+            </ListItem>
+          ))
+        ) : (
+          <Grid
+            container
+            alignItems="center"
+            style={{ marginTop: 20, flexDirection: "column" }}
+          >
+            {/* <Typography>
                 Categories not found.
               </Typography> */}
-              <img src={NotFoundImage} className={classes.notFoundImage} />
-            </Grid>
-          )
-        }
+            <img src={NotFoundImage} className={classes.notFoundImage} />
+          </Grid>
+        )}
       </List>
     </Controls.Paper>
   );
@@ -393,36 +404,36 @@ export default function HomePage(props) {
       <Grid container className={classes.trendingSection}>
         {/* Start Popular categories */}
         <Grid item xs={12} md={4}>
-          <PopularcategorySection/>
+          <PopularcategorySection />
         </Grid>
         {/* End Popular categories */}
 
         {/* Start Most view  */}
         <Grid item xs={12} md={8}>
-          <Controls.Paper style={{minHeight:"50vh", position:"relative"}}>
-            {updateListLoading ? 
-              <PreLoader loading={true}/> :
-              null
-            }
+          <Controls.Paper style={{ minHeight: "50vh", position: "relative" }}>
+            {updateListLoading ? <PreLoader loading={true} /> : null}
             <Grid container spacing={2}>
               <Grid container justifyContent="center">
                 <Typography variant="h4" component="div">
                   Most Recent Updates
                 </Typography>
               </Grid>
-              {recentPosts.length !== 0
-                ? recentPosts.map((item, i) => (
-                    <MostRecentCard key={i} post={item} />
-                  ))
-                : (
-                  <Grid container alignItems="center" style={{marginTop:20, flexDirection:"column"}}>
-                    {/* <Typography>
+              {recentPosts.length !== 0 ? (
+                recentPosts.map((item, i) => (
+                  <MostRecentCard key={i} post={item} />
+                ))
+              ) : (
+                <Grid
+                  container
+                  alignItems="center"
+                  style={{ marginTop: 20, flexDirection: "column" }}
+                >
+                  {/* <Typography>
                       Updates not found.
                     </Typography> */}
-                    <img src={NotFoundImage} className={classes.notFoundImage} />
-                  </Grid>
-                )
-              }
+                  <img src={NotFoundImage} className={classes.notFoundImage} />
+                </Grid>
+              )}
             </Grid>
           </Controls.Paper>
         </Grid>

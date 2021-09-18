@@ -32,9 +32,4 @@ function checkCookie() {
   }
 }
 
-
-export {
-    getCookie,
-    setCookie,
-    checkCookie
-}
+export { getCookie, setCookie, checkCookie };

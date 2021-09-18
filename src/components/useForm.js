@@ -1,6 +1,5 @@
-import { makeStyles } from '@material-ui/core';
-import React, { useState } from 'react';
-
+import { makeStyles } from "@material-ui/core";
+import React, { useState } from "react";
 
 // USE THIS THEMPLATE FOR VALIDATION
 // const validate = (fieldValues= values) => {
@@ -19,52 +18,52 @@ import React, { useState } from 'react';
 //     return Object.values(temp).every(x=> x=="");
 // }
 
-const useStyles = makeStyles( theme => ({
-    root:{
-        padding: theme.spacing(3),
-        "& .MuiFormControl-root":{
-            width:"100%",
-            margin: theme.spacing(1)
-        }
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(3),
+    "& .MuiFormControl-root": {
+      width: "100%",
+      margin: theme.spacing(1),
+    },
+  },
+}));
+
+export function useForm(
+  initialValues,
+  validateOnChange = false,
+  validate = null
+) {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const handleInputChange = (e) => {
+    console.log(e);
+    const { name, value } = e.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
+
+    if (validateOnChange) {
+      validate({ [name]: value });
     }
-}))
+  };
 
-export function useForm(initialValues,validateOnChange=false, validate = null) {
-
-    const [values, setValues] = useState(initialValues);
-    const [errors, setErrors] = useState({});
-    const handleInputChange =  e => {
-        console.log(e)
-        const {name,value} = e.target;
-        setValues({
-            ...values,
-            [name]:value
-        })
-
-        if(validateOnChange){
-            validate({[name] : value})
-        }
-    }
-
-    return {
-        values,
-        setValues,
-        handleInputChange,
-        errors,
-        setErrors
-    }
+  return {
+    values,
+    setValues,
+    handleInputChange,
+    errors,
+    setErrors,
+  };
 }
 
+export function Form(props) {
+  const classes = useStyles();
+  const { children, ...others } = props;
 
-export  function Form(props) {
-
-    const classes = useStyles();
-    const {children, ...others} = props;
-
-    return (
-        <form  className={classes.root} {...others}>
-            {children}
-        </form>
-    )
+  return (
+    <form className={classes.root} {...others}>
+      {children}
+    </form>
+  );
 }
-

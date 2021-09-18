@@ -24,19 +24,19 @@ import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import Controls from "../components/Controls";
 import { useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import {Link, useHistory} from 'react-router-dom';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import { Link, useHistory } from "react-router-dom";
 import { logout } from "../services/auth";
-import AddIcon from '@material-ui/icons/Add';
-import {UserContext} from '../context/UserContext';
-import {getCategoryWithSubCategory} from '../services/category'
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import {CatContext} from '../context/CategorySubCategotyContext';
-import NotFoundImage from '../assets/not-found.svg';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import AddIcon from "@material-ui/icons/Add";
+import { UserContext } from "../context/UserContext";
+import { getCategoryWithSubCategory } from "../services/category";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import { CatContext } from "../context/CategorySubCategotyContext";
+import NotFoundImage from "../assets/not-found.svg";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 import { getNotificationCount } from "../services/notifications";
-import NotificationPanel from './NotificationPanel'
+import NotificationPanel from "./NotificationPanel";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -53,9 +53,9 @@ const useStyles = makeStyles((theme) => ({
   navbar: {
     paddingRight: theme.spacing(10),
   },
-  headerFavIcon:{
-    color:"white",
-    marginLeft:10,
+  headerFavIcon: {
+    color: "white",
+    marginLeft: 10,
   },
   categoryMenu: {
     morgin: 0,
@@ -105,11 +105,11 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
-  notFoundImage:{
-    width:"100%",
-    height:"100%",
-    maxWidth:"150px"
-  }
+  notFoundImage: {
+    width: "100%",
+    height: "100%",
+    maxWidth: "150px",
+  },
 }));
 
 const GenerateList = (props) => {
@@ -118,36 +118,48 @@ const GenerateList = (props) => {
   const { list, ...others } = props;
 
   return (
-    <div className={classes.accordination}  {...others}>
-        { list.length !==0 ? list.map((category, i) => (
-            <Accordion key={i}>
-                <AccordionSummary
-                 className={classes.accordinationSummary}
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-                >
-                <Typography>{category.categoryName}</Typography>
-                </AccordionSummary>
-                <AccordionDetails className={classes.accordinationDetails}>
-                    <List dense={true}>
-                        {category.subCategoryList.map((item, j) => (
-                            <ListItem key={j} to={`/products/${category.categoryName}/${item.subCategoryName}`} component={Link} >
-                              <ListItemText primary={item.subCategoryName} secondary={`${item.postCount} Posts`} />
-                            </ListItem>
-                        ))}
-                    </List>
-                </AccordionDetails>
-            </Accordion>
-        )):
-        (
-          <Grid container alignItems="center" style={{marginTop:20, flexDirection:"column"}}>
-            {/* <Typography>
+    <div className={classes.accordination} {...others}>
+      {list.length !== 0 ? (
+        list.map((category, i) => (
+          <Accordion key={i}>
+            <AccordionSummary
+              className={classes.accordinationSummary}
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography>{category.categoryName}</Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordinationDetails}>
+              <List dense={true}>
+                {category.subCategoryList.map((item, j) => (
+                  <ListItem
+                    key={j}
+                    to={`/products/${category.categoryName}/${item.subCategoryName}`}
+                    component={Link}
+                  >
+                    <ListItemText
+                      primary={item.subCategoryName}
+                      secondary={`${item.postCount} Posts`}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </AccordionDetails>
+          </Accordion>
+        ))
+      ) : (
+        <Grid
+          container
+          alignItems="center"
+          style={{ marginTop: 20, flexDirection: "column" }}
+        >
+          {/* <Typography>
               Categories not found.
             </Typography> */}
-            <img src={NotFoundImage} className={classes.notFoundImage} />
-          </Grid>
-        )}
+          <img src={NotFoundImage} className={classes.notFoundImage} />
+        </Grid>
+      )}
     </div>
   );
 };
@@ -155,24 +167,21 @@ const GenerateList = (props) => {
 const HeaderNotificationIcon = (props) => {
   const classes = useStyles();
   const [count, setCount] = useState(0);
-  const {userData} = props;
+  const { userData } = props;
   const iconRef = useRef(null);
 
-  console.log(iconRef)
-
-  useEffect( () => {
-    let interval = setInterval( async () => {
-       let res = await getNotificationCount(userData.email);
-       console.log(res)
-       if(res){
-         setCount(res)
-       }
-    }, 5000 )
+  useEffect(() => {
+    let interval = setInterval(async () => {
+      let res = await getNotificationCount(userData.email);
+      if (res) {
+        setCount(res);
+      }
+    }, 5000);
 
     return () => {
       clearInterval(interval);
-    }
-  },[]);
+    };
+  }, []);
 
   return (
     <>
@@ -189,27 +198,27 @@ const HeaderNotificationIcon = (props) => {
       </Tooltip>
       <NotificationPanel iconRef={iconRef} />
     </>
-
-  )
-}
+  );
+};
 
 export default function Header(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const { isMobile, setIsMobile, openMobileDrawer, setOpenMobileDrawer } = props;
-  const {userData, setUserData} = useContext(UserContext);
+  const { isMobile, setIsMobile, openMobileDrawer, setOpenMobileDrawer } =
+    props;
+  const { userData, setUserData } = useContext(UserContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const [ categories, setCategories]= useState({})
+  const [categories, setCategories] = useState({});
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
-  const res = useContext(CatContext)
-  
-  useEffect(()=>{
-    if(res){
-      setCategories(res)
+  const res = useContext(CatContext);
+
+  useEffect(() => {
+    if (res) {
+      setCategories(res);
     }
-  },[res])
+  }, [res]);
 
   // useEffect( async () => {
   //   if(userData){
@@ -253,16 +262,16 @@ export default function Header(props) {
       setCategoryAnchorEl(null);
   };
   const history = useHistory();
-  const handleLogout = () =>{
-    logout(setUserData, history)
-  }
+  const handleLogout = () => {
+    logout(setUserData, history);
+  };
 
   return (
     <>
       <div className={classes.getHeaderPadding}></div>
       <AppBar className={classes.appBar} id="header">
         <Toolbar>
-          { isMobile? (
+          {isMobile ? (
             <div className={classes.isMobileIcon}>
               <IconButton
                 edge="start"
@@ -277,13 +286,25 @@ export default function Header(props) {
           ) : null}
           {/* <div style={{ width: 50, height: 50, backgroundColor: "grey" }}></div> */}
           {/* <Link to={{pathname:"/"}}> */}
-            <Typography to={{pathname:"/"}} component={Link}  variant="caption" style={{fontSize:20, fontWeight:'bold', textDecoration:"none", color:"white"}}>Reviewia</Typography>
+          <Typography
+            to={{ pathname: "/" }}
+            component={Link}
+            variant="caption"
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              textDecoration: "none",
+              color: "white",
+            }}
+          >
+            Reviewia
+          </Typography>
           {/* </Link> */}
           <div className={classes.getPadding}></div>
 
           <div className={classes.navbar}>
             <Controls.ActionButton textColor="white" component={Link} to="/">
-               Home
+              Home
             </Controls.ActionButton>
             <Controls.ActionButton textColor="white" onClick={handleCategory}>
               Reviews{" "}
@@ -296,14 +317,16 @@ export default function Header(props) {
                 }}
               />
             </Controls.ActionButton>
-            { userData.true ? 
-              (
-                <Controls.ActionButton textColor="white" component={Link} to={{pathname:"/product/add"}}>
-                  <AddIcon/> New Post
-                </Controls.ActionButton>
-              ):null
-            }
-            
+            {userData.true ? (
+              <Controls.ActionButton
+                textColor="white"
+                component={Link}
+                to={{ pathname: "/product/add" }}
+              >
+                <AddIcon /> New Post
+              </Controls.ActionButton>
+            ) : null}
+
             <Menu
               id="categoryMenu"
               className={classes.categoryMenu}
@@ -316,89 +339,102 @@ export default function Header(props) {
                   <Typography align="center" variant="h6" component="div">
                     Product
                   </Typography>
-                  <GenerateList
-                    list={ categories.products }
-                  />
+                  <GenerateList list={categories.products} />
                 </Grid>
                 <Grid item xs={6}>
                   <Typography align="center" variant="h6" component="div">
                     Services
                   </Typography>
-                  <GenerateList list={ categories.services} />
+                  <GenerateList list={categories.services} />
                 </Grid>
               </Grid>
-              <Grid container justifyContent="center" className={classes.closeIcon}>
-                  <IconButton onClick={ () => setCategoryAnchorEl(null)}>
-                      <HighlightOffIcon fontSize="large" color="secondary" />
-                  </IconButton>
+              <Grid
+                container
+                justifyContent="center"
+                className={classes.closeIcon}
+              >
+                <IconButton onClick={() => setCategoryAnchorEl(null)}>
+                  <HighlightOffIcon fontSize="large" color="secondary" />
+                </IconButton>
               </Grid>
             </Menu>
           </div>
-          {userData.isLoggedIn ? 
-            (
-              <>              
-                <NotificationPanel userData={userData} />
-                <Link to={{pathname: "/favourite-list"}} style={{textDecoration:"none"}} underline="none" >
-                  <Tooltip title="Favourite List" aria-label="add" arrow>
-                    <IconButton
-                      id="headeFavIcon"
-                      className={classes.headerFavIcon}
-                      component="span"
-                    >
-                      <FavoriteIcon  id="headerHeartIcon" />
-                    </IconButton>
-                  </Tooltip>
-                </Link>
-                <IconButton color="inherit" onClick={ handleMenu } >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="categoryMenu"
-                  className={classes.Menu}
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  style={{position:"absolute", top:40}}
-                >
-                  {userData.role == "admin" ? 
-                    (
-                      <MenuItem component={Link} to="/dashboard" >Dashboard</MenuItem>    
-                    ):null
-                  }
-                  <MenuItem component={Link} to="/profile" >Profile</MenuItem>
-                  <MenuItem>Instant Groups</MenuItem>
-                  <MenuItem onClick={handleLogout} >Logout</MenuItem>
-                </Menu>
-              </>
-            )
-            :
-            (
-              <div>
-                <Link to={{pathname: "/favourite-list"}} style={{textDecoration:"none"}} underline="none" >
-                  <Tooltip title="Favourite List" aria-label="add" arrow>
-                    <IconButton
-                      id="headeFavIcon"
-                      className={classes.headerFavIcon}
-                      component="span"
-                    >
-                      <FavoriteIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Link>
-                <Link to={{pathname: "/login", state:{ register:0 }}} style={{textDecoration:"none"}} underline="none" >
-                  <Controls.Button style={{marginRight:10}}>
-                    Login
-                  </Controls.Button>
-                </Link>
-                <Link to={{pathname: "/login", state:{ register:1 }}} style={{textDecoration:"none"}} underline="none" >
-                    <Controls.Button >
-                      SignUp
-                    </Controls.Button>
-                  </Link>
-              </div>
-            )
-          }          
-          
+          {userData.isLoggedIn ? (
+            <>
+              <NotificationPanel userData={userData} />
+              <Link
+                to={{ pathname: "/favourite-list" }}
+                style={{ textDecoration: "none" }}
+                underline="none"
+              >
+                <Tooltip title="Favourite List" aria-label="add" arrow>
+                  <IconButton
+                    id="headeFavIcon"
+                    className={classes.headerFavIcon}
+                    component="span"
+                  >
+                    <FavoriteIcon id="headerHeartIcon" />
+                  </IconButton>
+                </Tooltip>
+              </Link>
+              <IconButton color="inherit" onClick={handleMenu}>
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="categoryMenu"
+                className={classes.Menu}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                style={{ position: "absolute", top: 40 }}
+              >
+                {userData.role == "admin" ? (
+                  <MenuItem component={Link} to="/dashboard">
+                    Dashboard
+                  </MenuItem>
+                ) : null}
+                <MenuItem component={Link} to="/profile">
+                  Profile
+                </MenuItem>
+                <MenuItem>Instant Groups</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <div>
+              <Link
+                to={{ pathname: "/favourite-list" }}
+                style={{ textDecoration: "none" }}
+                underline="none"
+              >
+                <Tooltip title="Favourite List" aria-label="add" arrow>
+                  <IconButton
+                    id="headeFavIcon"
+                    className={classes.headerFavIcon}
+                    component="span"
+                  >
+                    <FavoriteIcon />
+                  </IconButton>
+                </Tooltip>
+              </Link>
+              <Link
+                to={{ pathname: "/login", state: { register: 0 } }}
+                style={{ textDecoration: "none" }}
+                underline="none"
+              >
+                <Controls.Button style={{ marginRight: 10 }}>
+                  Login
+                </Controls.Button>
+              </Link>
+              <Link
+                to={{ pathname: "/login", state: { register: 1 } }}
+                style={{ textDecoration: "none" }}
+                underline="none"
+              >
+                <Controls.Button>SignUp</Controls.Button>
+              </Link>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
     </>

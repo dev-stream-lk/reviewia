@@ -1,11 +1,11 @@
-import { Grid, Link, makeStyles, Paper } from "@material-ui/core";
+import { Grid, Link, makeStyles } from "@material-ui/core";
 import React, { useState } from "react";
 import Controls from "../components/Controls";
-import { useForm, Form } from "../components/useForm";
+import {  Form } from "../components/useForm";
 import { Typography } from "@material-ui/core";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import MainImage from "../static/img/login_img.svg";
-import {Link as RouterLink} from 'react-router-dom'
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -15,17 +15,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
-  siteName:{
+  siteName: {
     marginTop: theme.spacing(5),
-    [theme.breakpoints.up('md')]:{
-      display:"none",
-    }
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
   },
   paper: {
     marginTop: theme.spacing(2),
-    [ theme.breakpoints.up('md')]:{
+    [theme.breakpoints.up("md")]: {
       marginTop: theme.spacing(2),
-    }
+    },
   },
   paperDiv: {
     padding: `${theme.spacing(0)}px ${theme.spacing(0)}px ${theme.spacing(
@@ -43,19 +43,18 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 50,
   },
   loginImage: {
-    display:"none",
+    display: "none",
     [theme.breakpoints.up("md")]: {
       display: "inherit",
     },
   },
-  title:{
-    color: `${theme.palette.primary.main} !important`
-}
+  title: {
+    color: `${theme.palette.primary.main} !important`,
+  },
 }));
 
-const ButtonSet = (props) => {
-  const classes = useStyles();
-  const [selected, setSelected] = useState(0);
+const ButtonSet = () => {
+  // const [selected, setSelected] = useState(0);
 
   return (
     <Form>
@@ -124,68 +123,85 @@ const ButtonSet = (props) => {
   );
 };
 
-const Terms =() =>{
-    const classes = useStyles();
-    return (
-      <Grid
-        item
-        xs={12}
+const Terms = () => {
+  return (
+    <Grid
+      item
+      xs={12}
+      style={{
+        // maxHeight: "100vh",
+        padding: "30px",
+        height: "50vh",
+        paddingTop: "10px",
+      }}
+      container
+      spacing={3}
+    >
+      <Typography
+        align="center"
         style={{
-          // maxHeight: "100vh",
-          padding: "30px",
-          height: "50vh",
-          paddingTop: "10px",
+          marginTop: "10px",
+          fontWeight: 400,
+          fontSize: 15,
         }}
-        container
-        spacing={3}
       >
-        <Typography
-          align="center"
-          style={{
-            marginTop: "10px",
-            fontWeight: 400,
-            fontSize: 15
-          }}
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
-          consectetur luctus nunc, eu ultrices felis consequat sed. Etiam at
-          ante sed lacus aliquam mollis sit amet vel metus. Lorem ipsum dolor
-          sit amet, consectetur adipiscing elit. Etiam consectetur luctus nunc,
-          eu ultrices felis consequat sed. Etiam at ante sed lacus aliquam
-          mollis sit amet vel metus. Lorem ipsum dolor sit amet, consectetur
-          adipiscing elit. Etiam consectetur luctus nunc, eu ultrices felis
-          consequat sed. Etiam at ante sed lacus aliquam mollis sit amet vel
-          metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
-          consectetur luctus nunc, eu ultrices felis consequat sed. Etiam at
-          ante sed lacus aliquam mollis sit amet vel metus. Lorem ipsum dolor
-          sit amet, consectetur adipiscing elit. Etiam consectetur luctus nunc,
-          eu ultrices felis consequat sed. Etiam at ante sed lacus aliquam
-          mollis sit amet vel metus. Lorem ipsum dolor sit amet, consectetur
-          adipiscing elit. Etiam consectetur luctus nunc, eu ultrices felis
-          consequat sed. Etiam at ante sed lacus aliquam mollis sit amet vel
-          metus.
-        </Typography>
-      </Grid>
-    );
-}
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
+        consectetur luctus nunc, eu ultrices felis consequat sed. Etiam at ante
+        sed lacus aliquam mollis sit amet vel metus. Lorem ipsum dolor sit amet,
+        consectetur adipiscing elit. Etiam consectetur luctus nunc, eu ultrices
+        felis consequat sed. Etiam at ante sed lacus aliquam mollis sit amet vel
+        metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
+        consectetur luctus nunc, eu ultrices felis consequat sed. Etiam at ante
+        sed lacus aliquam mollis sit amet vel metus. Lorem ipsum dolor sit amet,
+        consectetur adipiscing elit. Etiam consectetur luctus nunc, eu ultrices
+        felis consequat sed. Etiam at ante sed lacus aliquam mollis sit amet vel
+        metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
+        consectetur luctus nunc, eu ultrices felis consequat sed. Etiam at ante
+        sed lacus aliquam mollis sit amet vel metus. Lorem ipsum dolor sit amet,
+        consectetur adipiscing elit. Etiam consectetur luctus nunc, eu ultrices
+        felis consequat sed. Etiam at ante sed lacus aliquam mollis sit amet vel
+        metus.
+      </Typography>
+    </Grid>
+  );
+};
 
 export default function TermsOfService() {
-
-  const [active, setActive] = useState("Accept");
   const classes = useStyles();
 
-
   return (
-    <Grid container justifyContent="center" >
+    <Grid container justifyContent="center">
       <Grid item xs={false} className={classes.loginImage} md={5}>
-        <Grid container justifyContent="center" style={{flexDirection:"column", paddingLeft:40}}>
-          <Link underline="none" variant="h3" align="center" component={RouterLink} to="/" className={classes.title}>Reviewia</Link>
-          <img style={{width:"100%"}} src={MainImage} />
+        <Grid
+          container
+          justifyContent="center"
+          style={{ flexDirection: "column", paddingLeft: 40 }}
+        >
+          <Link
+            underline="none"
+            variant="h3"
+            align="center"
+            component={RouterLink}
+            to="/"
+            className={classes.title}
+          >
+            Reviewia
+          </Link>
+          <img alt="" style={{ width: "100%" }} src={MainImage} />
         </Grid>
       </Grid>
       <Grid item xs={12} sm={11} md={7} className={classes.wrapper}>
-        <Grid item className={classes.siteName} >
-        <Link underline="none" variant="h3" align="center" component={RouterLink} to="/" className={classes.title}>Reviewia</Link>
+        <Grid item className={classes.siteName}>
+          <Link
+            underline="none"
+            variant="h3"
+            align="center"
+            component={RouterLink}
+            to="/"
+            className={classes.title}
+          >
+            Reviewia
+          </Link>
         </Grid>
         <Controls.Paper
           className={classes.paper}
@@ -241,7 +257,7 @@ export default function TermsOfService() {
               </Typography>
             </Grid>
           </Grid>
-          <ButtonSet/>
+          <ButtonSet />
         </Controls.Paper>
       </Grid>
     </Grid>

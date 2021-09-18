@@ -56,7 +56,7 @@ export default function DashBoard(props) {
 
   return (
     <>
-      <Header/>
+      <Header />
       <Grid container className={"content"}>
         <Grid item className={classes.wrapper}>
           <Drawer
@@ -139,15 +139,13 @@ export default function DashBoard(props) {
           <Grid container>
             <Grid item xs={12}>
               <Controls.Paper className={classes.dashboardContentPaper}>
-                {selected === 1 ? <AddCaregory/> : null}
+                {selected === 1 ? <AddCaregory /> : null}
 
                 {selected === 2 ? <ReportedBannedPost /> : null}
 
-                {selected === 3 ? (
-                  <ReportedHiddenReview/>
-                ) : null}
+                {selected === 3 ? <ReportedHiddenReview /> : null}
 
-                {selected === 4 ? <BlockedUsers/> : null}
+                {selected === 4 ? <BlockedUsers /> : null}
 
                 {selected === 5 ? (
                   <Typography>System Reports</Typography>

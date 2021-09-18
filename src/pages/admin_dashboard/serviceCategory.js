@@ -7,10 +7,9 @@ import {
   IconButton,
   ListItemSecondaryAction,
 } from "@material-ui/core";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-
 
 export default function ServiceCategory() {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
@@ -22,7 +21,7 @@ export default function ServiceCategory() {
     setSelectedIndex(index);
   };
 
-  const [services, setService] = useState([
+  const [services] = useState([
     { title: "Electronics service", id: 1 },
     { title: "Cloths service", id: 2 },
     { title: "Education service", id: 3 },
@@ -45,7 +44,7 @@ export default function ServiceCategory() {
       <List component="nav" aria-label="secondary mailbox folder">
         {services
           .filter((val) => {
-            if (searchItem == "") {
+            if (searchItem === "") {
               return val;
             } else if (
               val.title

@@ -15,21 +15,21 @@ import {
 } from "../services/notifications";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import ChatIcon from "@material-ui/icons/Chat";
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
-import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-import GroupIcon from '@material-ui/icons/Group';
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import GroupIcon from "@material-ui/icons/Group";
 import PublicIcon from "@material-ui/icons/Public";
-import {getDateTime} from '../utils/dateTime';
+import { getDateTime } from "../utils/dateTime";
 import { getReviewById } from "../services/reviews";
 import { useHistory } from "react-router-dom";
-import {PreLoader} from './basic/PreLoader';
+import { PreLoader } from "./basic/PreLoader";
 import { getGroupData } from "../services/instantGroups";
-import {markAsRead} from "../services/notifications";
+import { markAsRead } from "../services/notifications";
 
 const useStyles = makeStyles((theme) => ({
   headerFavIcon: {
     color: "white",
-    cursor:"pointer"
+    cursor: "pointer",
   },
   unreadNotifi: {
     background: "#ddf",
@@ -85,10 +85,10 @@ export default function NotificationPanel(props) {
 
   const getCount = async () => {
     let res = await getNotificationCount(userData.email);
-      if (res) {
-        setCount(res);
-      }
-  }
+    if (res) {
+      setCount(res);
+    }
+  };
 
   useEffect(() => {
     getCount();
@@ -121,29 +121,29 @@ export default function NotificationPanel(props) {
   const handleGoToReview = async (notifi) => {
     setLoading(true);
     let res = await getReviewById(notifi.targetId);
-    if(res){
-      let mark = await markAsRead(notifi.id)
-      history.push(`/product/view/${res['postId']}`)
+    if (res) {
+      let mark = await markAsRead(notifi.id);
+      history.push(`/product/view/${res["postId"]}`);
     }
     handleClose();
     setLoading(false);
-  }
+  };
 
   const handleGoToPost = (notifi) => {
     handleClose();
-    history.push(`/product/view/${notifi.targetId}`)
-  }
+    history.push(`/product/view/${notifi.targetId}`);
+  };
 
   const handleGoToGroup = async (notifi) => {
     setLoading(true);
     let res = await getGroupData(notifi.targetId);
-    if(res){
-      let mark = await markAsRead(notifi.id)
-      history.push(`/product/instantGroup/${res.postId}/${notifi.targetId}`)
+    if (res) {
+      let mark = await markAsRead(notifi.id);
+      history.push(`/product/instantGroup/${res.postId}/${notifi.targetId}`);
     }
     handleClose();
     setLoading(false);
-  }
+  };
 
   return (
     <div>
@@ -158,116 +158,134 @@ export default function NotificationPanel(props) {
           <NotificationsIcon />
         </Badge>
       </Tooltip>
-      <div style={{position:"relative"}}>
-      <StyledMenu
-        id="customized-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <PreLoader loading={loading} />
-        {notifiList.map((notifi, i) => {
-          let markAsRead = notifi.markAsRead;
-          if (notifi.type == "REVIEW") {
-            return (
-              <>
-                <StyledMenuItem  onClick={ () => handleGoToReview(notifi)} className={!markAsRead && classes.unreadNotifi}>
-                  {
-                    notifi.content.search("disliked") === -1 ?
-                    (
+      <div style={{ position: "relative" }}>
+        <StyledMenu
+          id="customized-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <PreLoader loading={loading} />
+          {notifiList.map((notifi, i) => {
+            let markAsRead = notifi.markAsRead;
+            if (notifi.type == "REVIEW") {
+              return (
+                <>
+                  <StyledMenuItem
+                    onClick={() => handleGoToReview(notifi)}
+                    className={!markAsRead && classes.unreadNotifi}
+                  >
+                    {notifi.content.search("disliked") === -1 ? (
                       <ListItemIcon title="Review liked">
                         <ThumbUpIcon fontSize="small" />
                       </ListItemIcon>
-                    ):
-                    (
+                    ) : (
                       <ListItemIcon title="Review disliked">
                         <ThumbDownIcon fontSize="small" />
                       </ListItemIcon>
-                    )
-
-                  }
-                  <ListItemText
-                    primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
-                    secondaryTypographyProps={{style:{fontSize:13}}}
-                    primary={notifi.content}
-                    secondary={getDateTime(notifi.createdAt)}
-                  />
-                </StyledMenuItem>
-                <Divider />
-              </>
-            );
-          } else if (notifi.type === "GROUP") {
-            return (
-              <>
-                <StyledMenuItem onClick={() => handleGoToGroup(notifi)} className={!markAsRead && classes.unreadNotifi}>
-                  <ListItemIcon title="Instant Group Notification">
-                    <GroupIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
-                    secondaryTypographyProps={{style:{fontSize:13}}}
-                    primary={notifi.content}
-                    secondary={getDateTime(notifi.createdAt)}
-                  />
-                </StyledMenuItem>
-                <Divider />
-              </>
-            );
-          } else if (notifi.type === "POST") {
-            return (
-              <>
-                <StyledMenuItem onClick={() => handleGoToPost(notifi)} className={!markAsRead && classes.unreadNotifi}>
-                  <ListItemIcon title="New Review">
-                    <ChatIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
-                    secondaryTypographyProps={{style:{fontSize:13}}}
-                    primary={notifi.content}
-                    secondary={getDateTime(notifi.createdAt)}
-                  />
-                </StyledMenuItem>
-                <Divider />
-              </>
-            );
-          }else if (notifi.type === "USER") {
-            return (
-              <>
-                <StyledMenuItem className={!markAsRead && classes.unreadNotifi}>
-                  <ListItemIcon title="Like/Dislike">
-                    <ChatIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
-                    secondaryTypographyProps={{style:{fontSize:13}}}
-                    primary={notifi.content}
-                    secondary={getDateTime(notifi.createdAt)}
-                  />
-                </StyledMenuItem>
-                <Divider />
-              </>
-            );
-          } else {
-            return (
-              <>
-                <StyledMenuItem className={!markAsRead && classes.unreadNotifi}>
-                  <ListItemIcon>
-                    <PublicIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{ style: {fontSize:15, whiteSpace: "normal" } }}
-                    secondaryTypographyProps={{style:{fontSize:13}}}
-                    primary={notifi.content}
-                    secondary={getDateTime(notifi.createdAt)}
-                  />
-                </StyledMenuItem>
-                <Divider />
-              </>
-            );
-          }
-        })}
-      </StyledMenu>
+                    )}
+                    <ListItemText
+                      primaryTypographyProps={{
+                        style: { fontSize: 15, whiteSpace: "normal" },
+                      }}
+                      secondaryTypographyProps={{ style: { fontSize: 13 } }}
+                      primary={notifi.content}
+                      secondary={getDateTime(notifi.createdAt)}
+                    />
+                  </StyledMenuItem>
+                  <Divider />
+                </>
+              );
+            } else if (notifi.type === "GROUP") {
+              return (
+                <>
+                  <StyledMenuItem
+                    onClick={() => handleGoToGroup(notifi)}
+                    className={!markAsRead && classes.unreadNotifi}
+                  >
+                    <ListItemIcon title="Instant Group Notification">
+                      <GroupIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        style: { fontSize: 15, whiteSpace: "normal" },
+                      }}
+                      secondaryTypographyProps={{ style: { fontSize: 13 } }}
+                      primary={notifi.content}
+                      secondary={getDateTime(notifi.createdAt)}
+                    />
+                  </StyledMenuItem>
+                  <Divider />
+                </>
+              );
+            } else if (notifi.type === "POST") {
+              return (
+                <>
+                  <StyledMenuItem
+                    onClick={() => handleGoToPost(notifi)}
+                    className={!markAsRead && classes.unreadNotifi}
+                  >
+                    <ListItemIcon title="New Review">
+                      <ChatIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        style: { fontSize: 15, whiteSpace: "normal" },
+                      }}
+                      secondaryTypographyProps={{ style: { fontSize: 13 } }}
+                      primary={notifi.content}
+                      secondary={getDateTime(notifi.createdAt)}
+                    />
+                  </StyledMenuItem>
+                  <Divider />
+                </>
+              );
+            } else if (notifi.type === "USER") {
+              return (
+                <>
+                  <StyledMenuItem
+                    className={!markAsRead && classes.unreadNotifi}
+                  >
+                    <ListItemIcon title="Like/Dislike">
+                      <ChatIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        style: { fontSize: 15, whiteSpace: "normal" },
+                      }}
+                      secondaryTypographyProps={{ style: { fontSize: 13 } }}
+                      primary={notifi.content}
+                      secondary={getDateTime(notifi.createdAt)}
+                    />
+                  </StyledMenuItem>
+                  <Divider />
+                </>
+              );
+            } else {
+              return (
+                <>
+                  <StyledMenuItem
+                    className={!markAsRead && classes.unreadNotifi}
+                  >
+                    <ListItemIcon>
+                      <PublicIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        style: { fontSize: 15, whiteSpace: "normal" },
+                      }}
+                      secondaryTypographyProps={{ style: { fontSize: 13 } }}
+                      primary={notifi.content}
+                      secondary={getDateTime(notifi.createdAt)}
+                    />
+                  </StyledMenuItem>
+                  <Divider />
+                </>
+              );
+            }
+          })}
+        </StyledMenu>
       </div>
     </div>
   );
