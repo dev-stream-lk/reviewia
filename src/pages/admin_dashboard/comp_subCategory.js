@@ -4,11 +4,10 @@ import {
   List,
   ListItem,
   ListItemText,
-  Button,
   IconButton,
   ListItemSecondaryAction,
   Divider,
-  DialogContentText,
+  Typography
 } from "@material-ui/core";
 import React, { useState } from "react";
 import Controls from "../../components/Controls";
@@ -36,80 +35,112 @@ const useStyles = makeStyles((theme) => ({
       4
     )}px ${theme.spacing(0)}px !important`,
   },
+  addCategory: {
+    width: 500,
+  },
 }));
 
-export default function SubCategory() {
+const AddNewSubCategory = (props) => {
   const classes = useStyles();
+  const { open, setOpen, type,addNewSubCategory } = props;
+  const [subCategoryName, setSubCategoryName] = useState("");
+  const [error, setError] = useState("");
 
-  const [subCategories, setcategory] = useState([
-    { mainId: 1, title: "TV", id: 1 },
-    { mainId: 1, title: "Laptop", id: 2 },
-    { mainId: 1, title: "Mobile Phone", id: 3 },
-    { mainId: 1, title: "Washing machine", id: 4 },
-  ]);
+  const onSubmit = async () => {
+    let res = await addNewSubCategory(subCategoryName);
 
-  const [openAddSubCategory, setOpenAddSubCategory] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpenAddSubCategory(true);
+    if(res){
+      setOpen(false);
+      setError("");
+      setSubCategoryName("");
+    }else{
+      setError("New sub category creation failed.")
+    }
   };
 
-  const handleClose = () => {
-    setOpenAddSubCategory(false);
+  const Actions = () => {
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+          color="secondary"
+          style={{ marginRight: 10 }}
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          disabled={subCategoryName !== "" ? false : true}
+          onClick={() => onSubmit()}
+        >
+          Create
+        </Controls.Button>
+      </Grid>
+    );
   };
 
   return (
     <>
       <Controls.Popup
-        title="Add new Sub Category"
-        openPopup={openAddSubCategory}
-        setOpenPopup={setOpenAddSubCategory}
-        actions={
-          <>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleClose} color="primary">
-              add
-            </Button>
-          </>
-        }
+        title="Create New Sub Category"
+        openPopup={open}
+        setOpenPopup={setOpen}
+        actions={<Actions />}
       >
-        <DialogContentText>
-          Add Your Sub Category for Electronics.
-        </DialogContentText>
-        <Controls.Input disabled={true} value={"Category : Electronic"} />
-        <Controls.Input
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Sub Category"
-          type="text"
-          fullWidth
-        />
+        {
+          error !== "" && (
+            <Grid container style={{marginTop:8, padding:8, marginBottom:24, color:"red", background:"#ffaaaa"}} justifyContent="center" >
+              <Typography variant="subtitle2">
+                {error}
+              </Typography>
+            </Grid>
+          )
+        }
+        <div className={classes.addCategory}>
+          <Controls.Input
+            name="name"
+            label="Sub Caregoty Name"
+            value={subCategoryName}
+            onChange={(e) => setSubCategoryName(e.target.value)}
+            required={true}
+          />
+        </div>
       </Controls.Popup>
+    </>
+  );
+};
 
-      <Grid container justifyContent="flex-end">
+
+export default function SubCategory(props) {
+  const classes = useStyles();
+  const {catData, addNewSubCategory} = props;
+  const [openAddSubCategory, setOpenAddSubCategory] = useState(false);
+
+  return (
+    <>
+      <Grid container justifyContent="space-between" alignItems="center" style={{marginTop: "8px",}}>
+        <Typography variant="h6" style={{fontWeight:600}}>
+          Sub Categories
+        </Typography>
+        <AddNewSubCategory open={openAddSubCategory} addNewSubCategory={addNewSubCategory} setOpen={setOpenAddSubCategory} />
         <Controls.Button
           variant="contained"
           color="primary"
           size="small"
           style={{
-            marginTop: "20px",
             marginLeft: 40,
           }}
           className={classes.button}
           startIcon={<AddCircleOutlineIcon />}
-          onClick={handleClickOpen}
+          onClick={() => setOpenAddSubCategory(true)}
         >
           New
         </Controls.Button>
       </Grid>
       <List>
-        {subCategories.map((category) => (
+        {catData.subCategoryList && catData.subCategoryList.map((subCategory) => (
           <div>
             <ListItem>
-              <ListItemText primary={category.title} />
+              <ListItemText primary={subCategory.subCategoryName} />
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="edit">
                   <EditIcon />

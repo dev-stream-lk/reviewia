@@ -6,29 +6,32 @@ import {
   TextField,
   IconButton,
   ListItemSecondaryAction,
+  makeStyles
 } from "@material-ui/core";
 import React, { useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 
-export default function ProductCategory() {
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+const useStyles = makeStyles((theme)=>({
+  addSubCategory: {
+    width: 500,
+  },
+}));
 
-  const handleListItemClick = (event, index) => {
-    console.log(index);
+
+export default function ProductCategory(props) {
+
+
+  const {productList, setCatSelected} = props;
+  const [selectedIndex, setSelectedIndex] = useState(1);
+
+  const handleListItemClick = (event, id) => {
     //call the function to gain sub classes..using index as id.
-
-    setSelectedIndex(index);
+    setSelectedIndex(id);
+    setCatSelected(id)
   };
 
   const [searchItem, setSearch] = useState("");
-
-  const [products] = useState([
-    { title: "Electronics", id: 1 },
-    { title: "Cloths", id: 2 },
-    { title: "Education", id: 3 },
-    { title: "Foods", id: 4 },
-  ]);
 
   return (
     <Grid>
@@ -44,25 +47,26 @@ export default function ProductCategory() {
         </Grid>
       </form>
       <List component="nav" aria-label="secondary mailbox folder">
-        {products
+        {productList
           .filter((val) => {
             if (searchItem === "") {
               return val;
             } else if (
-              val.title
+              val.categoryName
                 .toLocaleLowerCase()
                 .includes(searchItem.toLocaleLowerCase())
             ) {
               return val;
             }
           })
-          .map((product) => (
+          .map((product, i) => (
             <ListItem
+              key={i}
               button
-              selected={selectedIndex === product["id"]}
-              onClick={(event) => handleListItemClick(event, product["id"])}
+              selected={selectedIndex === product["categoryId"]}
+              onClick={(event) => handleListItemClick(event, product["categoryId"])}
             >
-              <ListItemText primary={product.title} />
+              <ListItemText primary={product.categoryName} />
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="edit">
                   <EditIcon />
