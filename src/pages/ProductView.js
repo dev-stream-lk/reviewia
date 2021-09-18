@@ -397,7 +397,10 @@ const ProductView = (props) => {
     let data = await addReview(userData.email, userData.name, parseInt(postId), description, userRate);
     await getPostInfo()
     await getPostReviews()
+  }
 
+  const firstLetterCapital = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   // add to favourite list
@@ -542,9 +545,9 @@ const ProductView = (props) => {
                 </Grid>
                 <Grid item xs={12} sm={11} md={9} direction="column">
                   <Controls.Paper>Title: {Object.keys(postData).length !== 0 ? postData.title:""}</Controls.Paper>
-                  <Controls.Paper>Categoty: {Object.keys(postData).length !== 0 ? postData.category:""}</Controls.Paper>
-                  <Controls.Paper>SubCategoty: {Object.keys(postData).length !== 0 ? postData.subCategory:""}</Controls.Paper>
-                  <Controls.Paper>Brand: {Object.keys(postData).length !== 0 ? postData.brand.name:""}</Controls.Paper>
+                  <Controls.Paper>Categoty: {Object.keys(postData).length !== 0 ? firstLetterCapital(postData.category):""}</Controls.Paper>
+                  <Controls.Paper>SubCategoty: {Object.keys(postData).length !== 0 ? firstLetterCapital(postData.subCategory):""}</Controls.Paper>
+                  <Controls.Paper>Brand: {Object.keys(postData).length !== 0 ? firstLetterCapital(postData.brand.name):""}</Controls.Paper>
                   <Controls.Paper>Review count: {Object.keys(postData).length !== 0 ? postData.reviewCount:""}</Controls.Paper>
                   <Controls.Paper>Description: {Object.keys(postData).length !== 0 ? postData.description:""}</Controls.Paper>
                 </Grid>
