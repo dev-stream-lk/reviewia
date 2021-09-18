@@ -1,8 +1,4 @@
-import {
-  Grid,
-  makeStyles,
-  Typography
-} from "@material-ui/core";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import Controls from "../../components/Controls";
 

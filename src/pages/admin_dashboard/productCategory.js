@@ -1,30 +1,17 @@
 import {
   Grid,
-  makeStyles,
-  Typography,
   List,
   ListItem,
   ListItemText,
   TextField,
-  InputBase,
-  Button,
   IconButton,
-  Tooltip,
-  CardMedia,
-  CardHeader,
-  Avatar,
-  CardContent,
   ListItemSecondaryAction,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import Controls from "../../components/Controls";
-import SearchIcon from "@material-ui/icons/Search";
+import React, { useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 
-
 export default function ProductCategory() {
-  
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const handleListItemClick = (event, index) => {
@@ -36,7 +23,7 @@ export default function ProductCategory() {
 
   const [searchItem, setSearch] = useState("");
 
-  const [products, setProduct] = useState([
+  const [products] = useState([
     { title: "Electronics", id: 1 },
     { title: "Cloths", id: 2 },
     { title: "Education", id: 3 },
@@ -59,7 +46,7 @@ export default function ProductCategory() {
       <List component="nav" aria-label="secondary mailbox folder">
         {products
           .filter((val) => {
-            if (searchItem == "") {
+            if (searchItem === "") {
               return val;
             } else if (
               val.title

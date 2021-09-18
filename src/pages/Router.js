@@ -11,20 +11,18 @@ import AddProduct from "./AddProduct";
 import Profile from "./Profile";
 import PasswordRecovery from "./PasswordRecovery";
 import TermsOfService from "./TermsOfService";
-import DashBoard from './admin_dashboard/DashBoard';
-import FavouriteList from './FavouriteList';
-import PageNotFound from './PageNotFound'
-
+import DashBoard from "./admin_dashboard/DashBoard";
+import FavouriteList from "./FavouriteList";
+import PageNotFound from "./PageNotFound";
 
 export default function Router() {
-
   return (
     <>
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
             {" "}
-            <HomePage/>
+            <HomePage />
           </Route>
           <Route exact path="/about">
             {" "}
@@ -35,11 +33,11 @@ export default function Router() {
           </Route>
           <Route exact path="/product/compare">
             {" "}
-            <Compare/>{" "}
+            <Compare />{" "}
           </Route>
           <Route exact path="/product/view/:id">
             {" "}
-            <ProductView/>{" "}
+            <ProductView />{" "}
           </Route>
           <Route exact path="/products/:categoryId/:subCategoryId">
             {" "}
@@ -65,19 +63,22 @@ export default function Router() {
             <Profile />
           </Route>
           <Route exact path="/TermsOfService">
-            <TermsOfService/>
+            <TermsOfService />
           </Route>
           <Route exact path="/passwordRecovery">
             {" "}
-            <PasswordRecovery/>{" "}
+            <PasswordRecovery />{" "}
           </Route>
           <Route exact path="/favourite-list">
             {" "}
-            <FavouriteList/>{" "}
+            <FavouriteList />{" "}
           </Route>
-          <Route exact path="/dashboard"> <DashBoard /> </Route>
+          <Route exact path="/dashboard">
+            {" "}
+            <DashBoard />{" "}
+          </Route>
           <Route exact path="/pagenotfound">
-            <PageNotFound/>
+            <PageNotFound />
           </Route>
         </Switch>
       </BrowserRouter>

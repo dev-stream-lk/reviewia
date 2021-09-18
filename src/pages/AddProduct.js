@@ -31,12 +31,12 @@ import { getCategoryWithSubCategory } from "../services/category";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import { requiredField } from "../components/Validators";
 import { createPost, getPostBySearch } from "../services/posts";
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from "@material-ui/icons/Edit";
 import { PreLoader } from "../components/basic/PreLoader";
 import { getDate } from "../utils/dateTime";
-import NotFoundImage from '../assets/not-found.svg';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
+import NotFoundImage from "../assets/not-found.svg";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
   addProductWrapper: {
@@ -87,9 +87,9 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 100,
     maxWidth: 100,
   },
-  notFoundImage:{
-    width:"100%",
-    maxWidth:"150px"
+  notFoundImage: {
+    width: "100%",
+    maxWidth: "150px",
   },
   similarCard: {
     cursor: "pointer",
@@ -99,11 +99,11 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiCardHeader-subheader": {
       fontSize: 14,
     },
-    height:"100%",
-    display:"flex",
-    flexDirection:"column",
-    alignItems:"center",
-    justifyContent:"space-between",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 }));
 
@@ -122,12 +122,17 @@ const SimillarProductCard = (props) => {
         style={{ textDecoration: "none" }}
       >
         <Controls.Card className={classes.similarCard}>
-          <CardHeader title={postData.title} subheader={getDate(postData.createdAt)}></CardHeader>
+          <CardHeader
+            title={postData.title}
+            subheader={getDate(postData.createdAt)}
+          ></CardHeader>
           <CardMedia title={postData.title}>
             <div style={{ width: 200, height: 200 }}>
               <img
                 style={{ maxWidth: 200, maxHeight: 200 }}
-                src={`${postData.imgURL.length === 0 ? "" : postData.imgURL[0].url}`}
+                src={`${
+                  postData.imgURL.length === 0 ? "" : postData.imgURL[0].url
+                }`}
               />
             </div>
           </CardMedia>
@@ -150,11 +155,7 @@ const SimillarProductCard = (props) => {
 
 const Step1 = (props) => {
   const classes = useStyles();
-  const {
-    step1Data,
-    setStep1Data,
-    handleNext,
-  } = props;
+  const { step1Data, setStep1Data, handleNext } = props;
 
   const [disableSubmit, setDisableSubmit] = useState(true);
 
@@ -174,7 +175,7 @@ const Step1 = (props) => {
       ...temp,
     });
 
-    return  Object.values(temp).every((x) => x == "");
+    return Object.values(temp).every((x) => x == "");
   };
 
   const { values, setValues, handleInputChange, errors, setErrors } = useForm(
@@ -194,7 +195,7 @@ const Step1 = (props) => {
   // get all categories, subCategories and brands only one time
   useEffect(async () => {
     setLoadingCat(true);
-    console.log(step1Data)
+    console.log(step1Data);
     let data = await getCategoryWithSubCategory();
     let products = [];
     let services = [];
@@ -243,9 +244,9 @@ const Step1 = (props) => {
       let type = values.type == "p" ? "products" : "services";
       categories[`${type}`].forEach((item, index) => {
         if (values.category == item.id) {
-          setValues({...values,categoryName :item.title});
+          setValues({ ...values, categoryName: item.title });
           others["category"] = item.title;
-          console.log("cat",values)
+          console.log("cat", values);
           let subCategories = [];
           for (let i in item.subCategories) {
             subCategories.push({
@@ -265,9 +266,9 @@ const Step1 = (props) => {
     if (values.subCategory != "" && subCategories.length !== 0) {
       subCategories.forEach((item, index) => {
         if (values.subCategory == item.id) {
-          values['subCategoryName'] = item.title;
+          values["subCategoryName"] = item.title;
           others["subCategory"] = item.title;
-          console.log("sub",values);
+          console.log("sub", values);
           let brands = [];
           for (let i in item.brands) {
             brands.push({
@@ -284,61 +285,59 @@ const Step1 = (props) => {
   useEffect(() => {
     // brands.map((item, i) => {
     //   if (item.id == values.brand) {
-        values['brandName'] = values.brand;
-        others["brand"] = values.brand;
+    values["brandName"] = values.brand;
+    others["brand"] = values.brand;
     //   }
     // });
   }, [values.brand, brands]);
 
   const validateFields = () => {
     let errors = {};
-    if( "title" in values)
-      errors['title'] = requiredField(values.title)
-    if( "type" in values)
-      errors['type'] = requiredField(values.type)
-    if( "category" in values)
-      errors['category'] = requiredField(values.category)
-    if( "subCategory" in values)
-      errors['subCategory'] = requiredField(values.subCategory)
+    if ("title" in values) errors["title"] = requiredField(values.title);
+    if ("type" in values) errors["type"] = requiredField(values.type);
+    if ("category" in values)
+      errors["category"] = requiredField(values.category);
+    if ("subCategory" in values)
+      errors["subCategory"] = requiredField(values.subCategory);
 
-    console.log(errors)
+    console.log(errors);
 
-    let isValid = Object.values(errors).every( x => x=="");
+    let isValid = Object.values(errors).every((x) => x == "");
     setDisableSubmit(!isValid);
     return isValid;
-  }
+  };
 
   // get similar posts
-  useEffect( async () => {
+  useEffect(async () => {
     setLoading(true);
     validateFields();
-    if(!others.category){
-      others['category'] = "";
+    if (!others.category) {
+      others["category"] = "";
     }
-    if(!others.subCategory){
-      others['subCategory'] = "";
+    if (!others.subCategory) {
+      others["subCategory"] = "";
     }
-    if(!others.brand){
-      others['brand'] = "";
+    if (!others.brand) {
+      others["brand"] = "";
     }
-    let d = {...values, ...others};
+    let d = { ...values, ...others };
     let res = await getPostBySearch(d, 0, 4);
-    console.log(res)
-    if(res){
-      setSimilarPosts(res.posts)
+    console.log(res);
+    if (res) {
+      setSimilarPosts(res.posts);
     }
     setLoading(false);
-  },[values])
+  }, [values]);
 
   // set form data to global scope
   const handleStep1Next = (e) => {
-    let a = {}
-    if( values.brandName === "" || values.brandName === undefined ){
-      a = {...values, brandName: "Others"};
-    }else{
+    let a = {};
+    if (values.brandName === "" || values.brandName === undefined) {
+      a = { ...values, brandName: "Others" };
+    } else {
       a = values;
     }
-    setValues(a)
+    setValues(a);
     setStep1Data(a);
     handleNext(e);
   };
@@ -350,7 +349,7 @@ const Step1 = (props) => {
           <Form className={classes.stepForms}>
             <Grid container>
               <Grid item xs={12} md={6}>
-                <Controls.Paper style={{position:"relative"}}>
+                <Controls.Paper style={{ position: "relative" }}>
                   <PreLoader loading={loadingCat} />
                   <Grid container>
                     <Grid container alignItems="center">
@@ -456,11 +455,25 @@ const Step1 = (props) => {
                             margin="normal"
                             variant="outlined"
                             name="brand"
-                            InputProps={{ ...params.InputProps, type: 'search' }}
-                            onChange={(e) => handleInputChange({target:{name:"brand",value:e.target.value}})}
+                            InputProps={{
+                              ...params.InputProps,
+                              type: "search",
+                            }}
+                            onChange={(e) =>
+                              handleInputChange({
+                                target: {
+                                  name: "brand",
+                                  value: e.target.value,
+                                },
+                              })
+                            }
                           />
                         )}
-                        onChange={(e,val) => handleInputChange({target:{name:"brand",value:val}}) }
+                        onChange={(e, val) =>
+                          handleInputChange({
+                            target: { name: "brand", value: val },
+                          })
+                        }
                       />
                     </Grid>
                   </Grid>
@@ -484,7 +497,11 @@ const Step1 = (props) => {
                       ></Controls.Input>
                     </Grid>
                     <Grid container justifyContent="flex-end">
-                      <Controls.Button disabled={disableSubmit} text="Next" onClick={handleStep1Next}>
+                      <Controls.Button
+                        disabled={disableSubmit}
+                        text="Next"
+                        onClick={handleStep1Next}
+                      >
                         Next <ArrowForwardIosIcon />
                       </Controls.Button>
                     </Grid>
@@ -495,29 +512,36 @@ const Step1 = (props) => {
           </Form>
         </Grid>
         <Grid item xs={12}>
-          <Controls.Paper style={{minHeight:"40vh", position:"relative"}}>
+          <Controls.Paper style={{ minHeight: "40vh", position: "relative" }}>
             <PreLoader loading={loading} />
             <Grid container spacing={2}>
-              <Grid container justifyContent="center" style={{marginBottom:24}}>
+              <Grid
+                container
+                justifyContent="center"
+                style={{ marginBottom: 24 }}
+              >
                 <Typography variant="h4" component="div">
                   Similar Products/Services
                 </Typography>
               </Grid>
-              {
-                similarPosts.length !== 0 ? similarPosts.map( (post,i) => (
+              {similarPosts.length !== 0 ? (
+                similarPosts.map((post, i) => (
                   <Grid key={i} item xs={6} sm={4} lg={3}>
                     <SimillarProductCard postData={post} />
                   </Grid>
-                )):
-                (
-                  <Grid container alignItems="center" style={{marginTop:20, flexDirection:"column"}}>
-                    {/* <Typography>
+                ))
+              ) : (
+                <Grid
+                  container
+                  alignItems="center"
+                  style={{ marginTop: 20, flexDirection: "column" }}
+                >
+                  {/* <Typography>
                       Updates not found.
                     </Typography> */}
-                    <img src={NotFoundImage} className={classes.notFoundImage} />
-                  </Grid>
-                )
-              }
+                  <img src={NotFoundImage} className={classes.notFoundImage} />
+                </Grid>
+              )}
             </Grid>
           </Controls.Paper>
         </Grid>
@@ -626,9 +650,7 @@ const ImageInfo = (props) => {
           placeholder="Short Description. max 50 characters"
         />
       </Grid>
-      <Grid container justifyContent="flex-end">
-        
-      </Grid>
+      <Grid container justifyContent="flex-end"></Grid>
     </>
   );
 };
@@ -655,7 +677,7 @@ const Step2 = (props) => {
     }
     let images = Array.from(selectedImages);
     images.push({
-      imageObj: newSelectedImage
+      imageObj: newSelectedImage,
     });
     setNewSelectedImage(null);
     setSelectedImages(images);
@@ -722,7 +744,7 @@ const Step2 = (props) => {
                         </label>
                       </div>
                     </Grid>
-                    <Grid container xs={12} justifyContent="flex-end" >
+                    <Grid container xs={12} justifyContent="flex-end">
                       <Controls.Button
                         disabled={selectedImages.length == 3 ? true : false}
                         onClick={handleImageAdd}
@@ -812,13 +834,13 @@ const Step3 = (props) => {
     handleNext,
     handleBack,
     setActiveStep,
-    setNewPostId
+    setNewPostId,
   } = props;
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const addPost = async () => {
-    console.log(step1Data)
+    console.log(step1Data);
     setLoading(true);
     let data = {
       email: userData.email,
@@ -829,14 +851,14 @@ const Step3 = (props) => {
       description: step1Data.description,
       selectedImages,
     };
-    console.log("add",step1Data)
+    console.log("add", step1Data);
     let res = await createPost(data);
-    console.log(res)
+    console.log(res);
     if (res) {
       setStep1Data([]);
       setSelectedImages([]);
-      console.log(res.postId)
-      setNewPostId(res['postId']);
+      console.log(res.postId);
+      setNewPostId(res["postId"]);
       handleNext();
     } else {
       console.log("error");
@@ -846,8 +868,8 @@ const Step3 = (props) => {
 
   return (
     <>
-      <Grid container style={{position:"relative"}}>
-        <PreLoader loading={loading}/>
+      <Grid container style={{ position: "relative" }}>
+        <PreLoader loading={loading} />
         <Grid item xs={12}>
           <Controls.Paper>
             <Typography
@@ -861,10 +883,23 @@ const Step3 = (props) => {
                 <Grid container justifyContent="center">
                   <Grid item xs={12} sm={10} md={8}>
                     <Controls.Paper>
-                      <Grid container justifyContent="center" alignItems="center" style={{position:"relative"}}>
+                      <Grid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        style={{ position: "relative" }}
+                      >
                         <Typography variant="h6">Basic Information</Typography>
-                        <Controls.ActionButton color="default" onClick={()=>setActiveStep(0)} style={{fontSize:25, position:"absolute", right:20}}>
-                          <EditIcon color="primary"  />
+                        <Controls.ActionButton
+                          color="default"
+                          onClick={() => setActiveStep(0)}
+                          style={{
+                            fontSize: 25,
+                            position: "absolute",
+                            right: 20,
+                          }}
+                        >
+                          <EditIcon color="primary" />
                         </Controls.ActionButton>
                       </Grid>
                       <Grid container>
@@ -893,7 +928,7 @@ const Step3 = (props) => {
                                   Category
                                 </FormLabel>
                                 <Typography>
-                                  {step1Data['categoryName']}
+                                  {step1Data["categoryName"]}
                                 </Typography>
                               </Grid>
                               <Grid container alignItems="center">
@@ -944,10 +979,23 @@ const Step3 = (props) => {
 
                   <Grid item xs={12} sm={10} md={8}>
                     <Controls.Paper>
-                      <Grid container style={{position:"relative"}} justifyContent="center" alignItems="center" >
+                      <Grid
+                        container
+                        style={{ position: "relative" }}
+                        justifyContent="center"
+                        alignItems="center"
+                      >
                         <Typography variant="h6">Selected Images</Typography>
-                        <Controls.ActionButton color="default" onClick={()=>setActiveStep(1)} style={{fontSize:25, position:"absolute", right:20}}>
-                          <EditIcon color="primary"  />
+                        <Controls.ActionButton
+                          color="default"
+                          onClick={() => setActiveStep(1)}
+                          style={{
+                            fontSize: 25,
+                            position: "absolute",
+                            right: 20,
+                          }}
+                        >
+                          <EditIcon color="primary" />
                         </Controls.ActionButton>
                       </Grid>
                       <Controls.Paper>
@@ -1057,10 +1105,10 @@ export default function AddProduct(props) {
     type: "",
     category: "",
     subCategory: "",
-    categoryName:"",
+    categoryName: "",
     producedYear: "",
     brand: "",
-    brandName:"",
+    brandName: "",
     description: "",
   };
 

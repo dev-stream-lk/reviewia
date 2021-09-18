@@ -2,16 +2,7 @@ import {
   Grid,
   makeStyles,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   Button,
-  IconButton,
-  Tooltip,
-  CardMedia,
-  CardHeader,
-  Avatar,
-  CardContent,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -19,11 +10,11 @@ import {
   TextField,
   DialogActions,
 } from "@material-ui/core";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import Controls from "../../components/Controls";
 import ProductCategory from "./productCategory";
 import ServiceCategory from "./serviceCategory";
-import SubCategory from "./comp_subCategory"
+import SubCategory from "./comp_subCategory";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,13 +47,11 @@ export default function AddCaregory() {
   const [openService, setOpenService] = useState(false);
 
   const handleClickOpen = () => {
-    
     if (selected === 0) {
       setOpenProduct(true);
     } else {
       setOpenService(true);
     }
-    
   };
 
   const handleClose = () => {

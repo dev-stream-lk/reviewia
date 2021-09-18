@@ -25,8 +25,8 @@ import AddIcon from "@material-ui/icons/Add";
 import { UserContext } from "../context/UserContext";
 import { getPostBySearch } from "../services/posts";
 import { getCategoryWithSubCategory } from "../services/category";
-import NotFoundImage from '../assets/not-found.svg';
-import {PreLoader} from '../components/basic/PreLoader';
+import NotFoundImage from "../assets/not-found.svg";
+import { PreLoader } from "../components/basic/PreLoader";
 import { Pagination } from "@material-ui/lab";
 
 const drawerWidth = 280;
@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
   productListItemImage: {
     minHeight: 80,
     maxHeight: 150,
-    maxWidth:"100%"
+    maxWidth: "100%",
   },
   productListItemHeader: {
     width: "100%",
@@ -103,16 +103,16 @@ const useStyles = makeStyles((theme) => ({
       width: "70%",
     },
   },
-  notFoundImage:{
-    width:"100%",
-    maxWidth:"150px"
+  notFoundImage: {
+    width: "100%",
+    maxWidth: "150px",
   },
 }));
 
 const FiltersMenu = (props) => {
   const classes = useStyles();
   const params = useParams();
-  const {handlePagination, setFilterData} = props;
+  const { handlePagination, setFilterData } = props;
   const [handleCollapseByRating, setHandleCollapseByRating] = useState(true);
   const [handleCollapseByCategory, setHandleCollapseByCategory] =
     useState(true);
@@ -126,12 +126,12 @@ const FiltersMenu = (props) => {
   const [subCategories, setSubCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [values, setValues] = useState({
-    ratingOperator:">",
-    rating:0,
+    ratingOperator: ">",
+    rating: 0,
     category: params.categoryId || "all",
     subCategory: params.subCategoryId || "all",
     type: "all",
-    brand: "all"
+    brand: "all",
   });
 
   // get all categories, subCategories and brands only one time
@@ -167,8 +167,7 @@ const FiltersMenu = (props) => {
         subCategory: params.subCategoryId ? params.subCategoryId : "all",
         brand: "",
       };
-      console.log({products})
-      setValues({...values,...initialCatValues});
+      setValues({ ...values, ...initialCatValues });
       setCategories({ products, services });
     }
   }, []);
@@ -179,7 +178,7 @@ const FiltersMenu = (props) => {
       ...values,
       category: "all",
       subCategory: "all",
-      brand: "all"
+      brand: "all",
     });
     setSubCategories([]);
   }, [values.type]);
@@ -189,7 +188,7 @@ const FiltersMenu = (props) => {
     setValues({
       ...values,
       subCategory: "all",
-      brand: "all"
+      brand: "all",
     });
     setBrands([]);
     if (values.category !== "" && categories.length !== 0) {
@@ -215,7 +214,7 @@ const FiltersMenu = (props) => {
   useEffect(() => {
     setValues({
       ...values,
-      brand: "all"
+      brand: "all",
     });
     if (values.subCategory != "" && subCategories.length !== 0) {
       subCategories.forEach((item, index) => {
@@ -242,8 +241,8 @@ const FiltersMenu = (props) => {
     });
   }, [values.brand, brands]);
 
-  useEffect (() => {
-    if(values){
+  useEffect(() => {
+    if (values) {
       // let others =  {
       // rating:byRating,
       // ratingOperator: ratingOperator
@@ -251,17 +250,15 @@ const FiltersMenu = (props) => {
 
       let d;
       setFilterData((data) => {
-        d ={
+        d = {
           ...data,
-          ...values
+          ...values,
         };
-        console.log(d)
-        return d
-        }
-      );
+        return d;
+      });
       handlePagination(1, d);
     }
-  },[values])
+  }, [values]);
 
   // const [categoryOptions, setCategoryOptions] = useState([
   //     {id:"all", title:"All"},
@@ -320,27 +317,28 @@ const FiltersMenu = (props) => {
                 label="Sort By"
                 items={[
                   { id: ">", title: "greater" },
-                  { id: "<", title: "less" }
+                  { id: "<", title: "less" },
                 ]}
                 value={values.ratingOperator}
                 className={classes.filterCollapseInputGroup}
-                onChange={(e, value) => setValues({...values, ratingOperator:value})}
+                onChange={(e, value) =>
+                  setValues({ ...values, ratingOperator: value })
+                }
                 className={classes.radioGroup}
               ></Controls.RadioGroup>
             </Grid>
-            <div style={{paddingLeft:10, display:"flex", alignItems:"center"}}>
+            <div
+              style={{ paddingLeft: 10, display: "flex", alignItems: "center" }}
+            >
               <Rating
                 value={values.rating}
                 name="byRating"
                 precision={0.25}
-                onChange={(e, value) => setValues({...values, rating:value})}
+                onChange={(e, value) => setValues({ ...values, rating: value })}
               />
-              <span>
-              ( {values.rating} )
-              </span>
+              <span>( {values.rating} )</span>
             </div>
           </Collapse>
-
         </Grid>
       </ListItem>
 
@@ -429,7 +427,7 @@ const FiltersMenu = (props) => {
                   categories.length != 0
                     ? values.type == "p"
                       ? categories.products.length != 0
-                        ? [{ id: "all", title: "All" },...categories.products]
+                        ? [{ id: "all", title: "All" }, ...categories.products]
                         : [{ id: "all", title: "Not Found" }]
                       : categories.services.length != 0
                       ? categories.services
@@ -446,9 +444,9 @@ const FiltersMenu = (props) => {
               <Controls.Select
                 name="subCategory"
                 options={
-                  subCategories.length !== 0 ?
-                  [{ id: "all", title: "All" },...subCategories] :
-                  [{ id: "all", title: "Not Found" }]
+                  subCategories.length !== 0
+                    ? [{ id: "all", title: "All" }, ...subCategories]
+                    : [{ id: "all", title: "Not Found" }]
                 }
                 value={values.subCategory}
                 onChange={(e) =>
@@ -464,9 +462,9 @@ const FiltersMenu = (props) => {
               <Controls.Select
                 name="brand"
                 options={
-                  brands.length !== 0 ?
-                  [{ id: "all", title: "All" }, ...brands] :
-                  [{ id: "all", title: "Not Found" }]
+                  brands.length !== 0
+                    ? [{ id: "all", title: "All" }, ...brands]
+                    : [{ id: "all", title: "Not Found" }]
                 }
                 value={values.brand}
                 onChange={(e) =>
@@ -509,8 +507,10 @@ const ProductCard = (props) => {
               //     <MoreVertIcon />
               //   </IconButton>
               // }
-              titleTypographyProps={{ style: {fontSize:22, whiteSpace: "normal" } }}
-              subheaderTypographyProps={{style:{fontSize:13}}}
+              titleTypographyProps={{
+                style: { fontSize: 22, whiteSpace: "normal" },
+              }}
+              subheaderTypographyProps={{ style: { fontSize: 13 } }}
               title={post.title}
               subheader={new Date(post.createdAt).toDateString()}
             />
@@ -572,17 +572,16 @@ export default function ProductList(props) {
     window.addEventListener("resize", handleDisplaySize);
   });
 
-  const handlePagination= async (page=1, filters=filterData) => {
+  const handlePagination = async (page = 1, filters = filterData) => {
     setPostLoading(true);
     setCurrentPage(page);
-    console.log(filters)
-    let data = await getPostBySearch(filters, currentPage-1,20);
+    let data = await getPostBySearch(filters, currentPage - 1, 20);
     if (data) {
-      setMaxPages(data.totalPages)
+      setMaxPages(data.totalPages);
       setPosts(data.posts);
     }
     setPostLoading(false);
-  }
+  };
 
   useEffect(async () => {
     if (filterData) {
@@ -615,7 +614,10 @@ export default function ProductList(props) {
             Filter Products
           </Typography>
           <Form className={classes.filterForm}>
-            <FiltersMenu handlePagination={handlePagination} setFilterData={setFilterData} />
+            <FiltersMenu
+              handlePagination={handlePagination}
+              setFilterData={setFilterData}
+            />
           </Form>
         </Drawer>
         {/* End Drawer */}
@@ -634,7 +636,10 @@ export default function ProductList(props) {
             Filter Products
           </Typography>
           <Form className={classes.filterForm}>
-            <FiltersMenu handlePagination={handlePagination} setFilterData={setFilterData} />
+            <FiltersMenu
+              handlePagination={handlePagination}
+              setFilterData={setFilterData}
+            />
           </Form>
         </Drawer>
 
@@ -649,16 +654,24 @@ export default function ProductList(props) {
               className={classes.productListSearch}
               placeholder="Find Product or service"
               value={filterData.title}
-              onChange={(e) => setFilterData({...filterData, title: (e.target.value)})}
+              onChange={(e) =>
+                setFilterData({ ...filterData, title: e.target.value })
+              }
             ></Controls.Input>
           </Grid>
           <Grid
             container
-            style={{ paddingRight: 50, marginTop:40, marginBottom:16 }}
+            style={{ paddingRight: 50, marginTop: 40, marginBottom: 16 }}
             justifyContent="space-between"
           >
-            <div style={{paddingLeft:50}}>
-              <Pagination onChange={(e, page)=> handlePagination(page)} page={currentPage} count={maxPages} variant="outlined" shape="rounded"  />
+            <div style={{ paddingLeft: 50 }}>
+              <Pagination
+                onChange={(e, page) => handlePagination(page)}
+                page={currentPage}
+                count={maxPages}
+                variant="outlined"
+                shape="rounded"
+              />
             </div>
             <Link
               to={{ pathname: "/product/add" }}
@@ -669,7 +682,7 @@ export default function ProductList(props) {
               </Controls.Button>
             </Link>
           </Grid>
-          <Controls.Paper style={{ minHeight: "50vh",position:"relative" }}>
+          <Controls.Paper style={{ minHeight: "50vh", position: "relative" }}>
             <PreLoader loading={postLoading} />
             <Grid container spacing={2}>
               {posts.length != 0 ? (
@@ -684,8 +697,18 @@ export default function ProductList(props) {
                   </Grid>
                 ))
               ) : (
-                <Grid item xs={12} alignItems="center" justifyContent="center" style={{height:"100%",display:"flex", flexDirection:"column"}}>
-                  <Typography variant="subtitle2" style={{marginBottom:20}}>
+                <Grid
+                  item
+                  xs={12}
+                  alignItems="center"
+                  justifyContent="center"
+                  style={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Typography variant="subtitle2" style={{ marginBottom: 20 }}>
                     <span>Post Not found.</span>
                   </Typography>
                   <img src={NotFoundImage} className={classes.notFoundImage} />
@@ -693,9 +716,15 @@ export default function ProductList(props) {
               )}
             </Grid>
           </Controls.Paper>
-          <Grid container style={{marginTop:20, marginBottom:50}} >
-            <div style={{paddingLeft:50}}>
-              <Pagination onChange={(e, page)=> handlePagination(page)} page={currentPage} count={maxPages} variant="outlined" shape="rounded"  />
+          <Grid container style={{ marginTop: 20, marginBottom: 50 }}>
+            <div style={{ paddingLeft: 50 }}>
+              <Pagination
+                onChange={(e, page) => handlePagination(page)}
+                page={currentPage}
+                count={maxPages}
+                variant="outlined"
+                shape="rounded"
+              />
             </div>
           </Grid>
         </div>

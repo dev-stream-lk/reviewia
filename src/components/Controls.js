@@ -1,27 +1,27 @@
-import Input from './basic/Input';
-import RadioGroup from './basic/RadioGroup';
-import Select from './basic/Select';
-import Checkbox from './basic/Checkbox';
-import Button from './basic/Button';
-import DatePicker from './basic/DatePicker';
-import DateTimePicker from './basic/DateTimePicker';
-import Popup from '../components/basic/Popup';
-import ActionButton from '../components/basic/ActionButton';
-import Paper from '../components/basic/Paper';
-import Card from '../components/basic/Card';
+import Input from "./basic/Input";
+import RadioGroup from "./basic/RadioGroup";
+import Select from "./basic/Select";
+import Checkbox from "./basic/Checkbox";
+import Button from "./basic/Button";
+import DatePicker from "./basic/DatePicker";
+import DateTimePicker from "./basic/DateTimePicker";
+import Popup from "../components/basic/Popup";
+import ActionButton from "../components/basic/ActionButton";
+import Paper from "../components/basic/Paper";
+import Card from "../components/basic/Card";
 
-const  Controls = {
-    Input,
-    RadioGroup,
-    Select,
-    Checkbox,
-    DatePicker,
-    DateTimePicker,
-    Button,
-    Popup,
-    ActionButton,
-    Paper,
-    Card
-}
+const Controls = {
+  Input,
+  RadioGroup,
+  Select,
+  Checkbox,
+  DatePicker,
+  DateTimePicker,
+  Button,
+  Popup,
+  ActionButton,
+  Paper,
+  Card,
+};
 
 export default Controls;

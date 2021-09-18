@@ -2,21 +2,16 @@ import {
   Grid,
   makeStyles,
   Typography,
-  Button,
   IconButton,
-  Tooltip,
-  CardMedia,
   CardHeader,
-  Avatar,
   CardContent,
-  ListItemText,
 } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import Controls from "../components/Controls";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
-import NotFoundImage from '../assets/not-found.svg';
+import NotFoundImage from "../assets/not-found.svg";
 import { getAllInstantGroup } from "../services/instantGroups";
 import { getDateTime } from "../utils/dateTime";
 
@@ -45,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   productListItemHeader: {
     width: "100%",
     textAlign: "left",
-    marginBottom:0
+    marginBottom: 0,
   },
   Button_grid: {
     margin: theme.spacing(2),
@@ -54,9 +49,9 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     color: "red[900]",
   },
-  notFoundImage:{
-    width:"100%",
-    maxWidth:"150px"
+  notFoundImage: {
+    width: "100%",
+    maxWidth: "150px",
   },
   groupListItemImage: {
     height: 50,
@@ -64,15 +59,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const GroupCard = (props) => {
   const classes = useStyles();
-  const {groupData, userData} = props;
-  console.log(groupData)
+  const { groupData, userData } = props;
 
   return (
-    <Grid container style={{position:"relative"}}>
-      <Link to={`/product/instantGroup/${groupData.postId}/${groupData.id}`} style={{textDecoration:"none", width:"100%"}}>
+    <Grid container style={{ position: "relative" }}>
+      <Link
+        to={`/product/instantGroup/${groupData.postId}/${groupData.id}`}
+        style={{ textDecoration: "none", width: "100%" }}
+      >
         <Controls.Card className={classes.productListcard}>
           <Grid container>
             <Grid container item xs={12}>
@@ -86,28 +82,40 @@ const GroupCard = (props) => {
                     />
                   }
                   title={`${groupData.createdBy.firstName} ${groupData.createdBy.lastName}`}
-                  subheader={ groupData.createdBy.email === userData.email ? "Creator":"Member"}
+                  subheader={
+                    groupData.createdBy.email === userData.email
+                      ? "Creator"
+                      : "Member"
+                  }
                 />
               </Grid>
               <CardContent>
-                <Grid item xs={12}  >
-                  <Typography  variant="caption" display="block" gutterBottom>
-                    Created At : 
-                    {getDateTime(groupData.createdAt)}
+                <Grid item xs={12}>
+                  <Typography variant="caption" display="block" gutterBottom>
+                    Created At :{getDateTime(groupData.createdAt)}
                   </Typography>
-                  <Typography style={{textAlign:"left"}}  variant="caption" display="block" gutterBottom>
-                    Message Count : 
-                    {groupData.messages.length}
+                  <Typography
+                    style={{ textAlign: "left" }}
+                    variant="caption"
+                    display="block"
+                    gutterBottom
+                  >
+                    Message Count :{groupData.messages.length}
                   </Typography>
-                  <Typography style={{textAlign:"left"}}  variant="caption" display="block" gutterBottom>
-                    State : 
+                  <Typography
+                    style={{ textAlign: "left" }}
+                    variant="caption"
+                    display="block"
+                    gutterBottom
+                  >
+                    State :
                     {groupData.active ? (
-                        <span style={{color:"green", fontWeight:"bold"}}>Active</span>
-                      ):
-                      (
-                        <span style={{color:"red"}}>Expired</span>
-                      )
-                    }
+                      <span style={{ color: "green", fontWeight: "bold" }}>
+                        Active
+                      </span>
+                    ) : (
+                      <span style={{ color: "red" }}>Expired</span>
+                    )}
                   </Typography>
                 </Grid>
               </CardContent>
@@ -115,7 +123,10 @@ const GroupCard = (props) => {
           </Grid>
         </Controls.Card>
       </Link>
-      <IconButton style={{position:"absolute", right:20}} aria-label="options">
+      <IconButton
+        style={{ position: "absolute", right: 20 }}
+        aria-label="options"
+      >
         <MoreVertIcon />
       </IconButton>
     </Grid>
@@ -125,15 +136,14 @@ const GroupCard = (props) => {
 export default function GroupListContainer() {
   const classes = useStyles();
   const [myGroups, setMyGroups] = useState([]);
-  const {userData, setUserData} = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
 
-
-  useEffect( async () => {
+  useEffect(async () => {
     let res = await getAllInstantGroup(userData.email);
-    if(res){
+    if (res) {
       setMyGroups(res);
     }
-  },[])
+  }, []);
 
   return (
     <Grid
@@ -148,21 +158,26 @@ export default function GroupListContainer() {
       container
       spacing={3}
     >
-      { myGroups.length !== 0 ? myGroups.map((group, index) => 
-        (
+      {myGroups.length !== 0 ? (
+        myGroups.map((group, index) => (
           <Grid key={index} item xs={12} md={12}>
             <GroupCard groupData={group} userData={userData} />
           </Grid>
-        )):
-        (
-          <Grid item xs={12} alignItems="center" justifyContent="center" style={{height:"100%",display:"flex", flexDirection:"column"}}>
-              <Typography variant="subtitle2" style={{marginBottom:20}}>
-                You are not member in any group.
-              </Typography>
-              <img src={NotFoundImage} className={classes.notFoundImage} />
-            </Grid>
-        )
-      }
+        ))
+      ) : (
+        <Grid
+          item
+          xs={12}
+          alignItems="center"
+          justifyContent="center"
+          style={{ height: "100%", display: "flex", flexDirection: "column" }}
+        >
+          <Typography variant="subtitle2" style={{ marginBottom: 20 }}>
+            You are not member in any group.
+          </Typography>
+          <img src={NotFoundImage} className={classes.notFoundImage} />
+        </Grid>
+      )}
     </Grid>
   );
 }

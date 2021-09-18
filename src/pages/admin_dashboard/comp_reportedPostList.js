@@ -1,11 +1,6 @@
-import {
-  Grid,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import Controls from "../../components/Controls";
-
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -25,11 +20,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function ReportedBannedPost() {
-    const classes = useStyles();
-    var flag = 0;
-    const [selected, setSelected] = useState(flag);
+  const classes = useStyles();
+  var flag = 0;
+  const [selected, setSelected] = useState(flag);
 
   return (
     <Grid item xs={12} sm={10} md={12} className={classes.wrapper}>
