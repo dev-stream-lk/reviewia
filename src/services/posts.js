@@ -7,12 +7,13 @@ const TOKEN = getItem("token");
 export const createPost = (data) => {
     const {title, email, brandName, subCategoryId, description, type, selectedImages} = data;
     const formData = new FormData();
-    selectedImages.foreEach( img =>{
+    selectedImages.map( img =>{
         formData.append(
             "image",
             img["imageObj"],
             img["imageObj"].name
         );
+        return 1;
     } );
 
     formData.append(
@@ -33,13 +34,13 @@ export const createPost = (data) => {
     }
     let url = HOST+`user/post/create?email=${email}&subcategory=${subCategoryId}`
     if(brandName){
-        url +=`&brand${brandName}`;
+        url +=`&brand=${brandName}`;
     }
 
     return fetch(url, requestOptions )
     .then( async res => {
         if(res.ok){
-            return true;
+            return await res.json();
         }
         return false;
     })
@@ -115,14 +116,14 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
     let search_url = "";
     let isEmpty = true;
     if ("title" in filters && filters.title !== ""){
-        search_url += `title:${filters.title}`
+        search_url += `search=title:${filters.title}`
         isEmpty = false
     }
     if ("rating" in filters && filters.rating >0){
         if( !isEmpty)
             search_url += ",rate";
         else
-            search_url += "rate";
+            search_url += "search=rate";
         isEmpty = false
         
         if( "ratingOperator" in filters && filters.rating !== ""){
@@ -136,7 +137,7 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
         if( !isEmpty)
             search_url += ",category";
         else
-            search_url += "category";
+            search_url += "search=category";
 
         isEmpty = false
         search_url += `:${filters.category}`
@@ -145,7 +146,7 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
         if( !isEmpty)
             search_url += ",subCategory";
         else
-            search_url += "subCategory";
+            search_url += "search=subCategory";
         isEmpty = false
         search_url += `:${filters.subCategory}`
     }
@@ -154,7 +155,7 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
         if( !isEmpty)
             search_url += ",brand";
         else
-            search_url += "brand";
+            search_url += "search=brand";
         isEmpty = false
         search_url += `:${filters.brand}`
     }
@@ -163,7 +164,7 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
         if( !isEmpty)
             search_url += ",type";
         else
-            search_url += "type";
+            search_url += "search=type";
         isEmpty = false
         search_url += `:${filters.type}`
     }
@@ -181,7 +182,7 @@ export const getPostBySearch = (filters, page=0, size=10, sort="createdAt", orde
         }
     }
 
-    return fetch(HOST+`public/posts?search=${search_url}`, requestOptions )
+    return fetch(HOST+`public/posts?${search_url}`, requestOptions )
     .then( async res => {
         if(res.ok){
             let data = await res.json()

@@ -35,6 +35,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import { PreLoader } from "../components/basic/PreLoader";
 import { getDate } from "../utils/dateTime";
 import NotFoundImage from '../assets/not-found.svg';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
   addProductWrapper: {
@@ -149,12 +151,12 @@ const SimillarProductCard = (props) => {
 const Step1 = (props) => {
   const classes = useStyles();
   const {
-    setCategoryName,
-    setSubCategoryName,
     step1Data,
     setStep1Data,
     handleNext,
   } = props;
+
+  const [disableSubmit, setDisableSubmit] = useState(true);
 
   const validate = (fieldValues = step1Data) => {
     let temp = {};
@@ -172,7 +174,7 @@ const Step1 = (props) => {
       ...temp,
     });
 
-    return Object.values(temp).every((x) => x == "");
+    return  Object.values(temp).every((x) => x == "");
   };
 
   const { values, setValues, handleInputChange, errors, setErrors } = useForm(
@@ -180,38 +182,41 @@ const Step1 = (props) => {
     true,
     validate
   );
-  
+
+  const [loading, setLoading] = useState(false);
   const [similarPosts, setSimilarPosts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   var others = {};
+  const [loadingCat, setLoadingCat] = useState(true);
 
   // get all categories, subCategories and brands only one time
   useEffect(async () => {
-    if (values.type != "") {
-      let data = await getCategoryWithSubCategory();
-      let products = [];
-      let services = [];
-      if (data) {
-        for (let i in data.products) {
-          products.push({
-            id: data.products[i].categoryId,
-            title: data.products[i].categoryName,
-            subCategories: data.products[i].subCategoryList,
-          });
-        }
-        for (let i in data.services) {
-          products.push({
-            id: data.services[i].categoryId,
-            title: data.services[i].categoryName,
-            subCategories: data.services[i].subCategoryList,
-          });
-        }
-
-        setCategories({ products, services });
+    setLoadingCat(true);
+    console.log(step1Data)
+    let data = await getCategoryWithSubCategory();
+    let products = [];
+    let services = [];
+    if (data) {
+      for (let i in data.products) {
+        products.push({
+          id: data.products[i].categoryId,
+          title: data.products[i].categoryName,
+          subCategories: data.products[i].subCategoryList,
+        });
       }
+      for (let i in data.services) {
+        products.push({
+          id: data.services[i].categoryId,
+          title: data.services[i].categoryName,
+          subCategories: data.services[i].subCategoryList,
+        });
+      }
+
+      setCategories({ products, services });
     }
+    setLoadingCat(false);
   }, [setStep1Data]);
 
   // call when product type changed
@@ -223,6 +228,7 @@ const Step1 = (props) => {
       brand: "",
     });
     setSubCategories([]);
+    setBrands([]);
   }, [values.type]);
 
   // call when category changed
@@ -237,8 +243,9 @@ const Step1 = (props) => {
       let type = values.type == "p" ? "products" : "services";
       categories[`${type}`].forEach((item, index) => {
         if (values.category == item.id) {
-          values["categoryName"] = item.title;
+          setValues({...values,categoryName :item.title});
           others["category"] = item.title;
+          console.log("cat",values)
           let subCategories = [];
           for (let i in item.subCategories) {
             subCategories.push({
@@ -258,9 +265,9 @@ const Step1 = (props) => {
     if (values.subCategory != "" && subCategories.length !== 0) {
       subCategories.forEach((item, index) => {
         if (values.subCategory == item.id) {
-          values["subCategoryName"] = item.title;
+          values['subCategoryName'] = item.title;
           others["subCategory"] = item.title;
-          console.log(values);
+          console.log("sub",values);
           let brands = [];
           for (let i in item.brands) {
             brands.push({
@@ -275,16 +282,36 @@ const Step1 = (props) => {
   }, [values.subCategory, subCategories]);
 
   useEffect(() => {
-    brands.map((item, i) => {
-      if (item.id == values.brand) {
-        values["brandName"] = item.title;
-        others["brand"] = item.title;
-      }
-    });
+    // brands.map((item, i) => {
+    //   if (item.id == values.brand) {
+        values['brandName'] = values.brand;
+        others["brand"] = values.brand;
+    //   }
+    // });
   }, [values.brand, brands]);
+
+  const validateFields = () => {
+    let errors = {};
+    if( "title" in values)
+      errors['title'] = requiredField(values.title)
+    if( "type" in values)
+      errors['type'] = requiredField(values.type)
+    if( "category" in values)
+      errors['category'] = requiredField(values.category)
+    if( "subCategory" in values)
+      errors['subCategory'] = requiredField(values.subCategory)
+
+    console.log(errors)
+
+    let isValid = Object.values(errors).every( x => x=="");
+    setDisableSubmit(!isValid);
+    return isValid;
+  }
 
   // get similar posts
   useEffect( async () => {
+    setLoading(true);
+    validateFields();
     if(!others.category){
       others['category'] = "";
     }
@@ -300,11 +327,19 @@ const Step1 = (props) => {
     if(res){
       setSimilarPosts(res.posts)
     }
+    setLoading(false);
   },[values])
 
   // set form data to global scope
   const handleStep1Next = (e) => {
-    setStep1Data(values);
+    let a = {}
+    if( values.brandName === "" || values.brandName === undefined ){
+      a = {...values, brandName: "Others"};
+    }else{
+      a = values;
+    }
+    setValues(a)
+    setStep1Data(a);
     handleNext(e);
   };
 
@@ -315,7 +350,8 @@ const Step1 = (props) => {
           <Form className={classes.stepForms}>
             <Grid container>
               <Grid item xs={12} md={6}>
-                <Controls.Paper>
+                <Controls.Paper style={{position:"relative"}}>
+                  <PreLoader loading={loadingCat} />
                   <Grid container>
                     <Grid container alignItems="center">
                       <FormLabel className={classes.formLabel}>Title</FormLabel>
@@ -356,7 +392,7 @@ const Step1 = (props) => {
                         name="category"
                         options={
                           categories.length != 0
-                            ? values.type == "p"
+                            ? values.type === "p"
                               ? categories.products.length != 0
                                 ? categories.products
                                 : [{ id: "none", title: "Not Found" }]
@@ -390,7 +426,7 @@ const Step1 = (props) => {
                       </FormLabel>
                       <Controls.Input className={classes.input} type="date" />
                     </Grid> */}
-                    <Grid container alignItems="center">
+                    {/* <Grid container alignItems="center">
                       <FormLabel className={classes.formLabel}>Brand</FormLabel>
                       <Controls.Select
                         value={values.brand}
@@ -402,6 +438,29 @@ const Step1 = (props) => {
                             ? brands
                             : [{ id: "none", title: "Not Found" }]
                         }
+                      />
+                    </Grid> */}
+                    <Grid container alignItems="center">
+                      <FormLabel className={classes.formLabel}>Brand</FormLabel>
+                      <Autocomplete
+                        freeSolo
+                        id="brand"
+                        size="small"
+                        className={classes.input}
+                        disableClearable
+                        value={values.brand}
+                        options={brands.map((option) => option.title)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            margin="normal"
+                            variant="outlined"
+                            name="brand"
+                            InputProps={{ ...params.InputProps, type: 'search' }}
+                            onChange={(e) => handleInputChange({target:{name:"brand",value:e.target.value}})}
+                          />
+                        )}
+                        onChange={(e,val) => handleInputChange({target:{name:"brand",value:val}}) }
                       />
                     </Grid>
                   </Grid>
@@ -425,7 +484,7 @@ const Step1 = (props) => {
                       ></Controls.Input>
                     </Grid>
                     <Grid container justifyContent="flex-end">
-                      <Controls.Button text="Next" onClick={handleStep1Next}>
+                      <Controls.Button disabled={disableSubmit} text="Next" onClick={handleStep1Next}>
                         Next <ArrowForwardIosIcon />
                       </Controls.Button>
                     </Grid>
@@ -436,7 +495,8 @@ const Step1 = (props) => {
           </Form>
         </Grid>
         <Grid item xs={12}>
-          <Controls.Paper style={{minHeight:"40vh"}}>
+          <Controls.Paper style={{minHeight:"40vh", position:"relative"}}>
+            <PreLoader loading={loading} />
             <Grid container spacing={2}>
               <Grid container justifyContent="center" style={{marginBottom:24}}>
                 <Typography variant="h4" component="div">
@@ -758,24 +818,26 @@ const Step3 = (props) => {
   const [loading, setLoading] = useState(false);
 
   const addPost = async () => {
+    console.log(step1Data)
     setLoading(true);
     let data = {
       email: userData.email,
       title: step1Data["title"],
       type: step1Data["type"],
       subCategoryId: step1Data.subCategory,
-      brandName: step1Data.brandName,
+      brandName: step1Data.brandName || "Others",
       description: step1Data.description,
       selectedImages,
     };
-
+    console.log("add",step1Data)
     let res = await createPost(data);
     console.log(res)
     if (res) {
       setStep1Data([]);
       setSelectedImages([]);
+      console.log(res.postId)
       setNewPostId(res['postId']);
-      // handleNext();
+      handleNext();
     } else {
       console.log("error");
     }
@@ -831,7 +893,7 @@ const Step3 = (props) => {
                                   Category
                                 </FormLabel>
                                 <Typography>
-                                  {step1Data["categoryName"]}
+                                  {step1Data['categoryName']}
                                 </Typography>
                               </Grid>
                               <Grid container alignItems="center">
@@ -842,12 +904,12 @@ const Step3 = (props) => {
                                   {step1Data["subCategoryName"]}
                                 </Typography>
                               </Grid>
-                              <Grid container alignItems="center">
+                              {/* <Grid container alignItems="center">
                                 <FormLabel className={classes.formLabel}>
                                   Product Year
                                 </FormLabel>
                                 <Typography>14/07/2021</Typography>
-                              </Grid>
+                              </Grid> */}
                               <Grid container alignItems="center">
                                 <FormLabel className={classes.formLabel}>
                                   Brand
@@ -992,11 +1054,13 @@ const Step3 = (props) => {
 export default function AddProduct(props) {
   const initialPostData = {
     title: "",
-    type: "product",
+    type: "",
     category: "",
-    subCayegory: "",
+    subCategory: "",
+    categoryName:"",
     producedYear: "",
     brand: "",
+    brandName:"",
     description: "",
   };
 
@@ -1007,8 +1071,6 @@ export default function AddProduct(props) {
   const { userData, setUserData } = useContext(UserContext);
   const [step1Data, setStep1Data] = useState(initialPostData);
   const [selectedImages, setSelectedImages] = useState([]);
-  const [categoryName, setCategoryName] = useState("");
-  const [subCategoryName, setSubCategoryName] = useState("");
   const [newPostId, setNewPostId] = useState(undefined);
 
   // useEffect( ()=>{
@@ -1064,8 +1126,6 @@ export default function AddProduct(props) {
                   step1Data={step1Data}
                   setStep1Data={setStep1Data}
                   handleNext={handleNext}
-                  setCategoryName={setCategoryName}
-                  setSubCategoryName={setSubCategoryName}
                 />
               </>
             ) : null}

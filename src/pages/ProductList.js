@@ -114,7 +114,6 @@ const FiltersMenu = (props) => {
   const params = useParams();
   const {handlePagination, setFilterData} = props;
   const [handleCollapseByRating, setHandleCollapseByRating] = useState(true);
-  const [byRating, setByRating] = useState(0);
   const [handleCollapseByCategory, setHandleCollapseByCategory] =
     useState(true);
   const [handleCollapseByDates, setHandleCollapseByDates] = useState(true);
@@ -128,7 +127,7 @@ const FiltersMenu = (props) => {
   const [brands, setBrands] = useState([]);
   const [values, setValues] = useState({
     ratingOperator:">",
-    rating:2,
+    rating:0,
     category: params.categoryId || "all",
     subCategory: params.subCategoryId || "all",
     type: "all",
@@ -214,6 +213,10 @@ const FiltersMenu = (props) => {
 
   // call when subCategory changed
   useEffect(() => {
+    setValues({
+      ...values,
+      brand: "all"
+    });
     if (values.subCategory != "" && subCategories.length !== 0) {
       subCategories.forEach((item, index) => {
         if (values.subCategory == item.id) {
@@ -221,7 +224,7 @@ const FiltersMenu = (props) => {
           let brands = [];
           for (let i in item.brands) {
             brands.push({
-              id: item.brands[i].id,
+              id: item.brands[i].name,
               title: item.brands[i].name,
             });
           }
