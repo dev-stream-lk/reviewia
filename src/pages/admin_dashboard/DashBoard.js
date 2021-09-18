@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.primary.main,
     },
 
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up("sm")]: {
       display: "inherit",
     },
   },
@@ -42,7 +42,10 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 100,
   },
   dashboardContent: {
-    width: `calc(100% - ${drawerWidth}px)`,
+    width:"100%",
+    [theme.breakpoints.up("sm")]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+    }
   },
   dashboardContentPaper: {
     minHeight: "100vh",

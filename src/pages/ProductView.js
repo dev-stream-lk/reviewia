@@ -328,6 +328,7 @@ const WriteReview = (props) => {
     description: "",
     rating: 0,
   };
+  const [error, setError] = useState("");
 
   const validate = (fieldValue = values) => {
     const temp = {};
@@ -357,11 +358,15 @@ const WriteReview = (props) => {
     validate
   );
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (validate()) {
-      writeReview(values.description, values.rating);
-      setOpen(false);
-      setValues(initialValues);
+      let res = await writeReview(values.description, values.rating);
+      if(res){
+        setOpen(false);
+        setValues(initialValues);
+      }else{
+        setError("Review and star rating not maching.");
+      }
     }
   };
 
@@ -393,6 +398,15 @@ const WriteReview = (props) => {
         setOpenPopup={setOpen}
         actions={<Actions />}
       >
+        {
+          error !== "" && (
+            <Grid container style={{marginTop:8, padding:8, marginBottom:24, color:"red", background:"#ffaaaa"}} justifyContent="center" >
+              <Typography variant="subtitle2">
+                {error}
+              </Typography>
+            </Grid>
+          )
+        }
         <Form className={classes.writeReviewForm}>
           <Controls.Input
             name="description"
@@ -663,8 +677,12 @@ const ProductView = (props) => {
       description,
       userRate
     );
-    await getPostInfo();
-    await getPostReviews();
+    if(data){
+      setReviews([...reviews, data ])
+      getPostInfo()
+      return true;
+    }
+    return false;
   };
 
   const firstLetterCapital = (str) => {
