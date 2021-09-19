@@ -27,7 +27,7 @@ import { getPostBySearch } from "../services/posts";
 import { getCategoryWithSubCategory } from "../services/category";
 import NotFoundImage from "../assets/not-found.svg";
 import { PreLoader } from "../components/basic/PreLoader";
-import { Pagination } from "@material-ui/lab";
+import { Pagination, Skeleton } from "@material-ui/lab";
 
 const drawerWidth = 280;
 
@@ -107,6 +107,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     maxWidth: "150px",
   },
+  productCardImage:{
+    width:40,
+    height:40,
+    borderRadius:"50%"
+  }
 }));
 
 const FiltersMenu = (props) => {
@@ -116,11 +121,11 @@ const FiltersMenu = (props) => {
   const [handleCollapseByRating, setHandleCollapseByRating] = useState(true);
   const [handleCollapseByCategory, setHandleCollapseByCategory] =
     useState(true);
-  const [handleCollapseByDates, setHandleCollapseByDates] = useState(true);
 
-  const [filterStartDate, setFilterStartDate] = useState("");
-  const [filterEndDate, setFilterEndDate] = useState("");
-  const [byState, setByState] = useState("new");
+  // const [handleCollapseByDates, setHandleCollapseByDates] = useState(true);
+  // const [filterStartDate, setFilterStartDate] = useState("");
+  // const [filterEndDate, setFilterEndDate] = useState("");
+  // const [byState, setByState] = useState("new");
 
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -154,7 +159,7 @@ const FiltersMenu = (props) => {
         });
       }
       for (let i in data.services) {
-        products.push({
+        services.push({
           id: data.services[i].categoryName,
           title: data.services[i].categoryName,
           subCategories: data.services[i].subCategoryList,
@@ -260,28 +265,9 @@ const FiltersMenu = (props) => {
     }
   }, [values]);
 
-  // const [categoryOptions, setCategoryOptions] = useState([
-  //     {id:"all", title:"All"},
-  //     {id: "1", title:"Electronics"},
-  //     {id: "2", title:"Vehicles"},
-  //     {id: "3", title:"Others"}
-  // ]);
-  // const [subCategoryOptions, setSubCategoryOptions] = useState([
-  //     {id:"all", title:"All"},
-  //     {id: "1", title:"Mobile Phones"},
-  //     {id: "2", title:"Tvs"},
-  //     {id: "3", title:"Laptops"}
-  // ]);
-  // const [brandOptions, setBrandOptions] = useState([
-  //     {id:"all", title:"All"},
-  //     {id: "1", title:"Samsung"},
-  //     {id: "2", title:"Huawei"},
-  //     {id: "3", title:"LG"}
-  // ]);
-
   return (
     <List>
-      <ListItem className={classes.filterMenuItem}>
+      {/* <ListItem className={classes.filterMenuItem}>
         <Grid container>
           <Controls.RadioGroup
             name="byState"
@@ -297,7 +283,7 @@ const FiltersMenu = (props) => {
             className={classes.radioGroup}
           ></Controls.RadioGroup>
         </Grid>
-      </ListItem>
+      </ListItem> */}
       <ListItem className={classes.filterMenuItem}>
         <Grid container>
           <Typography
@@ -342,7 +328,7 @@ const FiltersMenu = (props) => {
         </Grid>
       </ListItem>
 
-      <ListItem className={classes.filterMenuItem}>
+      {/* <ListItem className={classes.filterMenuItem}>
         <Grid container>
           <Typography
             variant="subtitle1"
@@ -374,7 +360,7 @@ const FiltersMenu = (props) => {
             </div>
           </Collapse>
         </Grid>
-      </ListItem>
+      </ListItem> */}
 
       {/* Start ByCategory */}
       <ListItem className={classes.filterMenuItem}>
@@ -428,11 +414,11 @@ const FiltersMenu = (props) => {
                     ? values.type == "p"
                       ? categories.products.length != 0
                         ? [{ id: "all", title: "All" }, ...categories.products]
-                        : [{ id: "all", title: "Not Found" }]
+                        : [{ id: "all", title: "All" }]
                       : categories.services.length != 0
                       ? categories.services
-                      : [{ id: "all", title: "Not Found" }]
-                    : [{ id: "all", title: "Not Found" }]
+                      : [{ id: "all", title: "All" }]
+                    : [{ id: "all", title: "All" }]
                 }
                 // options ={[]}
               ></Controls.Select>
@@ -446,7 +432,7 @@ const FiltersMenu = (props) => {
                 options={
                   subCategories.length !== 0
                     ? [{ id: "all", title: "All" }, ...subCategories]
-                    : [{ id: "all", title: "Not Found" }]
+                    : [{ id: "all", title: "All" }]
                 }
                 value={values.subCategory}
                 onChange={(e) =>
@@ -464,7 +450,7 @@ const FiltersMenu = (props) => {
                 options={
                   brands.length !== 0
                     ? [{ id: "all", title: "All" }, ...brands]
-                    : [{ id: "all", title: "Not Found" }]
+                    : [{ id: "all", title: "All" }]
                 }
                 value={values.brand}
                 onChange={(e) =>
@@ -482,16 +468,15 @@ const FiltersMenu = (props) => {
 
 const ProductCard = (props) => {
   const classes = useStyles();
-  // const [rating, setRating] = useState(props.rating | (4.5));
-  const [rating, setRating] = useState(4.5);
   const { post } = props;
 
   return (
     <Controls.Card className={classes.productListcard}>
       <Grid container>
-        <Grid item xs={4}>
+        <Grid item xs={4} style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
           <CardMedia title={post.title}>
             <img
+              alt=""
               src={`${post.imgURL.length === 0 ? "" : post.imgURL[0].url}`}
               className={classes.productListItemImage}
             />
@@ -501,14 +486,24 @@ const ProductCard = (props) => {
           <Grid container>
             <CardHeader
               className={classes.productListItemHeader}
-              // avatar={<Avatar aria-label="recipe">R</Avatar>}
-              // action={
-              //   <IconButton aria-label="settings">
-              //     <MoreVertIcon />
-              //   </IconButton>
-              // }
+              avatar={ post.avatarUrl ? (
+                <img
+                  title={`${post.createdBy}`}
+                  alt=""
+                  src={`${post.avatarUrl}`}
+                  className={classes.productCardImage}
+                />
+              ): (
+                <Skeleton
+                  title={`${post.createdBy}`}
+                  animation="wave"
+                  variant="circle"
+                  width={40}
+                  height={40}
+                />
+              ) }
               titleTypographyProps={{
-                style: { fontSize: 22, whiteSpace: "normal" },
+                style: { fontSize: 20, whiteSpace: "normal" },
               }}
               subheaderTypographyProps={{ style: { fontSize: 13 } }}
               title={post.title}
@@ -601,50 +596,53 @@ export default function ProductList(props) {
       ></Header>
 
       <Grid container className={`${classes.wrapper} content`}>
-        {/* Start Drawer */}
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          style={{ display: isMobile ? "none" : "inherit" }}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <Typography variant="h5" component="div">
-            Filter Products
-          </Typography>
-          <Form className={classes.filterForm}>
-            <FiltersMenu
-              handlePagination={handlePagination}
-              setFilterData={setFilterData}
-            />
-          </Form>
-        </Drawer>
-        {/* End Drawer */}
+        {
+          !isMobile ? (
+            // Start Drawer
+            <Drawer
+              className={classes.drawer}
+              variant="permanent"
+              style={{ display: isMobile ? "none" : "inherit" }}
+              classes={{
+                paper: classes.drawerPaper,
+              }}
+            >
+              <Typography variant="h5" component="div">
+                Filter Products
+              </Typography>
+              <Form className={classes.filterForm}>
+                <FiltersMenu
+                  handlePagination={handlePagination}
+                  setFilterData={setFilterData}
+                />
+              </Form>
+            </Drawer>
+            // End Drawer
+          ): (
+            // Start Mobile Drawer
+            <Drawer
+            className={classes.mobileDrawer}
+            variant="temporary"
+            classes={{
+              paper: classes.drawerPaperMobile,
+            }}
+            open={openMobileDrawer}
+            onClose={() => setOpenMobileDrawer(false)}
+          >
+            <Typography variant="h5" component="div">
+              Filter Products
+            </Typography>
+            <Form className={classes.filterForm}>
+              <FiltersMenu
+                handlePagination={handlePagination}
+                setFilterData={setFilterData}
+              />
+            </Form>
+          </Drawer>
 
-        {/* Start Mobile Drawer */}
-        <Drawer
-          className={classes.mobileDrawer}
-          variant="temporary"
-          classes={{
-            paper: classes.drawerPaperMobile,
-          }}
-          open={openMobileDrawer}
-          onClose={() => setOpenMobileDrawer(false)}
-        >
-          <Typography variant="h5" component="div">
-            Filter Products
-          </Typography>
-          <Form className={classes.filterForm}>
-            <FiltersMenu
-              handlePagination={handlePagination}
-              setFilterData={setFilterData}
-            />
-          </Form>
-        </Drawer>
-
-        {/* End Mobile Drawer */}
-
+          // end Mobile Drawer 
+          )
+        }
         {/* Start ProductList */}
 
         <div className={classes.productListSection}>

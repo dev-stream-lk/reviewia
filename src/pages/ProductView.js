@@ -362,8 +362,9 @@ const WriteReview = (props) => {
     if (validate()) {
       let res = await writeReview(values.description, values.rating);
       if(res){
-        setOpen(false);
         setValues(initialValues);
+        setOpen(false);
+        setError("");
       }else{
         setError("Review and star rating not maching.");
       }
@@ -909,6 +910,12 @@ const ProductView = (props) => {
                   Brand:{" "}
                   {Object.keys(postData).length !== 0
                     ? firstLetterCapital(postData.brand.name)
+                    : ""}
+                </Controls.Paper>
+                <Controls.Paper>
+                  Posted By:{" "}
+                  {Object.keys(postData).length !== 0
+                    ? postData.createdBy
                     : ""}
                 </Controls.Paper>
                 <Controls.Paper>

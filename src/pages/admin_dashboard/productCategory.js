@@ -222,7 +222,7 @@ export default function ProductCategory(props) {
               selected={selectedIndex === product["categoryId"]}
               onClick={(event) => handleListItemClick(event, product["categoryId"])}
             >
-              <ListItemText primary={product.categoryName} />
+              <ListItemText primary={`${product.categoryName} (${product.postCount} posts)`} />
               <ListItemSecondaryAction>
                 <IconButton onClick={()=>handleEdit(product.categoryId)} edge="end" aria-label="edit">
                   <EditIcon />
