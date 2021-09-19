@@ -109,14 +109,94 @@ const AddNewSubCategory = (props) => {
   );
 };
 
-
-export default function SubCategory(props) {
+const DeleteSubCategory = (props) => {
   const classes = useStyles();
-  const {catData, addNewSubCategory} = props;
-  const [openAddSubCategory, setOpenAddSubCategory] = useState(false);
+  const { open, setOpen, deleteSubCategory } = props;
+  const [error, setError] = useState("");
+
+  const onSubmit = async () => {
+    let res = await deleteSubCategory();
+
+    if (res) {
+      setOpen(false);
+      setError("");
+    } else {
+      setError("New category creation failed.");
+    }
+  };
+
+  const Actions = () => {
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+          style={{ marginRight: 10 }}
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          color="secondary"
+          onClick={() => onSubmit()}
+        >
+          Delete
+        </Controls.Button>
+      </Grid>
+    );
+  };
 
   return (
     <>
+      <Controls.Popup
+        title="Create New Category"
+        openPopup={open}
+        setOpenPopup={setOpen}
+        actions={<Actions />}
+      >
+        {error !== "" && (
+          <Grid
+            container
+            style={{
+              marginTop: 8,
+              padding: 8,
+              marginBottom: 24,
+              color: "red",
+              background: "#ffaaaa",
+            }}
+            justifyContent="center"
+          >
+            <Typography variant="subtitle2">{error}</Typography>
+          </Grid>
+        )}
+        <div className={classes.addCategory}>
+          <Typography variant="subtitle2" >
+              Are you sure?
+          </Typography>
+        </div>
+      </Controls.Popup>
+    </>
+  );
+};
+
+
+export default function SubCategory(props) {
+  const classes = useStyles();
+  const {catData, addNewSubCategory, deleteSubCategory} = props;
+  const [openAddSubCategory, setOpenAddSubCategory] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteSubCatId, setDeleteSubCatId] = useState(0);
+
+  const deleteSubCat = () => {
+    return deleteSubCategory(catData.categoryId, deleteSubCatId);
+  }
+
+  const handleDelete = (subCategoryId) => {
+    setDeleteSubCatId(subCategoryId);
+    setOpenDelete(true);
+  }
+
+  return (
+    <>
+      <DeleteSubCategory deleteSubCategory={deleteSubCat} open={openDelete} setOpen={setOpenDelete} />
       <Grid container justifyContent="space-between" alignItems="center" style={{marginTop: "8px",}}>
         <Typography variant="h6" style={{fontWeight:600}}>
           Sub Categories
@@ -145,7 +225,7 @@ export default function SubCategory(props) {
                 <IconButton edge="end" aria-label="edit">
                   <EditIcon />
                 </IconButton>
-                <IconButton edge="end" aria-label="delete">
+                <IconButton onClick={()=>handleDelete(subCategory.subCategoryId)} edge="end" aria-label="delete">
                   <DeleteIcon />
                 </IconButton>
               </ListItemSecondaryAction>

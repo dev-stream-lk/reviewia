@@ -26,7 +26,7 @@ export const createNewCategory = (categoryName,type) => {
         return false;
       })
       .catch((err) => console.error(err));
-  };
+};
 
 
 // create new sub category
@@ -51,4 +51,46 @@ export const createNewSubCategory = (subCategoryName,categoryId) => {
         return false;
       })
       .catch((err) => console.error(err));
+};
+
+// delete category
+export const deleteCategoryDB = (categoryId) => {
+  
+  const requestOptions = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    }
   };
+
+  return fetch(HOST + `category?id=${categoryId}`, requestOptions)
+    .then( (res) => {
+      if (res.ok) {
+        return true;
+      }
+      return false;
+    })
+    .catch((err) => console.error(err));
+};
+
+// delete subcategory
+export const deleteSubCategoryDB = (subCategoryId) => {
+  
+  const requestOptions = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    }
+  };
+
+  return fetch(HOST + `subcategory?id=${subCategoryId}`, requestOptions)
+    .then( (res) => {
+      if (res.ok) {
+        return true;
+      }
+      return false;
+    })
+    .catch((err) => console.error(err));
+};

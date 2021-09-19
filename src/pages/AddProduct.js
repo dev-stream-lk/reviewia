@@ -853,11 +853,9 @@ const Step3 = (props) => {
     };
     console.log("add", step1Data);
     let res = await createPost(data);
-    console.log(res);
     if (res) {
       setStep1Data([]);
       setSelectedImages([]);
-      console.log(res.postId);
       setNewPostId(res["postId"]);
       handleNext();
     } else {

@@ -396,7 +396,6 @@ export default function Header(props) {
                 <MenuItem component={Link} to="/profile">
                   Profile
                 </MenuItem>
-                <MenuItem>Instant Groups</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </>
@@ -413,7 +412,7 @@ export default function Header(props) {
                     className={classes.headerFavIcon}
                     component="span"
                   >
-                    <FavoriteIcon />
+                    <FavoriteIcon id="headerHeartIcon" />
                   </IconButton>
                 </Tooltip>
               </Link>

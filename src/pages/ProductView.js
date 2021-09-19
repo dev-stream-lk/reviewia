@@ -733,7 +733,7 @@ const ProductView = (props) => {
 
   // get post remaining delete time
   const getRemainingDeleteTime = (datetime) => {
-    let res = getTimeRemains(postData.createdAt, 0, 0, 530);
+    let res = getTimeRemains(postData.createdAt, 0, 0, 30);
 
     return `${res.m} mins ${res.s} sec`;
   };
@@ -868,7 +868,7 @@ const ProductView = (props) => {
                     </IconButton>
                   </Tooltip>
                 ) : (
-                  checkDateTimeIsExpired(postData.createdAt, 530) && (
+                  checkDateTimeIsExpired(postData.createdAt, 30) && (
                     <Tooltip
                       title={`Delete Post Permanently( ${getRemainingDeleteTime(
                         postData.createdAt

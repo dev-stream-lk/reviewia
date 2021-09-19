@@ -2,12 +2,13 @@ import { Grid, makeStyles, Typography, Button } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import Controls from "../../components/Controls";
 import ProductCategory from "./productCategory";
-import ServiceCategory from "./serviceCategory";
 import SubCategory from "./comp_subCategory";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import {
   createNewCategory,
   createNewSubCategory,
+  deleteCategoryDB,
+  deleteSubCategoryDB,
 } from "../../services/dashboard";
 import { getCategoryWithSubCategory } from "../../services/category";
 
@@ -134,6 +135,24 @@ export default function AddCaregory() {
     }
   }, []);
 
+  useEffect( () => {
+    if(selected === 0){
+      if(productList.length >0){
+        setCatSelected(productList[0].categoryId)
+      }else{
+        setCatSelected(0);
+        setCatData({});
+      }
+    }else{
+      if(serviceList.length >0){
+        setCatSelected(serviceList[0].categoryId)
+      }else{
+        setCatSelected(0);
+        setCatData({});
+      }
+    }
+  }, [selected])
+
   useEffect(() => {
     if (catSelected !== 0) {
       if (selected === 0) {
@@ -195,9 +214,9 @@ export default function AddCaregory() {
           serviceList.map((cat) => {
             if (cat.categoryId === catSelected) {
               if (cat.subCategoryList === null) {
-                cat["brandList"] = [res];
+                cat["subCategoryList"] = [res];
               } else {
-                cat.subCategoryList.append(res);
+                cat.subCategoryList = [...cat.subCategoryList, res];
               }
             }
             return cat;
@@ -207,6 +226,74 @@ export default function AddCaregory() {
     }
     return res;
   };
+
+  const deleteCategory = async (categoryId) => {
+    let type = selected === 0 ? "p" : "s";
+    let res = await deleteCategoryDB(categoryId);
+    if (res) {
+      if (type === "p") {
+        setProductList(
+          productList.filter( (cat) => {
+            if(cat.categoryId === categoryId){
+              return false;
+            }else{
+              return true;
+            }
+          })
+        );
+      } else {
+        setServiceList(
+          serviceList.filter( (cat) => {
+            if(cat.categoryId === categoryId){
+              return false;
+            }else{
+              return true;
+            }
+          })
+        );
+      }
+      setCatSelected(0);
+      setCatData({});
+    }
+    return res;
+  }
+
+  const deleteSubCategory = async (categoryId,subCategoryId) => {
+    let type = selected === 0 ? "p" : "s";
+    let res = await deleteSubCategoryDB(subCategoryId);
+    if (res) {
+      if (type === "p") {
+        setProductList(
+          productList.map( (cat) => {
+            if(cat.categoryId === categoryId){
+              cat.subCategoryList = cat.subCategoryList.filter( (subCat) => {
+                if(subCat.subCategoryId === subCategoryId){
+                  return false;
+                }
+                return true;
+              })
+            }
+            return cat;
+          })
+        );
+      } else {
+        setServiceList(
+          serviceList.map( (cat) => {
+            if(cat.categoryId === categoryId){
+              cat.subCategoryList = cat.subCategoryList.filter( (subCat) => {
+                if(subCat.subCategoryId === subCategoryId){
+                  return false;
+                }
+                return true;
+              })
+            }
+            return cat;
+          })
+        );
+      }
+    }
+    return res;
+  }
 
   return (
     <Grid container spacing={3}>
@@ -335,12 +422,14 @@ export default function AddCaregory() {
                   <ProductCategory
                     setCatSelected={setCatSelected}
                     productList={productList}
+                    deleteCategory={deleteCategory}
                   />
                 ) : (
                   // <ServiceCategory serviceList={serviceList} />
                     <ProductCategory
                       setCatSelected={setCatSelected}
                       productList={serviceList}
+                      deleteCategory={deleteCategory}
                     />
                 )}
               </Grid>
@@ -353,6 +442,7 @@ export default function AddCaregory() {
           <SubCategory
             catData={catData}
             addNewSubCategory={addNewSubCategory}
+            deleteSubCategory={deleteSubCategory}
           />
         </Controls.Paper>
       </Grid>
