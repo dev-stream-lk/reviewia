@@ -14,6 +14,7 @@ import ReportedBannedPost from "./comp_reportedPostList";
 import ReportedHiddenReview from "./comp_reportHiddenReview";
 import BlockedUsers from "./comp_blockedUsers";
 import AddCaregory from "./comp_addCategory";
+import SystemReport from "./SystemReport";
 
 const drawerWidth = 280;
 
@@ -150,9 +151,7 @@ export default function DashBoard(props) {
 
                 {selected === 4 ? <BlockedUsers /> : null}
 
-                {selected === 5 ? (
-                  <Typography>System Reports</Typography>
-                ) : null}
+                {selected === 5 ? <SystemReport /> : null}
               </Controls.Paper>
             </Grid>
           </Grid>

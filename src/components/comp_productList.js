@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: "#CCDEF5",
     marginBottom: 20,
+    borderRadius:10
   },
   productListItemImage: {
     minHeight: 80,
@@ -70,7 +71,6 @@ const ProductCard = (props) => {
               <Grid container alignItems="center">
                 <CardHeader
                   className={classes.productListItemHeader}
-                  avatar={<Avatar aria-label="recipe">R</Avatar>}
                   title={post.title}
                   subheader={new Date(post.createdAt).toDateString()}
                 />

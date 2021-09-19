@@ -31,7 +31,7 @@ import { CatContext } from "../context/CategorySubCategotyContext";
 import { getDate } from "../utils/dateTime";
 import NotFoundImage from "../assets/not-found.svg";
 import { PreLoader } from "../components/basic/PreLoader";
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete, Skeleton } from "@material-ui/lab";
 import { getPostBySearch } from "../services/posts";
 
 const useStyles = makeStyles((theme) => ({
@@ -95,10 +95,10 @@ const useStyles = makeStyles((theme) => ({
   mostRecentCard: {
     cursor: "pointer",
     "& .MuiCardHeader-title": {
-      fontSize: 20,
+      fontSize: 16,
     },
     "& .MuiCardHeader-subheader": {
-      fontSize: 14,
+      fontSize: 12,
     },
     height: "100%",
     display: "flex",
@@ -150,6 +150,11 @@ const useStyles = makeStyles((theme) => ({
   homeSearch: {
     width: "100%",
   },
+  productCardImage:{
+    width:40,
+    height:40,
+    borderRadius:"50%"
+  }
 }));
 
 const HomeSearch = () => {
@@ -236,18 +241,35 @@ const MostRecentCard = (props) => {
       >
         <Controls.Card className={classes.mostRecentCard}>
           <CardHeader
+            style={{width:"100%", height:80, textAlign:"left"}}
             title={post.title}
+            avatar={ post.avatarUrl ? (
+              <img
+                title={`${post.createdBy}`}
+                alt=""
+                src={`${post.avatarUrl}`}
+                className={classes.productCardImage}
+              />
+            ): (
+              <Skeleton
+                title={`${post.createdBy}`}
+                animation="wave"
+                variant="circle"
+                width={40}
+                height={40}
+              />
+            ) }
             subheader={getDate(post.createdAt)}
           ></CardHeader>
           <CardMedia title={post.title}>
-            <div style={{ width: 200, height: 200 }}>
+            <div style={{ width: 200, height: 200, display:"flex", alignItems:"center", justifyContent:"center" }}>
               <img
                 style={{ maxWidth: 200, maxHeight: 200 }}
                 src={`${post.imgURL.length === 0 ? "" : post.imgURL[0].url}`}
               />
             </div>
           </CardMedia>
-          <CardContent>
+          <CardContent style={{ width:"100%"}} >
             <Rating
               name="phone"
               value={post.rate}
@@ -257,7 +279,6 @@ const MostRecentCard = (props) => {
             />
             <Box>{post.rate}</Box>
           </CardContent>
-          <CardActions></CardActions>
         </Controls.Card>
       </Link>
     </Grid>

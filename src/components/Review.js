@@ -248,15 +248,19 @@ export default function Review(props) {
                           justifyContent="flex-end"
                           className={classes.reviewFooter}
                         >
-                          <IconButton
-                            color="secondary"
-                            aria-label="report"
-                            component="span"
-                            onClick={() => setReportReviewId(review.reviewId)}
-                            title="Report Review"
-                          >
-                            <ReportIcon />
-                          </IconButton>
+                          {
+                            review.email !== userData.email && (
+                              <IconButton
+                                color="secondary"
+                                aria-label="report"
+                                component="span"
+                                onClick={() => setReportReviewId(review.reviewId)}
+                                title="Report Review"
+                              >
+                                <ReportIcon />
+                              </IconButton>
+                            )
+                          }
                           <div
                             style={{
                               display: "flex",
