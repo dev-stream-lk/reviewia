@@ -154,7 +154,7 @@ const FiltersMenu = (props) => {
         });
       }
       for (let i in data.services) {
-        products.push({
+        services.push({
           id: data.services[i].categoryName,
           title: data.services[i].categoryName,
           subCategories: data.services[i].subCategoryList,
@@ -260,28 +260,9 @@ const FiltersMenu = (props) => {
     }
   }, [values]);
 
-  // const [categoryOptions, setCategoryOptions] = useState([
-  //     {id:"all", title:"All"},
-  //     {id: "1", title:"Electronics"},
-  //     {id: "2", title:"Vehicles"},
-  //     {id: "3", title:"Others"}
-  // ]);
-  // const [subCategoryOptions, setSubCategoryOptions] = useState([
-  //     {id:"all", title:"All"},
-  //     {id: "1", title:"Mobile Phones"},
-  //     {id: "2", title:"Tvs"},
-  //     {id: "3", title:"Laptops"}
-  // ]);
-  // const [brandOptions, setBrandOptions] = useState([
-  //     {id:"all", title:"All"},
-  //     {id: "1", title:"Samsung"},
-  //     {id: "2", title:"Huawei"},
-  //     {id: "3", title:"LG"}
-  // ]);
-
   return (
     <List>
-      <ListItem className={classes.filterMenuItem}>
+      {/* <ListItem className={classes.filterMenuItem}>
         <Grid container>
           <Controls.RadioGroup
             name="byState"
@@ -297,7 +278,7 @@ const FiltersMenu = (props) => {
             className={classes.radioGroup}
           ></Controls.RadioGroup>
         </Grid>
-      </ListItem>
+      </ListItem> */}
       <ListItem className={classes.filterMenuItem}>
         <Grid container>
           <Typography
@@ -342,7 +323,7 @@ const FiltersMenu = (props) => {
         </Grid>
       </ListItem>
 
-      <ListItem className={classes.filterMenuItem}>
+      {/* <ListItem className={classes.filterMenuItem}>
         <Grid container>
           <Typography
             variant="subtitle1"
@@ -374,7 +355,7 @@ const FiltersMenu = (props) => {
             </div>
           </Collapse>
         </Grid>
-      </ListItem>
+      </ListItem> */}
 
       {/* Start ByCategory */}
       <ListItem className={classes.filterMenuItem}>
@@ -428,11 +409,11 @@ const FiltersMenu = (props) => {
                     ? values.type == "p"
                       ? categories.products.length != 0
                         ? [{ id: "all", title: "All" }, ...categories.products]
-                        : [{ id: "all", title: "Not Found" }]
+                        : [{ id: "all", title: "All" }]
                       : categories.services.length != 0
                       ? categories.services
-                      : [{ id: "all", title: "Not Found" }]
-                    : [{ id: "all", title: "Not Found" }]
+                      : [{ id: "all", title: "All" }]
+                    : [{ id: "all", title: "All" }]
                 }
                 // options ={[]}
               ></Controls.Select>
@@ -446,7 +427,7 @@ const FiltersMenu = (props) => {
                 options={
                   subCategories.length !== 0
                     ? [{ id: "all", title: "All" }, ...subCategories]
-                    : [{ id: "all", title: "Not Found" }]
+                    : [{ id: "all", title: "All" }]
                 }
                 value={values.subCategory}
                 onChange={(e) =>
@@ -464,7 +445,7 @@ const FiltersMenu = (props) => {
                 options={
                   brands.length !== 0
                     ? [{ id: "all", title: "All" }, ...brands]
-                    : [{ id: "all", title: "Not Found" }]
+                    : [{ id: "all", title: "All" }]
                 }
                 value={values.brand}
                 onChange={(e) =>

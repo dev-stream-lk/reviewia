@@ -208,7 +208,7 @@ const Step1 = (props) => {
         });
       }
       for (let i in data.services) {
-        products.push({
+        services.push({
           id: data.services[i].categoryId,
           title: data.services[i].categoryName,
           subCategories: data.services[i].subCategoryList,
@@ -392,10 +392,10 @@ const Step1 = (props) => {
                         options={
                           categories.length != 0
                             ? values.type === "p"
-                              ? categories.products.length != 0
+                              ? categories.products.length !== 0
                                 ? categories.products
                                 : [{ id: "none", title: "Not Found" }]
-                              : categories.services.length != 0
+                              : categories.services.length !== 0
                               ? categories.services
                               : [{ id: "none", title: "Not Found" }]
                             : [{ id: "none", title: "Not Found" }]
