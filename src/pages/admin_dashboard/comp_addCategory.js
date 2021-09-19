@@ -9,6 +9,8 @@ import {
   createNewSubCategory,
   deleteCategoryDB,
   deleteSubCategoryDB,
+  editCategoryDB,
+  editSubCategoryDB,
 } from "../../services/dashboard";
 import { getCategoryWithSubCategory } from "../../services/category";
 
@@ -258,6 +260,36 @@ export default function AddCaregory() {
     return res;
   }
 
+  const editCategory = async (categoryId, newName) => {
+
+    let type = selected === 0 ? "p" : "s";
+    let res = editCategoryDB(categoryId,newName);
+    if (res) {
+      if (type === "p") {
+        setProductList(
+          productList.map( (cat) => {
+            if(cat.categoryId === categoryId){
+              cat.categoryName = newName;
+            }
+            return cat;
+          })
+        );
+      } else {
+        setServiceList(
+          serviceList.filter( (cat) => {
+            if(cat.categoryId === categoryId){
+              cat.categoryName = newName;
+            }
+            return cat;
+          })
+        );
+      }
+      setCatSelected(0);
+      setCatData({});
+    }
+    return res;
+  }
+
   const deleteSubCategory = async (categoryId,subCategoryId) => {
     let type = selected === 0 ? "p" : "s";
     let res = await deleteSubCategoryDB(subCategoryId);
@@ -285,6 +317,44 @@ export default function AddCaregory() {
                   return false;
                 }
                 return true;
+              })
+            }
+            return cat;
+          })
+        );
+      }
+    }
+    return res;
+  }
+
+  const editSubCategory = async (categoryId, subCatId, newName) => {
+
+    let type = selected === 0 ? "p" : "s";
+    let res = editSubCategoryDB(subCatId,newName);
+    if (res) {
+      if (type === "p") {
+        setProductList(
+          productList.map( (cat) => {
+            if(cat.categoryId === categoryId){
+              cat.subCategoryList.map( (subCat) => {
+                if(subCat.subCategoryId === subCatId){
+                  subCat.subCategoryName = newName;
+                }
+                return subCat;
+              })
+            }
+            return cat;
+          })
+        );
+      } else {
+        setServiceList(
+          serviceList.map( (cat) => {
+            if(cat.categoryId === categoryId){
+              cat.subCategoryList.map( (subCat) => {
+                if(subCat.subCategoryId === subCatId){
+                  subCat.subCategoryName = newName;
+                }
+                return subCat;
               })
             }
             return cat;
@@ -423,6 +493,7 @@ export default function AddCaregory() {
                     setCatSelected={setCatSelected}
                     productList={productList}
                     deleteCategory={deleteCategory}
+                    editCategory={editCategory}
                   />
                 ) : (
                   // <ServiceCategory serviceList={serviceList} />
@@ -430,6 +501,7 @@ export default function AddCaregory() {
                       setCatSelected={setCatSelected}
                       productList={serviceList}
                       deleteCategory={deleteCategory}
+                      editCategory={editCategory}
                     />
                 )}
               </Grid>
@@ -443,6 +515,7 @@ export default function AddCaregory() {
             catData={catData}
             addNewSubCategory={addNewSubCategory}
             deleteSubCategory={deleteSubCategory}
+            editSubCategory={editSubCategory}
           />
         </Controls.Paper>
       </Grid>
