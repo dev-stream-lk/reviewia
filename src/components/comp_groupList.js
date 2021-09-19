@@ -5,6 +5,7 @@ import {
   IconButton,
   CardHeader,
   CardContent,
+  Divider,
 } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import Controls from "../components/Controls";
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
   productListcard: {
     width: "100%",
     backgroundColor: "#CCDEF5",
+    borderRadius:10
   },
   productListItemImage: {
     minHeight: 80,
@@ -71,8 +73,8 @@ const GroupCard = (props) => {
       >
         <Controls.Card className={classes.productListcard}>
           <Grid container>
-            <Grid container item xs={12}>
-              <Grid container>
+            <Grid container >
+              <Grid item item xs={12} lg={6}>
                 <CardHeader
                   className={classes.productListItemHeader}
                   avatar={
@@ -89,8 +91,9 @@ const GroupCard = (props) => {
                   }
                 />
               </Grid>
+              <Divider orientation="vertical" />
               <CardContent>
-                <Grid item xs={12}>
+                <Grid item xs={12} lg={6}>
                   <Typography variant="caption" display="block" gutterBottom>
                     Created At :{getDateTime(groupData.createdAt)}
                   </Typography>
@@ -123,12 +126,12 @@ const GroupCard = (props) => {
           </Grid>
         </Controls.Card>
       </Link>
-      <IconButton
+      {/* <IconButton
         style={{ position: "absolute", right: 20 }}
         aria-label="options"
       >
         <MoreVertIcon />
-      </IconButton>
+      </IconButton> */}
     </Grid>
   );
 };

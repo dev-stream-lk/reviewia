@@ -27,7 +27,7 @@ import { getPostBySearch } from "../services/posts";
 import { getCategoryWithSubCategory } from "../services/category";
 import NotFoundImage from "../assets/not-found.svg";
 import { PreLoader } from "../components/basic/PreLoader";
-import { Pagination } from "@material-ui/lab";
+import { Pagination, Skeleton } from "@material-ui/lab";
 
 const drawerWidth = 280;
 
@@ -107,6 +107,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     maxWidth: "150px",
   },
+  productCardImage:{
+    width:40,
+    height:40,
+    borderRadius:"50%"
+  }
 }));
 
 const FiltersMenu = (props) => {
@@ -116,11 +121,11 @@ const FiltersMenu = (props) => {
   const [handleCollapseByRating, setHandleCollapseByRating] = useState(true);
   const [handleCollapseByCategory, setHandleCollapseByCategory] =
     useState(true);
-  const [handleCollapseByDates, setHandleCollapseByDates] = useState(true);
 
-  const [filterStartDate, setFilterStartDate] = useState("");
-  const [filterEndDate, setFilterEndDate] = useState("");
-  const [byState, setByState] = useState("new");
+  // const [handleCollapseByDates, setHandleCollapseByDates] = useState(true);
+  // const [filterStartDate, setFilterStartDate] = useState("");
+  // const [filterEndDate, setFilterEndDate] = useState("");
+  // const [byState, setByState] = useState("new");
 
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -463,16 +468,15 @@ const FiltersMenu = (props) => {
 
 const ProductCard = (props) => {
   const classes = useStyles();
-  // const [rating, setRating] = useState(props.rating | (4.5));
-  const [rating, setRating] = useState(4.5);
   const { post } = props;
 
   return (
     <Controls.Card className={classes.productListcard}>
       <Grid container>
-        <Grid item xs={4}>
+        <Grid item xs={4} style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
           <CardMedia title={post.title}>
             <img
+              alt=""
               src={`${post.imgURL.length === 0 ? "" : post.imgURL[0].url}`}
               className={classes.productListItemImage}
             />
@@ -482,14 +486,24 @@ const ProductCard = (props) => {
           <Grid container>
             <CardHeader
               className={classes.productListItemHeader}
-              // avatar={<Avatar aria-label="recipe">R</Avatar>}
-              // action={
-              //   <IconButton aria-label="settings">
-              //     <MoreVertIcon />
-              //   </IconButton>
-              // }
+              avatar={ post.avatarUrl ? (
+                <img
+                  title={`${post.createdBy}`}
+                  alt=""
+                  src={`${post.avatarUrl}`}
+                  className={classes.productCardImage}
+                />
+              ): (
+                <Skeleton
+                  title={`${post.createdBy}`}
+                  animation="wave"
+                  variant="circle"
+                  width={40}
+                  height={40}
+                />
+              ) }
               titleTypographyProps={{
-                style: { fontSize: 22, whiteSpace: "normal" },
+                style: { fontSize: 20, whiteSpace: "normal" },
               }}
               subheaderTypographyProps={{ style: { fontSize: 13 } }}
               title={post.title}
@@ -582,50 +596,53 @@ export default function ProductList(props) {
       ></Header>
 
       <Grid container className={`${classes.wrapper} content`}>
-        {/* Start Drawer */}
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          style={{ display: isMobile ? "none" : "inherit" }}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <Typography variant="h5" component="div">
-            Filter Products
-          </Typography>
-          <Form className={classes.filterForm}>
-            <FiltersMenu
-              handlePagination={handlePagination}
-              setFilterData={setFilterData}
-            />
-          </Form>
-        </Drawer>
-        {/* End Drawer */}
+        {
+          !isMobile ? (
+            // Start Drawer
+            <Drawer
+              className={classes.drawer}
+              variant="permanent"
+              style={{ display: isMobile ? "none" : "inherit" }}
+              classes={{
+                paper: classes.drawerPaper,
+              }}
+            >
+              <Typography variant="h5" component="div">
+                Filter Products
+              </Typography>
+              <Form className={classes.filterForm}>
+                <FiltersMenu
+                  handlePagination={handlePagination}
+                  setFilterData={setFilterData}
+                />
+              </Form>
+            </Drawer>
+            // End Drawer
+          ): (
+            // Start Mobile Drawer
+            <Drawer
+            className={classes.mobileDrawer}
+            variant="temporary"
+            classes={{
+              paper: classes.drawerPaperMobile,
+            }}
+            open={openMobileDrawer}
+            onClose={() => setOpenMobileDrawer(false)}
+          >
+            <Typography variant="h5" component="div">
+              Filter Products
+            </Typography>
+            <Form className={classes.filterForm}>
+              <FiltersMenu
+                handlePagination={handlePagination}
+                setFilterData={setFilterData}
+              />
+            </Form>
+          </Drawer>
 
-        {/* Start Mobile Drawer */}
-        <Drawer
-          className={classes.mobileDrawer}
-          variant="temporary"
-          classes={{
-            paper: classes.drawerPaperMobile,
-          }}
-          open={openMobileDrawer}
-          onClose={() => setOpenMobileDrawer(false)}
-        >
-          <Typography variant="h5" component="div">
-            Filter Products
-          </Typography>
-          <Form className={classes.filterForm}>
-            <FiltersMenu
-              handlePagination={handlePagination}
-              setFilterData={setFilterData}
-            />
-          </Form>
-        </Drawer>
-
-        {/* End Mobile Drawer */}
-
+          // end Mobile Drawer 
+          )
+        }
         {/* Start ProductList */}
 
         <div className={classes.productListSection}>

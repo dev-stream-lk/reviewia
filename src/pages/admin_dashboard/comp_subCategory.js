@@ -305,7 +305,7 @@ export default function SubCategory(props) {
         {catData.subCategoryList && catData.subCategoryList.map((subCategory) => (
           <div>
             <ListItem>
-              <ListItemText primary={subCategory.subCategoryName} />
+              <ListItemText primary={`${subCategory.subCategoryName} (${subCategory.postCount} posts)`} />
               <ListItemSecondaryAction>
                 <IconButton onClick={()=>handleEdit(subCategory.subCategoryId)} edge="end" aria-label="edit">
                   <EditIcon />
