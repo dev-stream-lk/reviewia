@@ -183,7 +183,7 @@ const HomeSearch = () => {
         renderOption={(option, { selected }) => (
           <React.Fragment>
             <Link
-              to={`products/${option.category}/${option.subCategory}`}
+              to={`product/view/${option.postId}`}
               style={{
                 display: "flex",
                 alignItems: "center",
