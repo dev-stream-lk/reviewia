@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 150,
   },
   profilePicture: {
-    minHeight: 80,
-    maxHeight: 150,
+    width:200,
+    height:200,
   },
   profileCameraButton: {
     width: 30,
@@ -80,6 +80,7 @@ const Profile = (props) => {
   useEffect(async () => {
     if (userData) {
       let data = await get_user_basic_info(userData.token, userData.email);
+      console.log(data)
       if (data) {
         setProfileData(data);
       }
@@ -131,7 +132,9 @@ const Profile = (props) => {
                   >
                     <PhotoCameraIcon />
                   </Controls.ActionButton>
-                  <img src={ProfilePic} className={classes.profilePicture} />
+                  <div className={classes.profilePicture}>
+                    <img src={ profileData.avatar} style={{width:"100%",borderRadius:"50%"}}  />
+                  </div>
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={7} md={12} direction="column">

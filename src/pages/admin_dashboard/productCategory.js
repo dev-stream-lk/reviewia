@@ -6,11 +6,13 @@ import {
   TextField,
   IconButton,
   ListItemSecondaryAction,
-  makeStyles
+  makeStyles,
+  Typography
 } from "@material-ui/core";
 import React, { useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import Controls from "../../components/Controls";
 
 const useStyles = makeStyles((theme)=>({
   addSubCategory: {
@@ -18,12 +20,82 @@ const useStyles = makeStyles((theme)=>({
   },
 }));
 
+const DeleteCategory = (props) => {
+  const classes = useStyles();
+  const { open, setOpen, deleteCategory, deleteCategoryId } = props;
+  const [error, setError] = useState("");
+
+  const onSubmit = async () => {
+    let res = await deleteCategory(deleteCategoryId);
+
+    if (res) {
+      setOpen(false);
+      setError("");
+    } else {
+      setError("New category creation failed.");
+    }
+  };
+
+  const Actions = () => {
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+          style={{ marginRight: 10 }}
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          color="secondary"
+          onClick={() => onSubmit()}
+        >
+          Delete
+        </Controls.Button>
+      </Grid>
+    );
+  };
+
+  return (
+    <>
+      <Controls.Popup
+        title="Create New Category"
+        openPopup={open}
+        setOpenPopup={setOpen}
+        actions={<Actions />}
+      >
+        {error !== "" && (
+          <Grid
+            container
+            style={{
+              marginTop: 8,
+              padding: 8,
+              marginBottom: 24,
+              color: "red",
+              background: "#ffaaaa",
+            }}
+            justifyContent="center"
+          >
+            <Typography variant="subtitle2">{error}</Typography>
+          </Grid>
+        )}
+        <div className={classes.addCategory}>
+          <Typography variant="subtitle2" >
+              Are you sure?
+          </Typography>
+        </div>
+      </Controls.Popup>
+    </>
+  );
+};
+
 
 export default function ProductCategory(props) {
 
 
-  const {productList, setCatSelected} = props;
-  const [selectedIndex, setSelectedIndex] = useState(1);
+  const {productList, setCatSelected, deleteCategory} = props;
+  const [selectedIndex, setSelectedIndex] = useState( productList.length >0 ? productList[0].categoryId : 0);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteCategoryId, setDeleteCategoryId] = useState(0);
 
   const handleListItemClick = (event, id) => {
     //call the function to gain sub classes..using index as id.
@@ -32,9 +104,14 @@ export default function ProductCategory(props) {
   };
 
   const [searchItem, setSearch] = useState("");
+  const handleDelete = (categoryId) => {
+    setDeleteCategoryId(categoryId);
+    setOpenDelete(true);
+  }
 
   return (
     <Grid>
+      <DeleteCategory deleteCategory={deleteCategory} deleteCategoryId={deleteCategoryId} open={openDelete} setOpen={setOpenDelete} />
       <form noValidate autoComplete="off">
         <Grid item xs={6}>
           <TextField
@@ -71,7 +148,7 @@ export default function ProductCategory(props) {
                 <IconButton edge="end" aria-label="edit">
                   <EditIcon />
                 </IconButton>
-                <IconButton edge="end" aria-label="delete">
+                <IconButton onClick={()=>handleDelete(product.categoryId)}  edge="end" aria-label="delete">
                   <DeleteIcon />
                 </IconButton>
               </ListItemSecondaryAction>

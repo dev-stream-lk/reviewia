@@ -15,6 +15,7 @@ export const createPost = (data) => {
     selectedImages,
   } = data;
   const formData = new FormData();
+  console.log(selectedImages)
   selectedImages.map((img) => {
     formData.append("image", img["imageObj"], img["imageObj"].name);
     return 1;
