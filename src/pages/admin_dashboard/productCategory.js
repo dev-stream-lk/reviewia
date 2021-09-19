@@ -88,14 +88,87 @@ const DeleteCategory = (props) => {
   );
 };
 
+const EditCategory = (props) => {
+  const classes = useStyles();
+  const { open, setOpen, editCategory, editCategoryId } = props;
+  const [newName, setNewName] = useState("");
+  const [error, setError] = useState("");
+
+  const onSubmit = async () => {
+    let res = await editCategory(editCategoryId, newName);
+    if (res) {
+      setOpen(false);
+      setError("");
+    } else {
+      setError("Operation failed.");
+    }
+  };
+
+  const Actions = () => {
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+        color="secondary"
+          style={{ marginRight: 10 }}
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          disabled={newName !== "" ? false : true}
+          onClick={() => onSubmit()}
+        >
+          Save
+        </Controls.Button>
+      </Grid>
+    );
+  };
+
+  return (
+    <>
+      <Controls.Popup
+        title="Edit Category Name"
+        openPopup={open}
+        setOpenPopup={setOpen}
+        actions={<Actions />}
+      >
+        {error !== "" && (
+          <Grid
+            container
+            style={{
+              marginTop: 8,
+              padding: 8,
+              marginBottom: 24,
+              color: "red",
+              background: "#ffaaaa",
+            }}
+            justifyContent="center"
+          >
+            <Typography variant="subtitle2">{error}</Typography>
+          </Grid>
+        )}
+        <div className={classes.addCategory}>
+          <Controls.Input
+            name="description"
+            label="New Category Name"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            required={true}
+          />
+        </div>
+      </Controls.Popup>
+    </>
+  );
+};
 
 export default function ProductCategory(props) {
 
-
-  const {productList, setCatSelected, deleteCategory} = props;
+  const {productList, setCatSelected, deleteCategory, editCategory} = props;
   const [selectedIndex, setSelectedIndex] = useState( productList.length >0 ? productList[0].categoryId : 0);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [deleteCategoryId, setDeleteCategoryId] = useState(0);
+  const [editCategoryId, setEditCategoryId] = useState(0);
 
   const handleListItemClick = (event, id) => {
     //call the function to gain sub classes..using index as id.
@@ -109,9 +182,15 @@ export default function ProductCategory(props) {
     setOpenDelete(true);
   }
 
+  const handleEdit = (categoryId) => {
+    setEditCategoryId(categoryId);
+    setOpenEdit(true);
+  }
+
   return (
     <Grid>
       <DeleteCategory deleteCategory={deleteCategory} deleteCategoryId={deleteCategoryId} open={openDelete} setOpen={setOpenDelete} />
+      <EditCategory editCategory={editCategory} editCategoryId={editCategoryId} open={openEdit} setOpen={setOpenEdit} />
       <form noValidate autoComplete="off">
         <Grid item xs={6}>
           <TextField
@@ -145,7 +224,7 @@ export default function ProductCategory(props) {
             >
               <ListItemText primary={product.categoryName} />
               <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="edit">
+                <IconButton onClick={()=>handleEdit(product.categoryId)} edge="end" aria-label="edit">
                   <EditIcon />
                 </IconButton>
                 <IconButton onClick={()=>handleDelete(product.categoryId)}  edge="end" aria-label="delete">

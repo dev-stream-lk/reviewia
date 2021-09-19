@@ -177,16 +177,95 @@ const DeleteSubCategory = (props) => {
   );
 };
 
+const EditSubCategory = (props) => {
+  const classes = useStyles();
+  const { open, setOpen, editSubCategory, editSubCategoryId } = props;
+  const [newName, setNewName] = useState("");
+  const [error, setError] = useState("");
+
+  const onSubmit = async () => {
+    let res = await editSubCategory(newName);
+    if (res) {
+      setOpen(false);
+      setError("");
+    } else {
+      setError("Operation failed.");
+    }
+  };
+
+  const Actions = () => {
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+        color="secondary"
+          style={{ marginRight: 10 }}
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          disabled={newName !== "" ? false : true}
+          onClick={() => onSubmit()}
+        >
+          Save
+        </Controls.Button>
+      </Grid>
+    );
+  };
+
+  return (
+    <>
+      <Controls.Popup
+        title="Edit Sub Category Name"
+        openPopup={open}
+        setOpenPopup={setOpen}
+        actions={<Actions />}
+      >
+        {error !== "" && (
+          <Grid
+            container
+            style={{
+              marginTop: 8,
+              padding: 8,
+              marginBottom: 24,
+              color: "red",
+              background: "#ffaaaa",
+            }}
+            justifyContent="center"
+          >
+            <Typography variant="subtitle2">{error}</Typography>
+          </Grid>
+        )}
+        <div className={classes.addCategory}>
+          <Controls.Input
+            name="description"
+            label="New Category Name"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            required={true}
+          />
+        </div>
+      </Controls.Popup>
+    </>
+  );
+};
+
 
 export default function SubCategory(props) {
   const classes = useStyles();
-  const {catData, addNewSubCategory, deleteSubCategory} = props;
+  const {catData, addNewSubCategory, deleteSubCategory, editSubCategory } = props;
   const [openAddSubCategory, setOpenAddSubCategory] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [deleteSubCatId, setDeleteSubCatId] = useState(0);
+  const [editSubCatId, setEditSubCatId] = useState(0);
 
   const deleteSubCat = () => {
     return deleteSubCategory(catData.categoryId, deleteSubCatId);
+  }
+
+  const editSubCat = (newName) => {
+    return editSubCategory(catData.categoryId, editSubCatId, newName);
   }
 
   const handleDelete = (subCategoryId) => {
@@ -194,9 +273,15 @@ export default function SubCategory(props) {
     setOpenDelete(true);
   }
 
+  const handleEdit = (subCategoryId) => {
+    setEditSubCatId(subCategoryId);
+    setOpenEdit(true);
+  }
+
   return (
     <>
       <DeleteSubCategory deleteSubCategory={deleteSubCat} open={openDelete} setOpen={setOpenDelete} />
+      <EditSubCategory editSubCategory={editSubCat} open={openEdit} setOpen={setOpenEdit} />
       <Grid container justifyContent="space-between" alignItems="center" style={{marginTop: "8px",}}>
         <Typography variant="h6" style={{fontWeight:600}}>
           Sub Categories
@@ -222,7 +307,7 @@ export default function SubCategory(props) {
             <ListItem>
               <ListItemText primary={subCategory.subCategoryName} />
               <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="edit">
+                <IconButton onClick={()=>handleEdit(subCategory.subCategoryId)} edge="end" aria-label="edit">
                   <EditIcon />
                 </IconButton>
                 <IconButton onClick={()=>handleDelete(subCategory.subCategoryId)} edge="end" aria-label="delete">

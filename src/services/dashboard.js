@@ -94,3 +94,45 @@ export const deleteSubCategoryDB = (subCategoryId) => {
     })
     .catch((err) => console.error(err));
 };
+
+// edit Category
+export const editCategoryDB = (categoryId, newName) => {
+  
+  const requestOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    }
+  };
+
+  return fetch(HOST + `category?id=${categoryId}&set=${newName}`, requestOptions)
+    .then( (res) => {
+      if (res.ok) {
+        return true;
+      }
+      return false;
+    })
+    .catch((err) => console.error(err));
+};
+
+// edit subcategory
+export const editSubCategoryDB = (subCategoryId, newName) => {
+  
+  const requestOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    }
+  };
+
+  return fetch(HOST + `subcategory?id=${subCategoryId}&set=${newName}`, requestOptions)
+    .then( (res) => {
+      if (res.ok) {
+        return true;
+      }
+      return false;
+    })
+    .catch((err) => console.error(err));
+};
