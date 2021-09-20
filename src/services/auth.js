@@ -128,7 +128,7 @@ const logout = (setUserData, history) => {
   window.location.reload();
 };
 
-const passwordRecovery = ({ email }) => {
+const passwordRecovery = (email,password) => {
   const requestOptions = {
     method: "POST",
     headers: {
@@ -136,9 +136,10 @@ const passwordRecovery = ({ email }) => {
     },
     body: JSON.stringify({
       email,
+      password
     }),
   };
-  return fetch(HOST + "reset", requestOptions)
+  return fetch(HOST + "registration/reset", requestOptions)
     .then((res) => {
       if (res.ok) {
         return true;

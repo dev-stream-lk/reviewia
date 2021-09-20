@@ -358,6 +358,12 @@ const WriteReview = (props) => {
     validate
   );
 
+  const handleClose = () => {
+    setError("");
+    setValues(initialValues);
+    setOpen(false);
+  }
+
   const onSubmit = async () => {
     if (validate()) {
       let res = await writeReview(values.description, values.rating);
@@ -377,7 +383,7 @@ const WriteReview = (props) => {
         <Controls.Button
           color="secondary"
           style={{ marginRight: 10 }}
-          onClick={() => setOpen(false)}
+          onClick={handleClose}
         >
           Cancel
         </Controls.Button>
@@ -396,7 +402,7 @@ const WriteReview = (props) => {
       <Controls.Popup
         title="Write Review"
         openPopup={open}
-        setOpenPopup={setOpen}
+        setOpenPopup={handleClose}
         actions={<Actions />}
       >
         {
@@ -429,7 +435,7 @@ const WriteReview = (props) => {
                 })
               }
               name="rating"
-              precision={0.25}
+              precision={1}
             />
             <span style={{ paddingLeft: 10 }}>({values.rating})</span>
           </Grid>
@@ -444,6 +450,7 @@ const CreateInstantGroup = (props) => {
   const { open, setOpen, userData, postData } = props;
   const [dataList, setDataList] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(async () => {
     if (postData["reviews"]) {
@@ -453,7 +460,7 @@ const CreateInstantGroup = (props) => {
 
       // filter unique users
       dataList = dataList.filter((item, i, self) => {
-        if (userData.email == item.email) {
+        if (userData.email === item.email) {
           return false;
         }
         return i === self.findIndex((t) => t.email === item.email);
@@ -474,17 +481,25 @@ const CreateInstantGroup = (props) => {
     };
 
     let res = await createInstantGroup(data);
-    if (res) {
+    if (res === 200) {
+      setError("");
       window.location.reload();
+    }else if(res === 412){
+      setError("You can't create group.You already have active group.")
+    }else{
+      setError("Group create failed.")
     }
-
-    setOpen(false);
   };
+
+  const handleClose = () => {
+    setOpen(false);
+    setError("");
+  }
 
   const Actions = () => {
     return (
       <>
-        <Controls.Button onClick={() => setOpen(false)} color="secondary">
+        <Controls.Button onClick={handleClose} color="secondary">
           Cancel
         </Controls.Button>
 
@@ -496,11 +511,20 @@ const CreateInstantGroup = (props) => {
   return (
     <>
       <Controls.Popup
-        title="Report Review"
+        title="Create Instant Group"
         openPopup={open}
         setOpenPopup={setOpen}
         actions={<Actions />}
       >
+        {
+          error !== "" && (
+            <Grid container style={{padding:5, marginBottom:20, background:"#ffaaaa", color:"red"}}  justifyContent="center">
+              <Typography variant="caption">
+                {error}
+              </Typography>
+            </Grid>
+          )
+        }
         <Grid container className={classes.reportPopup}>
           <Grid item xs={12}>
             <MultipleSelect
@@ -826,7 +850,7 @@ const ProductView = (props) => {
                     </IconButton>
                   </Link>
                 </Tooltip>
-
+                
                 {activeGroupId !== 0 ? (
                   <Tooltip title="Goto Group Chat" aria-label="add" arrow>
                     <Link

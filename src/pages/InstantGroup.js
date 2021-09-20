@@ -1,6 +1,5 @@
 import {
   Box,
-  CardActions,
   CardContent,
   CardHeader,
   CardMedia,
@@ -24,7 +23,6 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SendIcon from "@material-ui/icons/Send";
 import { useHistory, useParams } from "react-router-dom";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import { UserContext } from "../context/UserContext";
 import {
@@ -33,6 +31,7 @@ import {
   addInstantGroupMemebers,
   removeInstantGroupMemebers,
   deleteInstantGroup,
+  leaveFromGroup,
 } from "../services/instantGroups";
 import { getPostById } from "../services/posts";
 import { getDateTime, getTimeRemains } from "../utils/dateTime";
@@ -40,7 +39,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import MultipleSelect from "../components/basic/MultipleSelect";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import ReplayIcon from "@material-ui/icons/Replay";
-import { keyframes } from "styled-components";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles((theme) => ({
   titleLabel: {
@@ -501,6 +500,71 @@ const RemainingTime = (props) => {
   );
 };
 
+const LeaveGroup = (props) => {
+  const classes = useStyles();
+  const { open, setOpen, userData, postData, groupData } = props;
+  const [error, setError] = useState("");
+  const history = useHistory();
+
+  const deleteGroup = async () => {
+    let data = { id: groupData["id"], email: userData.email };
+    let res = await leaveFromGroup(data);
+    if (res) {
+      setError("");
+      history.replace(`/product/view/${postData["postId"]}`);
+    } else {
+      setError("Leave group failed...");
+    }
+  };
+
+  const handleClose = () => {
+    setError("");
+    setOpen(false);
+  }
+
+  const Actions = () => {
+    return (
+      <>
+        <Controls.Button onClick={handleClose}>Cancel</Controls.Button>
+
+        <Controls.Button onClick={deleteGroup} color="secondary">
+          Leave
+        </Controls.Button>
+      </>
+    );
+  };
+
+  return (
+    <>
+      <Controls.Popup
+        title="Leave Group"
+        openPopup={open}
+        setOpenPopup={setOpen}
+        actions={<Actions />}
+      >
+        <Grid
+          container
+          style={{ width: "500" }}
+          className={classes.reportPopup}
+        >
+          {
+            error !== "" && (
+              <Grid container justifyContent="center" style={{padding:8, color:"red", background:"#ffeeee"}}>
+                <Typography variant="caption">
+                  {error}
+                </Typography>
+              </Grid>
+            )
+          }
+          <Grid item xs={12}>
+            <Typography>Are you sure? Do you want to leave?</Typography>
+          </Grid>
+        </Grid>
+      </Controls.Popup>
+    </>
+  );
+};
+
 const GroupMembersSection = (props) => {
   const { groupData, postData } = props;
   const { userData } = useContext(UserContext);
@@ -520,6 +584,11 @@ const GroupMembersSection = (props) => {
       />
       <div style={{ width: "100%", maxHeight: "50vh", overflowY: "scroll" }}>
         <Controls.Paper>
+          <Grid container>
+            <Typography variant="h6">
+              Group Members
+            </Typography>
+          </Grid>
           {groupData["createdBy"] &&
             groupData.createdBy.email === userData.email && (
               <Grid
@@ -582,6 +651,7 @@ const MessageSection = (props) => {
   const [deleteGroupOpen, setDeleteGroupOpen] = useState(false);
   const endOfChat = useRef();
   const [refreshing, setRefreshing] = useState(true);
+  const [openLeave, setOpenLeave] = useState(false);
 
   // send new message
   const sendNewMessage = async (message) => {
@@ -654,6 +724,14 @@ const MessageSection = (props) => {
         userData={userData}
         postData={postData}
       />
+
+      <LeaveGroup
+        groupData={groupData}
+        open={openLeave}
+        setOpen={setOpenLeave}
+        userData={userData}
+        postData={postData}
+      />
       <Grid>
         <Card className={classes.root}>
           <CardHeader
@@ -672,7 +750,7 @@ const MessageSection = (props) => {
                   )}
                 </IconButton>
                 {groupData["createdBy"] &&
-                groupData["createdBy"]["email"] === userData.email &&
+                groupData["createdBy"]["email"] === userData.email ?
                 groupData.active == true ? (
                   <>
                     <IconButton
@@ -684,7 +762,18 @@ const MessageSection = (props) => {
                       <DeleteForeverIcon />
                     </IconButton>
                   </>
-                ) : null}
+                ) : null
+                :(
+                  <IconButton
+                    onClick={() => setOpenLeave(true)}
+                    title="Leave group"
+                    color="secondary"
+                    aria-label="leave"
+                  >
+                    <ExitToAppIcon />
+                  </IconButton>
+                )
+                }
               </>
             }
           />
