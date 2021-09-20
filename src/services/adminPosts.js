@@ -51,14 +51,15 @@ export const getPostReports = (postId) => {
 export const adminBanPostDB = (postId) => {
   const requestOptions = {
     method: "PATCH",
+    crossDomain:true,
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${TOKEN}`,
     },
   };
 
   return fetch(HOST + `admin/report/process?id=${postId}`, requestOptions)
-    .then((res) => {
+    .then( async (res) => {
+      console.log(res)
       if (res.ok) {
         return true;
       }
@@ -67,4 +68,25 @@ export const adminBanPostDB = (postId) => {
     .catch((err) => console.error(err));
 };
 
+
+// admin unban for post
+export const adminUnBanPostDB = (postId) => {
+  const requestOptions = {
+    method: "PATCH",
+    crossDomain:true,
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+    },
+  };
+
+  return fetch(HOST + `admin/report/process?id=${postId}`, requestOptions)
+    .then( async (res) => {
+      console.log(res)
+      if (res.ok) {
+        return true;
+      }
+      return false;
+    })
+    .catch((err) => console.error(err));
+};
 
