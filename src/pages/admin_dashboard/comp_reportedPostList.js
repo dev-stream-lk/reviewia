@@ -252,11 +252,12 @@ const ReportedPost=(props)=>{
                 <IconButton title="Block post" onClick={() => setOpenBan(true)} aria-label="delete" className={classes.margin}>
                   <BlockOutlined fontSize="large" color="secondary" />
                 </IconButton>
-              ) : (
-                <IconButton title="Undo block" onClick={() => setOpenUnBan(true)} aria-label="delete" className={classes.margin}>
-                  <AddCircleOutlineIcon fontSize="large" color="primary" />
-                </IconButton>
-              )
+              ) : null 
+              // (
+              //   <IconButton title="Undo block" onClick={() => setOpenUnBan(true)} aria-label="delete" className={classes.margin}>
+              //     <AddCircleOutlineIcon fontSize="large" color="primary" />
+              //   </IconButton>
+              // )
             }
             titleTypographyProps={{style:{fontSize:20}}}
             title={postData.title}
@@ -495,7 +496,7 @@ export default function ReportedBannedPost() {
     if (data) {
       let reports = {notBanned:[],banned:[]};
       data.forEach( (report) => {
-        if(report.is_processed){
+        if(report.processed){
           reports.banned =  [...reports.banned, report];
         }else{
           reports.notBanned = [...reports.notBanned, report];
@@ -517,9 +518,9 @@ export default function ReportedBannedPost() {
 
   const adminBanPost = async () => {
     let res = await adminBanPostDB(selectedReportId);
-    console.log(res)
     if(res){
       setSelectedPostId(0);
+      setLoadPost(false);
       getPostReports();
     }
     return res;
