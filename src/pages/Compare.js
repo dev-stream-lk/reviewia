@@ -5,11 +5,12 @@ import {
   CardHeader,
   CardMedia,
   Grid,
+  Link,
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { Rating } from "@material-ui/lab";
-import React, { useContext } from "react";
+import { Autocomplete, Rating } from "@material-ui/lab";
+import React, { useContext, useEffect, useState } from "react";
 import Controls from "../components/Controls";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -17,6 +18,8 @@ import Phone from "../static/img/j7.jpg";
 import SearchIcon from "@material-ui/icons/Search";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { UserContext } from "../context/UserContext";
+import { getPostBySearch } from "../services/posts";
+import ImageCarousel from "../components/ImageCarousel";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -73,9 +76,125 @@ const SimillarProductCard = (props) => {
   );
 };
 
+const CompareSearch = (props) => {
+  const classes = useStyles();
+  const {setPostData} = props;
+  const [search, setSearch] = useState("");
+  const [dataSet, setDataSet] = useState([]);
+
+  useEffect(async () => {
+    if (search) {
+      let res = await getPostBySearch({ title: search });
+      console.log(res);
+      if (res) {
+        setDataSet(res["posts"]);
+      }
+    } else {
+      if (dataSet !== []) {
+        setDataSet([]);
+      }
+    }
+  }, [search]);
+
+  const handleSelect = (option) => {
+    setPostData(option);
+    console.log(option)
+  }
+
+  return (
+    <>
+      <Autocomplete
+        className={classes.homeSearch}
+        id="free-solo-2-demo"
+        disableClearable
+        getOptionLabel={(option) => option.title}
+        options={dataSet && dataSet}
+        renderOption={(option, { selected }) => (
+          <React.Fragment>
+            <Grid
+              onClick={() => handleSelect(option)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                color: "black",
+                textDecoration: "none",
+              }}
+            >
+              <div style={{ height: 30 }}>
+                <img
+                  src={`${option.imgURL[0].url}`}
+                  style={{ maxWidth: 30, maxHeight: 30, marginRight: 16 }}
+                />
+              </div>
+              <span>{option.title}</span>
+            </Grid>
+          </React.Fragment>
+        )}
+        ListboxProps={{
+          style: {
+            overflowY: "scroll",
+            maxHeight: 300,
+          },
+        }}
+        renderInput={(params) => (
+          <Controls.Input
+            {...params}
+            endAdornment={<SearchIcon />}
+            fullWidth={true}
+            size="medium"
+            className={classes.headSearchInput}
+            placeholder="What are you looking for..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          ></Controls.Input>
+        )}
+      />
+    </>
+  );
+};
+
+// show last 5 reviews
+const ShowReviews = (props) => {
+
+  const {reviews} = props;
+  const [viewReviews, setViewReviews] = useState([]);
+  
+  useEffect ( () => {
+    if(reviews){
+      let len = reviews.length;
+      let start = 0;
+      if(len > 3){
+        start = len - 4;
+      }
+      console.log(start)
+      setViewReviews(reviews.splice(start));
+    }
+  }, [reviews])
+
+  return (
+    <>
+      {
+        viewReviews.map( (review,i) => (
+          <Grid container style={{marginBottom:5, padding:"5px 10px 5px 0", background:"#eee"}}>
+            <Typography variant="caption">
+              * {review.description}
+            </Typography>
+          </Grid>
+        ))
+      }
+    </>
+  )
+
+}
+
+
 export default function Compare(props) {
   const classes = useStyles();
   const { userData, setUserData } = useContext(UserContext);
+  const [post1Data, setPost1Data] = useState({});
+  const [post2Data, setPost2Data] = useState({});
+  const [post3Data, setPost3Data] = useState({});
+
 
   return (
     <>
@@ -92,82 +211,272 @@ export default function Compare(props) {
               <div className={classes.cardSection}>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
-                    <Controls.Input
-                      endAdornment={<SearchIcon />}
-                      placeholder="Search similar product"
-                    ></Controls.Input>
-                    <SimillarProductCard />
+                    <CompareSearch setPostData={setPost1Data} />
                   </Grid>
                   <Grid item xs={4}>
-                    <Controls.Input
-                      endAdornment={<SearchIcon />}
-                      placeholder="Search similar product"
-                    ></Controls.Input>
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <Skeleton
-                        width={"80%"}
-                        height={300}
-                        style={{ marginTop: 50 }}
-                        variant="rect"
-                      />
-                    </div>
+                    <CompareSearch setPostData={setPost2Data} />
                   </Grid>
                   <Grid item xs={4}>
-                    <Controls.Input
-                      endAdornment={<SearchIcon />}
-                      placeholder="Search similar product"
-                    ></Controls.Input>
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <Skeleton
-                        width={"80%"}
-                        height={300}
-                        style={{ marginTop: 50 }}
-                        variant="rect"
-                      />
-                    </div>
+                    <CompareSearch setPostData={setPost3Data} />
                   </Grid>
                 </Grid>
               </div>
             </Grid>
 
+            {/* start images */}
+            <Grid container className={classes.container}>
+              <div className={classes.topics}>Images</div>
+              <div className={classes.cardSection}>
+                <Grid container spacing={2}>
+                  {/* start image set 1 */}
+                  <Grid item xs={4}>
+                    {
+                      post1Data.title ? (
+                        <>
+                          <Grid style={{ height: 230 }} container justifyContent="center" alignItems="center">
+                            <div>
+                              <ImageCarousel images={post1Data.imgURL} />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} style={{ textAlign: "center" }}>
+                            <Rating
+                              value={parseFloat(
+                                Object.keys(post1Data).length !== 0 ? post1Data.rate : "0"
+                              )}
+                              name="byRating"
+                              precision={0.25}
+                              readOnly
+                            />
+                            <Grid container justifyContent="center">
+                              <Typography variant="subtitle2">
+                                ( {post1Data.rate} )
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </>
+                      ): (
+                        <Grid container style={{height:220}} justifyContent="center">
+                          <Skeleton variant="rect" animation="wave" style={{height:"100%", width:"80%"}}>
+
+                          </Skeleton>
+                          <Skeleton variant="rect" animation="wave" style={{height:30,marginTop:10, width:"80%"}}>
+
+                          </Skeleton>
+                        </ Grid>
+                      )
+                    }
+                    
+                  </Grid>
+                  {/* end image set 1 */}
+
+                  {/* start image set 2 */}
+                  <Grid item xs={4}>
+                    {
+                      post2Data.title ? (
+                        <>
+                          <Grid style={{ height: 230 }} container justifyContent="center" alignItems="center">
+                            <div>
+                              <ImageCarousel images={post2Data.imgURL} />
+                            </div>
+                          </ Grid>
+                          <Grid item xs={12} style={{ textAlign: "center" }}>
+                            <Rating
+                              value={parseFloat(
+                                Object.keys(post2Data).length !== 0 ? post2Data.rate : "0"
+                              )}
+                              name="byRating"
+                              precision={0.25}
+                              readOnly
+                            />
+                            <Grid container justifyContent="center">
+                              <Typography variant="subtitle2">
+                                ( {post2Data.rate} )
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </>
+                      ): (
+                        <Grid container style={{height:220}} justifyContent="center">
+                          <Skeleton variant="rect" animation="wave" style={{height:"100%", width:"80%"}}>
+
+                          </Skeleton>
+                          <Skeleton variant="rect" animation="wave" style={{height:30,marginTop:10, width:"80%"}}>
+
+                          </Skeleton>
+                        </ Grid>
+                      )
+                    }
+                    
+                  </Grid>
+                  {/* end image set 2 */}
+
+                  {/* set image set 3 */}
+                  <Grid item xs={4}>
+                    {
+                      post3Data.title ? (
+                        <>
+                          <Grid style={{ height: 230 }} container justifyContent="center" alignItems="center">
+                            <div>
+                              <ImageCarousel images={post3Data.imgURL} />
+                            </div>
+                          </Grid>
+                          <Grid item xs={12} style={{ textAlign: "center" }}>
+                            <Rating
+                              value={parseFloat(
+                                Object.keys(post3Data).length !== 0 ? post3Data.rate : "0"
+                              )}
+                              name="byRating"
+                              precision={0.25}
+                              readOnly
+                            />
+                            <Grid container justifyContent="center">
+                              <Typography variant="subtitle2">
+                                ( {post3Data.rate} )
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </>
+                      ): (
+                        <Grid container style={{height:220}} justifyContent="center">
+                          <Skeleton variant="rect" animation="wave" style={{height:"100%", width:"80%"}}>
+
+                          </Skeleton>
+                          <Skeleton variant="rect" animation="wave" style={{height:30,marginTop:10, width:"80%"}}>
+
+                          </Skeleton>
+                        </ Grid>
+                      )
+                    }
+                    
+                  </Grid>
+                  {/* end image set 3 */}
+                </Grid>
+              </div>
+            </Grid>
+            {/* end images */}
+
+            {/* start ID */}
+            <Grid container className={classes.container}>
+              <div className={classes.topics}>Post ID</div>
+              <div className={classes.cardSection}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    {post1Data.postId ? post1Data.postId : "-"}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post2Data.postId ? post2Data.postId : "-"}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post3Data.postId ? post3Data.postId : "-"}
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+            {/* end ID */}
+
+            {/* start title */}
+            <Grid container className={classes.container}>
+              <div className={classes.topics}>Title</div>
+              <div className={classes.cardSection}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    {post1Data.brand ? post1Data.title : "-"}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post2Data.brand ? post2Data.title : "-"}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post3Data.brand ? post3Data.title : "-"}
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+            {/* end title */}
+
+            {/* start brand */}
             <Grid container className={classes.container}>
               <div className={classes.topics}>Brand</div>
               <div className={classes.cardSection}>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
-                    Samsung
+                    {post1Data.brand ? post1Data.brand.name : "-"}
                   </Grid>
-                  <Grid item xs={4}></Grid>
-                  <Grid item xs={4}></Grid>
-                </Grid>
-              </div>
-            </Grid>
-
-            <Grid container className={classes.container}>
-              <div className={classes.topics}>Year</div>
-              <div className={classes.cardSection}>
-                <Grid container spacing={2}>
                   <Grid item xs={4}>
-                    2017
+                    {post2Data.brand ? post2Data.brand.name : "-"}
                   </Grid>
-                  <Grid item xs={4}></Grid>
-                  <Grid item xs={4}></Grid>
+                  <Grid item xs={4}>
+                    {post3Data.brand ? post3Data.brand.name : "-"}
+                  </Grid>
                 </Grid>
               </div>
             </Grid>
+            {/* end brand */}
 
+            {/* start review count */}
             <Grid container className={classes.container}>
               <div className={classes.topics}>Number of reviews</div>
               <div className={classes.cardSection}>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
-                    27455
+                    {post1Data.reviewCount ? post1Data.reviewCount : 0}
                   </Grid>
-                  <Grid item xs={4}></Grid>
-                  <Grid item xs={4}></Grid>
+                  <Grid item xs={4}>
+                    {post2Data.reviewCount ? post2Data.reviewCount : 0}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post3Data.reviewCount ? post3Data.reviewCount : 0}
+                  </Grid>
                 </Grid>
               </div>
             </Grid>
+            {/* end review count */}
+
+            {/* start view count */}
+            <Grid container className={classes.container}>
+              <div className={classes.topics}>Number of reviews</div>
+              <div className={classes.cardSection}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    {post1Data.viewCount ? post1Data.viewCount : 0}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post2Data.viewCount ? post2Data.viewCount : 0}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post3Data.viewCount ? post3Data.viewCount : 0}
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+            {/* end view count */}
+
+            {/* start reviews count */}
+            <Grid container className={classes.container}>
+              <div className={classes.topics}>Some reviews</div>
+              <div className={classes.cardSection}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    {post1Data.reviews ?
+                      <ShowReviews reviews={post1Data.reviews} />
+                      : "No reviews"}
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    {post2Data.reviews ?
+                      <ShowReviews reviews={post2Data.reviews} />
+                      : "No reviews"}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post3Data.reviews ? 
+                      <ShowReviews reviews={post3Data.reviews} />
+                      : "No reviews"
+                    }
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+            {/* end review count */}
+
           </Controls.Paper>
         </Grid>
       </Grid>
