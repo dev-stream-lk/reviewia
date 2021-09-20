@@ -50,7 +50,7 @@ export const getPostReports = (postId) => {
 // admin ban for post
 export const adminBanPostDB = (postId) => {
   const requestOptions = {
-    method: "PATCH",
+    method: "GET",
     crossDomain:true,
     headers: {
       Authorization: `Bearer ${TOKEN}`,
@@ -72,7 +72,7 @@ export const adminBanPostDB = (postId) => {
 // admin unban for post
 export const adminUnBanPostDB = (postId) => {
   const requestOptions = {
-    method: "PATCH",
+    method: "GET",
     crossDomain:true,
     headers: {
       Authorization: `Bearer ${TOKEN}`,
