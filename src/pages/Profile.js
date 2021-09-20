@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Button, ButtonGroup } from "@material-ui/core";
+import { Grid, makeStyles, Button, ButtonGroup, Typography } from "@material-ui/core";
 import { React, useContext, useEffect, useState } from "react";
 import Controls from "../components/Controls";
 import Header from "../components/Header";
@@ -11,6 +11,10 @@ import { UserContext } from "../context/UserContext";
 import { get_user_basic_info } from "../services/auth";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import { PreLoader } from "../components/basic/PreLoader";
+import EditIcon from '@material-ui/icons/Edit';
+import { ratingFieldRequired, requiredField } from "../components/Validators";
+import { Form, useForm } from "../components/useForm";
+import { updateProfile } from "../services/user";
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -60,6 +64,130 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const EditProfile = (props) => {
+  const classes = useStyles();
+  const { open, setOpen, editProfile, userData } = props;
+  const [enableSave, setEnableSave] = useState(false);
+  const names = userData.name.split(" ");
+  const initialValues = {
+    firstName: names[0] || "",
+    lastName: names[1] || ""
+  };
+  const [error, setError] = useState("");
+
+  const validate = (fieldValue = values) => {
+    const temp = {};
+    if ("firstName" in fieldValue)
+      temp.firstName = requiredField(fieldValue.firstName);
+    if ("lastName" in fieldValue)
+      temp.lastName = requiredField(fieldValue.lastName);
+
+    setErrors({
+      ...errors,
+      ...temp,
+    });
+
+    const isValid = Object.values(temp).every((x) => x == "");
+    const all_valid = Object.values({ ...errors, ...temp }).every(
+      (x) => x == ""
+    );
+    if (all_valid) setEnableSave(true);
+    else setEnableSave(false);
+
+    return isValid;
+  };
+
+  const { values, setValues, errors, setErrors, handleInputChange } = useForm(
+    initialValues,
+    true,
+    validate
+  );
+
+  const handleClose = () => {
+    setError("");
+    setValues(initialValues);
+    setErrors({});
+    setOpen(false);
+  }
+
+  const onSubmit = async () => {
+    if (validate()) {
+      let res = await editProfile(values.firstName, values.lastName);
+      if(res){
+        setValues(initialValues);
+        setOpen(false);
+        setError("");
+      }else{
+        setError("Unable to edit profile");
+      }
+    }
+  };
+
+  const Actions = () => {
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+          color="secondary"
+          style={{ marginRight: 10 }}
+          onClick={handleClose}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          disabled={enableSave ? false : true}
+          onClick={() => onSubmit()}
+        >
+          Save
+        </Controls.Button>
+      </Grid>
+    );
+  };
+
+  return (
+    <>
+      <Controls.Popup
+        title="Edit Profile"
+        openPopup={open}
+        setOpenPopup={handleClose}
+        actions={<Actions />}
+      >
+        {
+          error !== "" && (
+            <Grid container style={{marginTop:8, padding:8, marginBottom:24, color:"red", background:"#ffaaaa"}} justifyContent="center" >
+              <Typography variant="subtitle2">
+                {error}
+              </Typography>
+            </Grid>
+          )
+        }
+        <Form className={classes.writeReviewForm}>
+          <Grid container>
+            <Controls.Input
+              name="firstName"
+              label="First Name"
+              value={values.firstName}
+              error={errors.firstName}
+              onChange={handleInputChange}
+              required={true}
+            />
+          </Grid>
+          <Grid container style={{marginTop:20}}>
+            <Controls.Input
+              name="lastName"
+              label="Last Name"
+              value={values.lastName}
+              error={errors.lastName}
+              onChange={handleInputChange}
+              required={true}
+            />
+          </Grid>
+        </Form>
+      </Controls.Popup>
+    </>
+  );
+};
+
+
 const Profile = (props) => {
   const initialProfileData = {
     id: 0,
@@ -76,6 +204,15 @@ const Profile = (props) => {
   const [profileData, setProfileData] = useState({});
   const history = useHistory();
   const [pageLoading, setPageLoading] = useState(true);
+  const [openEdit, setOpenEdit] = useState(false);
+
+  useEffect(() => {
+    if (userData) {
+      if (userData.token == "") {
+        history.push("/login");
+      }
+    }
+  }, [userData]);
 
   useEffect(async () => {
     if (userData) {
@@ -88,18 +225,19 @@ const Profile = (props) => {
     }
   }, [userData]);
 
-  useEffect(() => {
-    if (userData) {
-      if (userData.token == "") {
-        history.push("/login");
+  const editProfile = async (firstName, lastName) => {
+      let res = await updateProfile(userData.email,firstName, lastName);
+      if(res){
+        window.location.reload()
       }
-    }
-  }, [userData]);
+      return res;
+  }
 
   return (
     <div>
       <Header />
       <div className={classes.mainDiv}>
+        <EditProfile open={openEdit} setOpen={setOpenEdit} userData={userData} editProfile={editProfile}  />
         <Grid
           container
           className={classes.productContainer}
@@ -154,8 +292,9 @@ const Profile = (props) => {
                     style={{ marginRight: 40 }}
                     color="secondary"
                     variant="outlined"
+                    onClick={()=>setOpenEdit(true)}
                   >
-                    Change Password
+                    Edit profile <EditIcon style={{marginLeft:10, padding:2}} />
                   </Controls.Button>
                 </Grid>
               </Grid>
