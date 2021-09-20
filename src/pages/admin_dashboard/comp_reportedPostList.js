@@ -15,11 +15,15 @@ import Button from "../../components/basic/Button";
 import React, { useState, useEffect } from "react";
 import { PreLoader } from "../../components/basic/PreLoader";
 import Controls from "../../components/Controls";
-import { getReportedPosts } from "../../services/adminPosts";
+import { adminBanPostDB, adminUnBanPostDB, getPostReports, getReportedPosts } from "../../services/adminPosts";
 import { BlockOutlined } from "@material-ui/icons";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
 import clsx from "clsx";
+import { getDateTime } from "../../utils/dateTime";
+import { getPostById } from "../../services/posts";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     padding: theme.spacing(0),
@@ -40,73 +44,267 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: "#CCDEF5",
     marginBottom: 5,
-    marginTop: 5,
+    borderRadius:8
   },
   media: {
-      width:"100%"
-     // 16:9
+      width:"100%",
+      display:"flex",
+      justifyContent:"flex-start"
   },
 }));
 
+const AdminBanPost = (props) => {
+  const classes = useStyles();
+  const { open, setOpen, adminBanPost } = props;
+  const [error, setError] = useState("");
+
+  const onSubmit = async () => {
+    let res = await adminBanPost();
+
+    if (res) {
+      setOpen(false);
+      setError("");
+    } else {
+      setError("Unable to ban this post.");
+    }
+  };
+
+  const Actions = () => {
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+          style={{ marginRight: 10 }}
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          color="secondary"
+          onClick={() => onSubmit()}
+        >
+          Ban Post
+        </Controls.Button>
+      </Grid>
+    );
+  };
+
+  return (
+    <>
+      <Controls.Popup
+        title="Ban post"
+        openPopup={open}
+        setOpenPopup={setOpen}
+        actions={<Actions />}
+      >
+        {error !== "" && (
+          <Grid
+            container
+            style={{
+              marginTop: 8,
+              padding: 8,
+              marginBottom: 24,
+              color: "red",
+              background: "#ffaaaa",
+            }}
+            justifyContent="center"
+          >
+            <Typography variant="subtitle2">{error}</Typography>
+          </Grid>
+        )}
+        <div className={classes.addCategory}>
+          <Typography variant="subtitle2" >
+              Are you sure?
+          </Typography>
+        </div>
+      </Controls.Popup>
+    </>
+  );
+};
+
+const AdminUnBanPost = (props) => {
+  const classes = useStyles();
+  const { open, setOpen, adminUnBanPost } = props;
+  const [error, setError] = useState("");
+
+  const onSubmit = async () => {
+    let res = await adminUnBanPost();
+
+    if (res) {
+      setOpen(false);
+      setError("");
+    } else {
+      setError("Unable to ban this post.");
+    }
+  };
+
+  const Actions = () => {
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+          style={{ marginRight: 10 }}
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          color="secondary"
+          onClick={() => onSubmit()}
+        >
+          Active Post
+        </Controls.Button>
+      </Grid>
+    );
+  };
+
+  return (
+    <>
+      <Controls.Popup
+        title="Active banned post"
+        openPopup={open}
+        setOpenPopup={setOpen}
+        actions={<Actions />}
+      >
+        {error !== "" && (
+          <Grid
+            container
+            style={{
+              marginTop: 8,
+              padding: 8,
+              marginBottom: 24,
+              color: "red",
+              background: "#ffaaaa",
+            }}
+            justifyContent="center"
+          >
+            <Typography variant="subtitle2">{error}</Typography>
+          </Grid>
+        )}
+        <div className={classes.addCategory}>
+          <Typography variant="subtitle2" >
+              Are you sure?
+          </Typography>
+        </div>
+      </Controls.Popup>
+    </>
+  );
+};
+
 const ReportedPost=(props)=>{
     const classes = useStyles();
-    const [expanded, setExpanded] = React.useState(false);
-    const [reportedPosts, setReportedPosts] = useState([]);
+    const [expanded, setExpanded] = useState(false);
+    const [reports, setReports] = useState([]);
+    const {selectedPostId, set, adminBanPost, tabNumber, adminUnBanPost} = props;
+    const [postData, setPostData] = useState({});
+    const [openBan, setOpenBan] = useState(false);
+    const [openUnBan, setOpenUnBan] = useState(false);
 
-    const getRepotedDetails = async () => {
-      let data = await getReportedPosts();
-      if (data) {
-        setReportedPosts(data);
-        console.log(data);
-        // setListLoading(false);
+    // get post details
+    useEffect( async () => {
+      if(selectedPostId){
+        let res = await getPostById(selectedPostId);
+        console.log(res)
+        if(res){
+          setPostData(res);
+        }
+      }else{
+        setPostData({});
       }
-    };
+    },[selectedPostId]);
+
+    // get report for selected post
+    useEffect( async () => {
+      let res = await getPostReports(selectedPostId);
+      if(res){
+        setReports(res);
+      }
+    },[]);
 
     const handleExpandClick = () => {
       setExpanded(!expanded);
-      getRepotedDetails();
     };
+
     return (
       <Grid
         container
         xs={12}
         sm={12}
         md={12}
-        style={{ position: "relative", width: "100%" }}
+        style={{ position: "relative", width: "100%", maxHeight:"75vh", overflowY:"scroll" }}
       >
+        <AdminBanPost open={openBan} setOpen={setOpenBan} adminBanPost={adminBanPost} />
+        <AdminUnBanPost open={openUnBan} setOpen={setOpenUnBan} adminUnBanPost={adminUnBanPost} />
         <Controls.Card className={classes.productListcard} variant="outlined">
           <CardHeader
-            avatar={
-              <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
-                D
+            avatar={ postData.avatarUrl ? (
+              <img
+                title={`${postData.title}`}
+                alt=""
+                src={`${postData.avatarUrl}`}
+                className={classes.productCardImage}
+              />
+            ): (
+              <Avatar style={{width:40, height:40}} title={`${postData.createdBy}`}  aria-label="recipe">
+                { postData.createdBy && postData.createdBy[0]}
               </Avatar>
-            }
+            ) }
             action={
-              <IconButton aria-label="delete" className={classes.margin}>
-                <BlockOutlined fontSize="large" color="secondary" />
-              </IconButton>
+              tabNumber === 0 ? (
+                <IconButton title="Block post" onClick={() => setOpenBan(true)} aria-label="delete" className={classes.margin}>
+                  <BlockOutlined fontSize="large" color="secondary" />
+                </IconButton>
+              ) : (
+                <IconButton title="Undo block" onClick={() => setOpenUnBan(true)} aria-label="delete" className={classes.margin}>
+                  <AddCircleOutlineIcon fontSize="large" color="primary" />
+                </IconButton>
+              )
             }
-            title="Shrimp and Chorizo Paella"
-            subheader="September 14, 2016"
+            titleTypographyProps={{style:{fontSize:20}}}
+            title={postData.title}
+            subheader={getDateTime(postData.createdAt)}
           />
-
-          {/* <CardMedia
-            className={classes.media}
-            image="https://lifemobile.lk/wp-content/uploads/2021/04/OnePlus-9.jpg"
-            title="Paella dish"
-          /> */}
           <CardContent>
             <div className={classes.media}>
-              <img
-                style={{ width: "100%", height: "100%" }}
-                src="https://lifemobile.lk/wp-content/uploads/2021/04/OnePlus-9.jpg"
-              ></img>
+              <div style={{width:150, height:150}}>
+                <img
+                  style={{ width: "100%", height: "100%" }}
+                  src={`${postData.imgURL && postData.imgURL.length >0 && postData.imgURL[0].url}`}
+                ></img>
+              </div>
+              <div style={{paddingLeft:20}}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  style={{ display: "flex", flexDirection: "row" }}
+                >
+                  <Typography style={{ marginRight: 20 }}>Post Owner :</Typography>
+                  {postData.createdBy}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  style={{ display: "flex", flexDirection: "row" }}
+                >
+                  <Typography style={{ marginRight: 20 }}>Email :</Typography>
+                  {postData.email}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  style={{ display: "flex", flexDirection: "row" }}
+                >
+                  <Typography style={{ marginRight: 20 }}>Review Count :</Typography>
+                  {postData.reviewCount}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  style={{ display: "flex", flexDirection: "row" }}
+                >
+                  <Typography style={{ marginRight: 20 }}>Rate :</Typography>
+                  {postData.rate}
+                </Typography>
+              </div>
             </div>
-            <Typography variant="body2" color="textSecondary" component="p">
-              This impressive paella is a perfect party dish and a fun meal to
-              cook together with your guests. Add 1 cup of frozen peas along
-              with the mussels, if you like.
-            </Typography>
           </CardContent>
           <CardActions
             style={{
@@ -128,10 +326,10 @@ const ReportedPost=(props)=>{
               Show report details
             </Button>
           </CardActions>
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <Collapse in={expanded} style={{background:"white"}} timeout="auto" unmountOnExit>
             <CardContent>
               <List style={{ maxHeight: "70vh", overflow: "auto" }}>
-                {reportedPosts.map((post, index) => (
+                {reports.map((report, index) => (
                   <Grid
                     key={index}
                     item
@@ -140,7 +338,7 @@ const ReportedPost=(props)=>{
                     justifyContent="center"
                     style={{ width: "100%" }}
                   >
-                    <ReportCardDetail post={post} ls={1} />
+                    <ReportCardDetail report={report} ls={1} />
                   </Grid>
                 ))}
               </List>
@@ -151,27 +349,30 @@ const ReportedPost=(props)=>{
     );
 }
 
+// right side report card
 const ReportCardDetail = (props) => {
   const classes = useStyles();
-  const { post, ls } = props;
+  const { report, ls } = props;
 
   return (
     <Grid container xs={12} style={{ position: "relative", width: "100%" }}>
       <Controls.Card className={classes.productListcard} variant="outlined">
-        <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
-              {post.reportedBy[0]}
+      <CardHeader
+          style={{textAlign:"left"}}
+          avatar={ report.avatarUrl ? (
+            <img
+              title={`${report.reportedBy}`}
+              alt=""
+              src={`${report.avatarUrl}`}
+              className={classes.productCardImage}
+            />
+          ): (
+            <Avatar style={{width:40, height:40}} title={`${report.reportedBy}`}  aria-label="recipe">
+              {report.reportedBy[0]}
             </Avatar>
-          }
-          action={
-            // <IconButton aria-label="settings" color="default"></IconButton>
-            <Typography style={{ justifyContent: "center" }}>
-              POST ID:{post.subjectId} {ls}
-            </Typography>
-          }
-          title="Shrimp and Chorizo Paella"
-          subheader="September 14, 2016"
+          ) }
+          title={`Report ID : ${report.id}`}
+          subheader={getDateTime(report.createdAt)}
         />
         <CardContent>
           <Typography
@@ -180,7 +381,15 @@ const ReportCardDetail = (props) => {
             style={{ display: "flex", flexDirection: "row" }}
           >
             <Typography style={{ marginRight: 20 }}>Reported By :</Typography>
-            {post.reportedBy}
+            {report.reportedBy}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            style={{ display: "flex", flexDirection: "row" }}
+          >
+            <Typography style={{ marginRight: 20 }}>Post ID :</Typography>
+            {report.subjectId}
           </Typography>
           <Typography
             variant="body2"
@@ -188,7 +397,7 @@ const ReportCardDetail = (props) => {
             style={{ display: "flex", flexDirection: "row" }}
           >
             <Typography style={{ marginRight: 20 }}>Reason :</Typography>
-            {post.reason}
+            {report.reason}
           </Typography>
         </CardContent>
     </Controls.Card>
@@ -196,27 +405,30 @@ const ReportCardDetail = (props) => {
   );
 };
 
+// left side report card
 const ReportCard = (props) => {
   const classes = useStyles();
-  const { post, ls , loadPost } = props;
+  const { report, ls , loadPost } = props;
 
   return (
     <Grid container xs={12} style={{ position: "relative", width: "100%" }}>
       <Controls.Card className={classes.productListcard} variant="outlined">
         <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
-              {post.reportedBy[0]}
+          style={{textAlign:"left"}}
+          avatar={ report.avatarUrl ? (
+            <img
+              title={`${report.reportedBy}`}
+              alt=""
+              src={`${report.avatarUrl}`}
+              className={classes.productCardImage}
+            />
+          ): (
+            <Avatar style={{width:40, height:40}} title={`${report.reportedBy}`}  aria-label="recipe">
+              {report.reportedBy[0]}
             </Avatar>
-          }
-          action={
-            // <IconButton aria-label="settings" color="default"></IconButton>
-            <Typography style={{ justifyContent: "center" }}>
-              POST ID:{post.subjectId} {ls}
-            </Typography>
-          }
-          title="Shrimp and Chorizo Paella"
-          subheader="September 14, 2016"
+          ) }
+          title={`Report ID : ${report.id}`}
+          subheader={getDateTime(report.createdAt)}
         />
         <CardContent>
           <Typography
@@ -225,7 +437,15 @@ const ReportCard = (props) => {
             style={{ display: "flex", flexDirection: "row" }}
           >
             <Typography style={{ marginRight: 20 }}>Reported By :</Typography>
-            {post.reportedBy}
+            {report.reportedBy}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            style={{ display: "flex", flexDirection: "row" }}
+          >
+            <Typography style={{ marginRight: 20 }}>Post ID :</Typography>
+            {report.subjectId}
           </Typography>
           <Typography
             variant="body2"
@@ -233,19 +453,18 @@ const ReportCard = (props) => {
             style={{ display: "flex", flexDirection: "row" }}
           >
             <Typography style={{ marginRight: 20 }}>Reason :</Typography>
-            {post.reason}
+            {report.reason}
           </Typography>
         </CardContent>
-        <CardActions style={{ justifyContent: "space-between" }}>
+        <CardActions style={{ justifyContent: "flex-end" }}>
           <Button
             variant="contained"
             color="blue"
             style={{ backgroundColor: "#152840", color: "white" }}
-            onClick={props.loadPost}
+            onClick={() => loadPost(report.id,report.subjectId)}
           >
             See More
           </Button>
-          <Typography>Here report ID: {post.id}</Typography>
         </CardActions>
       </Controls.Card>
     </Grid>
@@ -259,21 +478,61 @@ export default function ReportedBannedPost() {
   const [listLoading, setListLoading] = useState(true);
   const [reportedPosts, setReportedPosts] = useState([]);
   const [loadPost, setLoadPost] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedReportId, setSelectedReportId] = useState(0);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(async () => {
+  useEffect(() => {
+    if(selectedPostId){
+      setLoadPost(false);
+      setSelectedPostId(0);
+      setSelectedReportId(0);
+    }
+  }, [selected])
+  // get all post reports
+  const getPostReports = async () => {
     setListLoading(true);
     let data = await getReportedPosts();
     if (data) {
-      setReportedPosts(data);
-      console.log(data);
+      let reports = {notBanned:[],banned:[]};
+      data.forEach( (report) => {
+        if(report.is_processed){
+          reports.banned =  [...reports.banned, report];
+        }else{
+          reports.notBanned = [...reports.notBanned, report];
+        }
+      });
+      setReportedPosts(reports);
       setListLoading(false);
     }
+  }
+  useEffect(async () => {
+    getPostReports();
   }, []);
 
-  const loadThePost =()=>{
-      console.log("hello");
+  const loadThePost =(reportId, postId)=>{
+      setSelectedPostId(postId);
+      setSelectedReportId(reportId)
       setLoadPost(!loadPost);
+  }
+
+  const adminBanPost = async () => {
+    let res = await adminBanPostDB(selectedReportId);
+    console.log(res)
+    if(res){
+      setSelectedPostId(0);
+      getPostReports();
+    }
+    return res;
+  }
+
+  const adminUnBanPost = async () => {
+    let res = await adminUnBanPostDB(selectedReportId);
+    console.log(res)
+    if(res){
+      setSelectedPostId(0);
+      getPostReports();
+    }
+    return res;
   }
 
   return (
@@ -332,8 +591,9 @@ export default function ReportedBannedPost() {
               style={{ marginLeft: 5, marginRight: 5, position: "relative" }}
             >
               <PreLoader loading={listLoading} />
-              <List style={{ maxHeight: "70vh", overflow: "auto" }}>
-                {reportedPosts.map((post, index) => (
+              <List style={{ height: "75vh", overflow: "auto" }}>
+              {selected === 0 ? 
+                reportedPosts.notBanned && reportedPosts.notBanned.length>0 ? reportedPosts.notBanned.map((report, index) => (
                   <Grid
                     key={index}
                     item
@@ -342,13 +602,37 @@ export default function ReportedBannedPost() {
                     justifyContent="center"
                     style={{ width: "100%" }}
                   >
-                    {selected === 1 ? (
-                      <ReportCard post={post} ls={1} loadPost={loadThePost} />
-                    ) : (
-                      <ReportCard post={post} ls={0} loadPost={loadThePost} />
-                    )}
+                      <ReportCard report={report} ls={1} setSelectedPostId={setSelectedPostId} loadPost={loadThePost} />
                   </Grid>
-                ))}
+                )): (
+                  <Grid container justifyContent="center">
+                    <Typography>
+                      No New  reports.
+                    </Typography>
+                  </Grid>
+                )
+              : (
+                reportedPosts.banned && reportedPosts.banned.length>0 ? reportedPosts.banned.map((report, index) => (
+                  <Grid
+                    key={index}
+                    item
+                    xs={12}
+                    md={12}
+                    justifyContent="center"
+                    style={{ width: "100%" }}
+                  >
+                  <ReportCard report={report} ls={0} setSelectedPostId={setSelectedPostId} loadPost={loadThePost} />
+                  </Grid>
+                )): (
+                  <Grid container justifyContent="center">
+                    <Typography>
+                      No banned posts.
+                    </Typography>
+                  </Grid>
+                )
+              )
+              }
+                
               </List>
             </Grid>
 
@@ -390,7 +674,11 @@ export default function ReportedBannedPost() {
               </Controls.ActionButton>
             </Grid>
             <Grid container alignContent="center" sm={12} xs={12} md={12} style={{width:"100%"}}>
-              {loadPost ? <ReportedPost></ReportedPost> : <Typography>still not</Typography>}
+              {loadPost ? <ReportedPost tabNumber={selected} adminUnBanPost={adminUnBanPost} adminBanPost={adminBanPost} selectedPostId={selectedPostId}></ReportedPost> : (
+                <Grid container justifyContent="center" style={{marginTop:30}}>
+                  <Typography>Please select a report for see more details.</Typography>
+                </ Grid>
+              )}
             </Grid>
           </Grid>
         </Controls.Paper>
