@@ -7,9 +7,6 @@ import LockIcon from "@material-ui/icons/Lock";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import { Typography } from "@material-ui/core";
-import FacebookIcon from "@material-ui/icons/Facebook";
-import TwitterIcon from "@material-ui/icons/Twitter";
-import LinkedInIcon from "@material-ui/icons/LinkedIn";
 import PersonIcon from "@material-ui/icons/Person";
 import {
   validateUserName,
@@ -39,7 +36,10 @@ const useStyles = makeStyles((theme) => ({
   },
 
   paper: {
-    marginTop: theme.spacing(10),
+    marginTop: theme.spacing(3),
+    [theme.breakpoints.up("md")]: {
+      marginTop: theme.spacing(8),
+    }
   },
   paperDiv: {
     padding: `${theme.spacing(0)}px ${theme.spacing(0)}px ${theme.spacing(
@@ -66,6 +66,12 @@ const useStyles = makeStyles((theme) => ({
     color: `${theme.palette.primary.main} !important`,
     textDecoration: "none",
   },
+  leftSection:{
+    marginTop:20,
+    [theme.breakpoints.up("md")]: {
+      marginTop:80,
+    }
+  }
 }));
 
 const SignIN = (props) => {
@@ -535,9 +541,8 @@ export default function Login(props) {
   const classes = useStyles();
 
   return (
-    <Grid container>
-      <Grid item xs={1} sm></Grid>
-      <Grid item xs={false} className={classes.loginImage} md={5}>
+    <Grid container justifyContent="center">
+      <Grid item xs={12} className={classes.leftSection}  md={5}>
         <Grid
           container
           justifyContent="center"
@@ -552,7 +557,9 @@ export default function Login(props) {
           >
             Reviewia
           </Typography>
-          <img src={MainImage} />
+          {/* <Grid item xs={12} > */}
+          <img src={MainImage} className={classes.loginImage} />
+          {/* </Grid> */}
         </Grid>
       </Grid>
       <Grid item xs={12} sm={10} md={7} className={classes.wrapper}>
@@ -639,7 +646,6 @@ export default function Login(props) {
                     </Grid> */}
         </Controls.Paper>
       </Grid>
-      <Grid item xs={1} sm></Grid>
     </Grid>
   );
 }

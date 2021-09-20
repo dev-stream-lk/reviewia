@@ -5,11 +5,14 @@ import { useForm, Form } from "../components/useForm";
 import EmailIcon from "@material-ui/icons/Email";
 import { Typography } from "@material-ui/core";
 import Footer from "../components/Footer";
-import { validateEmail } from "../components/Validators";
+import { validateEmail, validatePassword } from "../components/Validators";
 import MainImage from "../static/img/login_img.svg";
 import { Link as RouterLink } from "react-router-dom";
 import { Link } from "@material-ui/core";
 import { passwordRecovery } from "../services/auth";
+import LockIcon from "@material-ui/icons/Lock";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -51,20 +54,38 @@ const useStyles = makeStyles((theme) => ({
 const RecoveryForm = (props) => {
   const classes = useStyles();
   const { userData, setUserData } = props;
+  const [visibility, setVisibility] = useState(false);
+  const [disableSubmit, setDisabledSubmit] = useState(true);
+  const [msg, setMsg] = useState("");
+  const [error, setError] = useState("");
   const initialState = {
     email: "",
+    password: "",
+    cpassword: ""
   };
 
   const validate = (fieldValues = values) => {
     let temp = {};
 
     if ("email" in fieldValues) temp.email = validateEmail(fieldValues.email);
+    if ("password" in fieldValues)
+    temp.password = validatePassword(fieldValues.password);
+  if ("cpassword" in fieldValues)
+    temp.cpassword = validatePassword(fieldValues.cpassword, values.password);
 
     setErrors({
       ...errors,
       ...temp,
     });
-    let isValid = Object.values(temp).every((x) => x == "");
+    let isValid = Object.values({
+      ...errors,
+      ...temp,
+    }).every((x) => x == "");
+    if (isValid){
+      setDisabledSubmit(false)
+    }else{
+      setDisabledSubmit(true);
+    }
     return isValid;
   };
 
@@ -76,17 +97,40 @@ const RecoveryForm = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const result = await passwordRecovery({
-      email: values.email,
-    });
-    if (result) {
-      setUserData({ ...userData, isLoggedIn: true });
+    if(validate()){
+      const result = await passwordRecovery(values.email,values.password);
+      if (result) {
+        setValues(initialState);
+        setMsg("Password reset email sent. Please check your emails.")
+        setError("");
+      }else{
+        setError("Password reset failed. Try again later.")
+        setMsg("");
+      }
     }
   };
 
   return (
     <Form>
+      {
+        msg !== "" && (
+          <Grid container justifyContent="center" style={{padding:8, marginBottom:20, background:"#aaffaa", color:"green"}}>
+            <Typography variant="subtitle1" style={{fontWeight:600}}>
+              {msg}
+            </Typography>
+          </Grid>
+        )
+      }
+
+      {
+        error !== "" && (
+          <Grid container justifyContent="center" style={{padding:8, marginBottom:20, background:"#ffaaaa", color:"red"}}>
+            <Typography variant="subtitle1" style={{fontWeight:600}}>
+              {error}
+            </Typography>
+          </Grid>
+        )
+      }
       <Grid container>
         <Controls.Input
           name="email"
@@ -99,12 +143,63 @@ const RecoveryForm = (props) => {
           onChange={handleInputChange}
         />
       </Grid>
+      <Grid container>
+        <Controls.Input
+          name="password"
+          placeholder="Password"
+          startAdornment={<LockIcon />}
+          endAdornment={
+            visibility ? (
+              <VisibilityIcon
+                onClick={() => setVisibility(false)}
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <VisibilityOffIcon
+                onClick={() => setVisibility(true)}
+                style={{ cursor: "pointer" }}
+              />
+            )
+          }
+          fullWidth={true}
+          size="medium"
+          type={visibility ? "text" : "password"}
+          value={values.password}
+          onChange={handleInputChange}
+          error={errors.password}
+        />
+        <Controls.Input
+          name="cpassword"
+          placeholder="Confirm Password"
+          startAdornment={<LockIcon />}
+          endAdornment={
+            visibility ? (
+              <VisibilityIcon
+                onClick={() => setVisibility(false)}
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <VisibilityOffIcon
+                onClick={() => setVisibility(true)}
+                style={{ cursor: "pointer" }}
+              />
+            )
+          }
+          fullWidth={true}
+          size="medium"
+          type={visibility ? "text" : "password"}
+          value={values.cpassword}
+          onChange={handleInputChange}
+          error={errors.cpassword}
+        />
+      </Grid>
       <Grid container alignItems="center">
         <Grid container justify="center" style={{ marginTop: 20 }}>
           <Controls.Button
+            disabled={disableSubmit}
             type="submit"
-            text="SEND RESET LINK"
-            style={{ backgroundColor: "#236CC7" }}
+            text="Reset Password"
+            onClick={handleSubmit}
           />
         </Grid>
       </Grid>

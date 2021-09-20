@@ -21,7 +21,9 @@ export const createInstantGroup = (data) => {
   return fetch(HOST + `user/group?email=${email}&post=${post}`, requestOptions)
     .then((res) => {
       if (res.ok) {
-        return true;
+        return 200;
+      }else if(res.status === 412){
+        return 412;
       }
       return false;
     })
@@ -157,6 +159,34 @@ export const deleteInstantGroup = (data) => {
 
   return fetch(
     HOST + `user/group/deactivate?email=${email}&id=${id}`,
+    requestOptions
+  )
+    .then((res) => {
+      if (res.ok) {
+        return true;
+      }
+      return false;
+    })
+    .catch((err) => console.error(err));
+};
+
+// leave from  instant group
+export const leaveFromGroup = (data) => {
+  const { id, email } = data;
+
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({
+      emails:[email]
+    }),
+  };
+
+  return fetch(
+    HOST + `user/group/remove?&id=${id}`,
     requestOptions
   )
     .then((res) => {

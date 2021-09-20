@@ -14,8 +14,30 @@ export const getUserDetails = (email) => {
   return fetch(HOST + `user/?email=${email}`, requestOptions)
     .then(async (res) => {
       if (res.ok) {
-        data = await res.json();
+        let data = await res.json();
         return data;
+      }
+      return false;
+    })
+    .catch((err) => console.error(err));
+};
+
+// update user firstName lastName
+export const updateProfile = (email,firstName, lastName) => {
+  const requestOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+  };
+
+  return fetch(HOST + `user/registration/update?email=${email}&first=${firstName}&last=${lastName}`, requestOptions)
+    .then(async (res) => {
+      if (res.ok) {
+        // let data = await res.json();
+        setItem("name", `${firstName} ${lastName}`);
+        return true;
       }
       return false;
     })
