@@ -14,7 +14,7 @@ export const getReportedPosts = () => {
     },
   };
 
-  return fetch(HOST + `admin/report`, requestOptions)
+  return fetch(HOST + `admin/report?type=p`, requestOptions)
     .then(async (res) => {
       if (res.ok) {
         let data = await res.json();
@@ -103,6 +103,26 @@ export const getBlockedUsers = () => {
   };
 
   return fetch(HOST + `user/lock/all`, requestOptions)
+    .then(async (res) => {
+      if (res.ok) {
+        let data = await res.json();
+        return data;
+      }
+      return false;
+    })
+    .catch((err) => console.error(err));
+};
+//get repoted reviews
+export const getReportedReviews = () => {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+  };
+
+  return fetch(HOST + `admin/report?type=r`, requestOptions)
     .then(async (res) => {
       if (res.ok) {
         let data = await res.json();
