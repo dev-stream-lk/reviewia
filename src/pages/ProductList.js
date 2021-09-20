@@ -122,6 +122,8 @@ const FiltersMenu = (props) => {
   const [handleCollapseByCategory, setHandleCollapseByCategory] =
     useState(true);
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
   // const [handleCollapseByDates, setHandleCollapseByDates] = useState(true);
   // const [filterStartDate, setFilterStartDate] = useState("");
   // const [filterEndDate, setFilterEndDate] = useState("");
@@ -133,8 +135,8 @@ const FiltersMenu = (props) => {
   const [values, setValues] = useState({
     ratingOperator: ">",
     rating: 0,
-    category: params.categoryId || "all",
-    subCategory: params.subCategoryId || "all",
+    category: params.categoryId ? params.categoryId.charAt(0).toLowerCase() +params.categoryId.slice(1) : "all",
+    subCategory: params.subCategoryId ? params.subCategoryId  : "all",
     type: "all",
     brand: "all",
   });
@@ -165,7 +167,9 @@ const FiltersMenu = (props) => {
           subCategories: data.services[i].subCategoryList,
         });
       }
-
+      if(type===""){
+        type = "all"
+      }
       var initialCatValues = {
         type: type,
         category: params.categoryId ? params.categoryId : "all",
@@ -176,7 +180,6 @@ const FiltersMenu = (props) => {
       setCategories({ products, services });
     }
   }, []);
-
   // call when product type changed
   useEffect(() => {
     setValues({
@@ -190,9 +193,14 @@ const FiltersMenu = (props) => {
 
   // call when category changed
   useEffect(() => {
+    let subCategory = "all";
+    if(values.type && values.category &&  !isLoaded){
+      setIsLoaded(true);
+      subCategory = params.subCategory;
+    }
     setValues({
       ...values,
-      subCategory: "all",
+      subCategory: subCategory,
       brand: "all",
     });
     setBrands([]);
@@ -209,6 +217,7 @@ const FiltersMenu = (props) => {
               brands: item.subCategories[i].brandList,
             });
           }
+          console.log(subCategories)
           setSubCategories(subCategories);
         }
       });
@@ -416,7 +425,7 @@ const FiltersMenu = (props) => {
                         ? [{ id: "all", title: "All" }, ...categories.products]
                         : [{ id: "all", title: "All" }]
                       : categories.services.length != 0
-                      ? categories.services
+                      ? [{ id: "all", title: "All" }, ...categories.services]
                       : [{ id: "all", title: "All" }]
                     : [{ id: "all", title: "All" }]
                 }
