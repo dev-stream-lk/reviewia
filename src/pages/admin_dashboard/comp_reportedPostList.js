@@ -15,13 +15,15 @@ import Button from "../../components/basic/Button";
 import React, { useState, useEffect } from "react";
 import { PreLoader } from "../../components/basic/PreLoader";
 import Controls from "../../components/Controls";
-import { adminBanPostDB, getPostReports, getReportedPosts } from "../../services/adminPosts";
+import { adminBanPostDB, adminUnBanPostDB, getPostReports, getReportedPosts } from "../../services/adminPosts";
 import { BlockOutlined } from "@material-ui/icons";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
 import clsx from "clsx";
 import { getDateTime } from "../../utils/dateTime";
 import { getPostById } from "../../services/posts";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     padding: theme.spacing(0),
@@ -53,11 +55,11 @@ const useStyles = makeStyles((theme) => ({
 
 const AdminBanPost = (props) => {
   const classes = useStyles();
-  const { open, setOpen, banPost } = props;
+  const { open, setOpen, adminBanPost } = props;
   const [error, setError] = useState("");
 
   const onSubmit = async () => {
-    let res = await banPost();
+    let res = await adminBanPost();
 
     if (res) {
       setOpen(false);
@@ -89,7 +91,75 @@ const AdminBanPost = (props) => {
   return (
     <>
       <Controls.Popup
-        title="Create New Category"
+        title="Ban post"
+        openPopup={open}
+        setOpenPopup={setOpen}
+        actions={<Actions />}
+      >
+        {error !== "" && (
+          <Grid
+            container
+            style={{
+              marginTop: 8,
+              padding: 8,
+              marginBottom: 24,
+              color: "red",
+              background: "#ffaaaa",
+            }}
+            justifyContent="center"
+          >
+            <Typography variant="subtitle2">{error}</Typography>
+          </Grid>
+        )}
+        <div className={classes.addCategory}>
+          <Typography variant="subtitle2" >
+              Are you sure?
+          </Typography>
+        </div>
+      </Controls.Popup>
+    </>
+  );
+};
+
+const AdminUnBanPost = (props) => {
+  const classes = useStyles();
+  const { open, setOpen, adminUnBanPost } = props;
+  const [error, setError] = useState("");
+
+  const onSubmit = async () => {
+    let res = await adminUnBanPost();
+
+    if (res) {
+      setOpen(false);
+      setError("");
+    } else {
+      setError("Unable to ban this post.");
+    }
+  };
+
+  const Actions = () => {
+    return (
+      <Grid container justifyContent="flex-end">
+        <Controls.Button
+          style={{ marginRight: 10 }}
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Controls.Button>
+        <Controls.Button
+          color="secondary"
+          onClick={() => onSubmit()}
+        >
+          Active Post
+        </Controls.Button>
+      </Grid>
+    );
+  };
+
+  return (
+    <>
+      <Controls.Popup
+        title="Active banned post"
         openPopup={open}
         setOpenPopup={setOpen}
         actions={<Actions />}
@@ -123,17 +193,21 @@ const ReportedPost=(props)=>{
     const classes = useStyles();
     const [expanded, setExpanded] = useState(false);
     const [reports, setReports] = useState([]);
-    const {selectedPostId, set, adminBanPost} = props;
+    const {selectedPostId, set, adminBanPost, tabNumber, adminUnBanPost} = props;
     const [postData, setPostData] = useState({});
     const [openBan, setOpenBan] = useState(false);
+    const [openUnBan, setOpenUnBan] = useState(false);
 
     // get post details
     useEffect( async () => {
       if(selectedPostId){
         let res = await getPostById(selectedPostId);
+        console.log(res)
         if(res){
           setPostData(res);
         }
+      }else{
+        setPostData({});
       }
     },[selectedPostId]);
 
@@ -149,12 +223,6 @@ const ReportedPost=(props)=>{
       setExpanded(!expanded);
     };
 
-    // const adminBanPost = async () => {
-    //   let res = await adminBanPostDB(selectedPostId);
-    //   if(res){
-    //   }
-    // }
-
     return (
       <Grid
         container
@@ -163,7 +231,8 @@ const ReportedPost=(props)=>{
         md={12}
         style={{ position: "relative", width: "100%", maxHeight:"75vh", overflowY:"scroll" }}
       >
-        <AdminBanPost open={openBan} setOpen={setOpenBan} />
+        <AdminBanPost open={openBan} setOpen={setOpenBan} adminBanPost={adminBanPost} />
+        <AdminUnBanPost open={openUnBan} setOpen={setOpenUnBan} adminUnBanPost={adminUnBanPost} />
         <Controls.Card className={classes.productListcard} variant="outlined">
           <CardHeader
             avatar={ postData.avatarUrl ? (
@@ -179,9 +248,15 @@ const ReportedPost=(props)=>{
               </Avatar>
             ) }
             action={
-              <IconButton onClick={() => setOpenBan(true)} aria-label="delete" className={classes.margin}>
-                <BlockOutlined fontSize="large" color="secondary" />
-              </IconButton>
+              tabNumber === 0 ? (
+                <IconButton title="Block post" onClick={() => setOpenBan(true)} aria-label="delete" className={classes.margin}>
+                  <BlockOutlined fontSize="large" color="secondary" />
+                </IconButton>
+              ) : (
+                <IconButton title="Undo block" onClick={() => setOpenUnBan(true)} aria-label="delete" className={classes.margin}>
+                  <AddCircleOutlineIcon fontSize="large" color="primary" />
+                </IconButton>
+              )
             }
             titleTypographyProps={{style:{fontSize:20}}}
             title={postData.title}
@@ -333,7 +408,7 @@ const ReportCardDetail = (props) => {
 // left side report card
 const ReportCard = (props) => {
   const classes = useStyles();
-  const { report, setSelectedPostId, ls , loadPost } = props;
+  const { report, ls , loadPost } = props;
 
   return (
     <Grid container xs={12} style={{ position: "relative", width: "100%" }}>
@@ -386,7 +461,7 @@ const ReportCard = (props) => {
             variant="contained"
             color="blue"
             style={{ backgroundColor: "#152840", color: "white" }}
-            onClick={() => loadPost(report.subjectId)}
+            onClick={() => loadPost(report.id,report.subjectId)}
           >
             See More
           </Button>
@@ -404,20 +479,60 @@ export default function ReportedBannedPost() {
   const [reportedPosts, setReportedPosts] = useState([]);
   const [loadPost, setLoadPost] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedReportId, setSelectedReportId] = useState(0);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(async () => {
+  useEffect(() => {
+    if(selectedPostId){
+      setLoadPost(false);
+      setSelectedPostId(0);
+      setSelectedReportId(0);
+    }
+  }, [selected])
+  // get all post reports
+  const getPostReports = async () => {
     setListLoading(true);
     let data = await getReportedPosts();
     if (data) {
-      setReportedPosts(data);
+      let reports = {notBanned:[],banned:[]};
+      data.forEach( (report) => {
+        if(report.is_processed){
+          reports.banned =  [...reports.banned, report];
+        }else{
+          reports.notBanned = [...reports.notBanned, report];
+        }
+      });
+      setReportedPosts(reports);
       setListLoading(false);
     }
+  }
+  useEffect(async () => {
+    getPostReports();
   }, []);
 
-  const loadThePost =(postId)=>{
+  const loadThePost =(reportId, postId)=>{
       setSelectedPostId(postId);
+      setSelectedReportId(reportId)
       setLoadPost(!loadPost);
+  }
+
+  const adminBanPost = async () => {
+    let res = await adminBanPostDB(selectedReportId);
+    console.log(res)
+    if(res){
+      setSelectedPostId(0);
+      getPostReports();
+    }
+    return res;
+  }
+
+  const adminUnBanPost = async () => {
+    let res = await adminUnBanPostDB(selectedReportId);
+    console.log(res)
+    if(res){
+      setSelectedPostId(0);
+      getPostReports();
+    }
+    return res;
   }
 
   return (
@@ -476,8 +591,9 @@ export default function ReportedBannedPost() {
               style={{ marginLeft: 5, marginRight: 5, position: "relative" }}
             >
               <PreLoader loading={listLoading} />
-              <List style={{ maxHeight: "75vh", overflow: "auto" }}>
-                {reportedPosts.map((report, index) => (
+              <List style={{ height: "75vh", overflow: "auto" }}>
+              {selected === 0 ? 
+                reportedPosts.notBanned && reportedPosts.notBanned.length>0 ? reportedPosts.notBanned.map((report, index) => (
                   <Grid
                     key={index}
                     item
@@ -486,13 +602,37 @@ export default function ReportedBannedPost() {
                     justifyContent="center"
                     style={{ width: "100%" }}
                   >
-                    {selected === 1 ? (
                       <ReportCard report={report} ls={1} setSelectedPostId={setSelectedPostId} loadPost={loadThePost} />
-                    ) : (
-                      <ReportCard report={report} ls={0} setSelectedPostId={setSelectedPostId} loadPost={loadThePost} />
-                    )}
                   </Grid>
-                ))}
+                )): (
+                  <Grid container justifyContent="center">
+                    <Typography>
+                      No New  reports.
+                    </Typography>
+                  </Grid>
+                )
+              : (
+                reportedPosts.banned && reportedPosts.banned.length>0 ? reportedPosts.banned.map((report, index) => (
+                  <Grid
+                    key={index}
+                    item
+                    xs={12}
+                    md={12}
+                    justifyContent="center"
+                    style={{ width: "100%" }}
+                  >
+                  <ReportCard report={report} ls={0} setSelectedPostId={setSelectedPostId} loadPost={loadThePost} />
+                  </Grid>
+                )): (
+                  <Grid container justifyContent="center">
+                    <Typography>
+                      No banned posts.
+                    </Typography>
+                  </Grid>
+                )
+              )
+              }
+                
               </List>
             </Grid>
 
@@ -534,7 +674,7 @@ export default function ReportedBannedPost() {
               </Controls.ActionButton>
             </Grid>
             <Grid container alignContent="center" sm={12} xs={12} md={12} style={{width:"100%"}}>
-              {loadPost ? <ReportedPost selectedPostId={selectedPostId}></ReportedPost> : (
+              {loadPost ? <ReportedPost tabNumber={selected} adminUnBanPost={adminUnBanPost} adminBanPost={adminBanPost} selectedPostId={selectedPostId}></ReportedPost> : (
                 <Grid container justifyContent="center" style={{marginTop:30}}>
                   <Typography>Please select a report for see more details.</Typography>
                 </ Grid>
