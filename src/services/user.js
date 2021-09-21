@@ -25,7 +25,7 @@ export const getUserDetails = (email) => {
 // update user firstName lastName
 export const updateProfile = (email,firstName, lastName) => {
   const requestOptions = {
-    method: "GET",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TOKEN}`,
@@ -34,6 +34,7 @@ export const updateProfile = (email,firstName, lastName) => {
 
   return fetch(HOST + `user/registration/update?email=${email}&first=${firstName}&last=${lastName}`, requestOptions)
     .then(async (res) => {
+      console.log(res)
       if (res.ok) {
         // let data = await res.json();
         setItem("name", `${firstName} ${lastName}`);
