@@ -300,6 +300,53 @@ const Terms = () => {
         If it is determined that you retain moral rights (including rights of attribution or integrity) in the Submissions or Content, you hereby declare that (a) you do not require that any personally identifying information be used in connection with the Submission or Content, or any derivative works of or upgrades or updates thereto; (b) you have no objection to the publication, use, modification, deletion, and exploitation of the Submission and/or Content by Reviewia or its licensees, successors, and assigns; (c) you forever waive and agree not to claim or assert any entitlement to any and all moral rights of an author in any of the Submissions or Content; and (d) you forever release Reviewia, and its licensees, successors, and assigns, from any claims that you could otherwise assert against Reviewia by virtue of any such moral rights.
       </Typography>
 
+      <Typography
+        align="justify"
+        style={{
+          marginTop: "10px",
+          fontWeight: 400,
+          fontSize: 15,
+          marginBottom: 8,
+        }}
+      >
+        <Typography
+          align="left"
+          style={{
+            fontWeight: 600,
+            fontSize: 15,
+            marginBottom: 8,
+          }}
+        >
+          Liability Disclaimer
+        </Typography>
+        THE INFORMATION, CONTENT, SUBMISSIONS, SOFTWARE, PRODUCTS, AND/OR SERVICES PUBLISHED ON OR THROUGH THIS SITE MAY INCLUDE INACCURACIES OR ERRORS.REVIEWIA DOES NOT GUARANTEE THE ACCURACY OF, AND DISCLAIMS, ALL LIABILITY FOR ANY ERRORS OR OTHER INACCURACIES RELATING TO, THE INFORMATION AND DESCRIPTION OF THE TECHNOLOGY PRODUCTS AND RELATED SERVICES DISPLAYED ON THIS SITE (INCLUDING, WITHOUT LIMITATION, THE PRICING, SCREENSHOTS, VIDEOS, LIST OF PRODUCT AND SERVICE FEATURES, VENDOR COMPANY INFORMATION, GENERAL PRODUCT DESCRIPTIONS, ETC.).REVIEWIA  MAKES NO REPRESENTATIONS ABOUT THE SUITABILITY OF THE INFORMATION, CONTENT, SUBMISSIONS, SOFTWARE, PRODUCTS, AND/OR SERVICES CONTAINED OR DESCRIBED ON THIS SITE FOR ANY PURPOSE, AND THE INCLUSION OR OFFERING OF ANY PRODUCTS OR SERVICES ON OR THROUGH THIS SITE DOES NOT CONSTITUTE ANY ENDORSEMENT OR RECOMMENDATION OF SUCH PRODUCTS OR SERVICES BY REVIEWIA.ALL SUCH INFORMATION, CONTENT, SUBMISSIONS, SOFTWARE, PRODUCTS, AND/OR SERVICES ARE PROVIDED “AS IS” WITHOUT WARRANTY OF ANY KIND BY REVIEWIA.REVIEWIA  DISCLAIMS ALL WARRANTIES AND CONDITIONS THAT THIS SITE, ITS SERVERS, OR ANY EMAIL SENT FROM REVIEWIA, ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.REVIEWIA  HEREBY DISCLAIMS ALL WARRANTIES AND CONDITIONS WITH REGARD TO THE INFORMATION, CONTENT, SUBMISSIONS, SOFTWARE, PRODUCTS, AND/OR SERVICES CONTAINED OR DESCRIBED ON THIS SITE, INCLUDING ALL IMPLIED WARRANTIES AND CONDITIONS OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON INFRINGEMENT.
+        IN NO EVENT SHALL REVIEWIA  (NOR ITS OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, AND AFFILIATES) BE LIABLE FOR ANY DIRECT, INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF, OR IN ANY WAY CONNECTED WITH, YOUR ACCESS TO, DISPLAY ON, OR USE OF THIS SITE OR WITH THE DELAY OR INABILITY TO ACCESS, DISPLAY, OR USE THIS SITE (INCLUDING, BUT NOT LIMITED TO, YOUR RELIANCE UPON OPINIONS APPEARING ON THIS SITE; ANY COMPUTER VIRUSES, INFORMATION, CONTENT, SUBMISSIONS, SOFTWARE, LINKED SITES, PRODUCTS, AND/OR SERVICES OBTAINED OR ACCESSED THROUGH THIS SITE; OR OTHERWISE ARISING OUT OF THE ACCESS TO, DISPLAY ON, OR USE OF THIS SITE) WHETHER BASED ON A THEORY OF NEGLIGENCE, CONTRACT, TORT, STRICT LIABILITY, OR OTHERWISE, AND EVEN IF REVIEWIA  HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+        The limitation of liability reflects the allocation of risk between the parties.The limitations specified in this section will survive and apply even if any limited remedy specified in these Terms is found to have failed of its essential purpose.The limitations of liability provided in these Terms inure to the benefit of Reviewia.
+      </Typography>
+
+      <Typography
+        align="justify"
+        style={{
+          marginTop: "10px",
+          fontWeight: 400,
+          fontSize: 15,
+          marginBottom: 8,
+        }}
+      >
+        <Typography
+          align="left"
+          style={{
+            fontWeight: 600,
+            fontSize: 15,
+            marginBottom: 8,
+          }}
+        >
+          Copyright and Trademark Notices
+        </Typography>
+        All contents of this Site are: © Copyright 2021 Reviewia, Inc. All Rights Reserved. Reviewia is not responsible for content on websites, platforms, or mobile applications operated by parties other than Reviewia. Reviewia, its logo, and, except as noted below, all other product or service names, logos, or slogans displayed on this Site are registered and/or common law trademarks of Reviewia, Inc. or its suppliers or licensors and may not be copied, imitated, or used, in whole or in part, without the prior written permission of Reviewia or the applicable trademark holder. In addition, the look and feel of this Site, including all page headers, custom graphics, button icons, and scripts, is the service mark, trademark, and/or trade dress of Reviewia and may not be copied, imitated, or used, in whole or in part, without the prior written permission of Reviewia. All other trademarks, registered trademarks, product names, and company names or logos mentioned in or on this Site are the property of their respective owners. Reference to any products, services, processes, or other information, by trade name, trademark, manufacturer, supplier, or otherwise does not constitute or imply endorsement, sponsorship, or recommendation thereof by Reviewia.
+        Other logos and product and company names mentioned herein may be the trademarks of their respective owners.
+      </Typography>
+
     </Grid>
   );
 };
