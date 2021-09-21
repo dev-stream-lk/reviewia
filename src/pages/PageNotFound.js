@@ -6,7 +6,6 @@ export default function PageNotFound() {
       404 Page Not Found
       <br />
       <br />
-      Todo : style this page
     </div>
   );
 }

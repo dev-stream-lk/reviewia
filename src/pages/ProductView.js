@@ -855,68 +855,73 @@ const ProductView = (props) => {
                     </IconButton>
                   </Link>
                 </Tooltip>
-                
-                {activeGroupId !== 0 ? (
-                  <Tooltip title="Goto Group Chat" aria-label="add" arrow>
-                    <Link
-                      to={{
-                        pathname: `/product/instantGroup/${postId}/${activeGroupId}`,
-                      }}
-                    >
-                      <IconButton
-                        color="primary"
-                        aria-label="Goto Group Chat"
-                        component="span"
-                      >
-                        <GroupSharpIcon />
-                      </IconButton>
-                    </Link>
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Create Instant Group" aria-label="add" arrow>
-                    <IconButton
-                      color="primary"
-                      aria-label="Create instant group"
-                      component="span"
-                      onClick={() => {
-                        setOpenCreateInstant(true);
-                      }}
-                    >
-                      <GroupAddOutlinedIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-                {postData && postData.email !== userData.email ? (
-                  <Tooltip title="Report Post" aria-label="add" arrow>
-                    <IconButton
-                      onClick={() => setOpenReportPost(true)}
-                      color="primary"
-                      aria-label="Add to favourite"
-                      component="span"
-                    >
-                      <ReportIcon />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  checkDateTimeIsExpired(postData.createdAt, 30) && (
-                    <Tooltip
-                      title={`Delete Post Permanently( ${getRemainingDeleteTime(
-                        postData.createdAt
-                      )} ) `}
-                      aria-label="add"
-                      arrow
-                    >
-                      <IconButton
-                        onClick={() => setOpenDeletePost(true)}
-                        color="secondary"
-                        aria-label="Delete Group"
-                        component="span"
-                      >
-                        <DeleteForeverOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )
-                )}
+                {
+                  userData.isLoggedIn ? (
+                    <>
+                      {activeGroupId !== 0 ? (
+                        <Tooltip title="Goto Group Chat" aria-label="add" arrow>
+                          <Link
+                            to={{
+                              pathname: `/product/instantGroup/${postId}/${activeGroupId}`,
+                            }}
+                          >
+                            <IconButton
+                              color="primary"
+                              aria-label="Goto Group Chat"
+                              component="span"
+                            >
+                              <GroupSharpIcon />
+                            </IconButton>
+                          </Link>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="Create Instant Group" aria-label="add" arrow>
+                          <IconButton
+                            color="primary"
+                            aria-label="Create instant group"
+                            component="span"
+                            onClick={() => {
+                              setOpenCreateInstant(true);
+                            }}
+                          >
+                            <GroupAddOutlinedIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {postData && postData.email !== userData.email ? (
+                        <Tooltip title="Report Post" aria-label="add" arrow>
+                          <IconButton
+                            onClick={() => setOpenReportPost(true)}
+                            color="primary"
+                            aria-label="Add to favourite"
+                            component="span"
+                          >
+                            <ReportIcon />
+                          </IconButton>
+                        </Tooltip>
+                      ) : (
+                        checkDateTimeIsExpired(postData.createdAt, 30) && (
+                          <Tooltip
+                            title={`Delete Post Permanently( ${getRemainingDeleteTime(
+                              postData.createdAt
+                            )} ) `}
+                            aria-label="add"
+                            arrow
+                          >
+                            <IconButton
+                              onClick={() => setOpenDeletePost(true)}
+                              color="secondary"
+                              aria-label="Delete Group"
+                              component="span"
+                            >
+                              <DeleteForeverOutlinedIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )
+                      )}
+                    </>
+                  ):null
+                }
               </Grid>
               <Grid item xs={12} sm={11} md={9} direction="column">
                 <Controls.Paper>
@@ -978,14 +983,18 @@ const ProductView = (props) => {
                   {Object.keys(postData).length !== 0 ? postData.title : ""}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Controls.Button
-                  onClick={() => setOpen(true)}
-                  variant="outlined"
-                >
-                  Write a review
-                </Controls.Button>
-              </Grid>
+              {
+                userData.isLoggedIn && (
+                  <Grid item xs={6}>
+                    <Controls.Button
+                      onClick={() => setOpen(true)}
+                      variant="outlined"
+                    >
+                      Write a review
+                    </Controls.Button>
+                  </Grid>
+                )
+              }
               <Grid item xs={12}>
                 <Controls.Paper className={useStyles.paper}>
                   <Grid container className={classes.reviewContainer}>
