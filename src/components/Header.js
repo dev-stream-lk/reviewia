@@ -388,7 +388,7 @@ export default function Header(props) {
                 onClose={handleClose}
                 style={{ position: "absolute", top: 40 }}
               >
-                {userData.role == "admin" ? (
+                {userData.role == "ADMIN" ? (
                   <MenuItem component={Link} to="/dashboard">
                     Dashboard
                   </MenuItem>
