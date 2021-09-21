@@ -824,19 +824,9 @@ const MessageSection = (props) => {
 
 export default function InstantGroup(props) {
   const params = useParams();
-  const groupId = params["groupId"];
-  const postId = params["postId"];
-  const history = useHistory();
 
-  if (groupId == undefined) {
-    history.push("/pageNotFound");
-  }
-  const classes = useStyles();
   const { userData, setUserData } = useContext(UserContext);
-  const [postData, setPostData] = useState({});
-  const [groupData, setGroupData] = useState({});
-  const [error, setError] = useState("");
-
+  const history = useHistory();
   // check user is login
   useEffect(() => {
     if (userData) {
@@ -845,6 +835,18 @@ export default function InstantGroup(props) {
       }
     }
   }, [userData]);
+
+  const groupId = params["groupId"];
+  const postId = params["postId"];
+
+  if (groupId == undefined) {
+    history.push("/pageNotFound");
+  }
+  const classes = useStyles();
+  const [postData, setPostData] = useState({});
+  const [groupData, setGroupData] = useState({});
+  const [error, setError] = useState("");
+
 
   // get chat group info
   useEffect(async () => {

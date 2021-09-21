@@ -55,12 +55,14 @@ const user_login = ({ email, password }, setUserData, history) => {
       }
       return false;
     })
-    .then((data) => {
+    .then( async (data) => {
+      
       if (data) {
         let token = data["token"].split("Bearer ")[1];
         setItem("token", token);
         setItem("email", email);
         refreshContext();
+        var role= "USER";
         const requestOptions = {
           method: "GET",
           headers: {
@@ -68,20 +70,22 @@ const user_login = ({ email, password }, setUserData, history) => {
             Authorization: `Bearer ${token}`,
           },
         };
-        fetch(HOST + `user?email=${email}`, requestOptions)
+        await fetch(HOST + `user?email=${email}`, requestOptions)
           .then((res) => {
             if (res.ok) {
               return res.json();
             }
             return false;
           })
-          .then((data) => {
+          .then((data) => {    
             if (data) {
               setItem("name", data["firstName"] + " " + data["lastName"]);
+              setItem("role", data['role']);
+              role = data['role'];
             }
           })
           .catch((err) => console.error(err));
-        return token;
+        return {token, role};
       } else {
         return false;
       }

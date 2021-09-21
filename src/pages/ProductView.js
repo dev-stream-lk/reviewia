@@ -94,14 +94,15 @@ const ReportReview = (props) => {
     handleReportClose,
   } = props;
   const [customFeedback, setCustomFeedback] = useState("");
-  const defaultReasonId = 3;
+  const defaultReasonId = 4;
   const [reason, setReason] = useState(defaultReasonId);
   const [error, setError] = useState("");
 
   const reasons = [
-    { id: 1, title: "Fake Review" },
-    { id: 2, title: "Not Relavant" },
-    { id: 3, title: "Other" },
+    { id: 1, title: "Inappropriate Review" },
+    { id: 2, title: "Abusive Content" },
+    { id: 3, title: "It's a spam" },
+    { id: 4, title: "Other" },
   ];
 
   const handleReport = async (e) => {
@@ -209,14 +210,15 @@ const ReportPost = (props) => {
   const classes = useStyles();
   const { openReport, setOpenReport, userData, reportPostId } = props;
   const [customFeedback, setCustomFeedback] = useState("");
-  const defaultReasonId = 3;
+  const defaultReasonId = 4;
   const [reason, setReason] = useState(defaultReasonId);
   const [error, setError] = useState("");
 
   const reasons = [
-    { id: 1, title: "Fake Post" },
-    { id: 2, title: "Duplicate Post" },
-    { id: 3, title: "Other" },
+    { id: 1, title: "Inappropriate Post" },
+    { id: 2, title: "Abusive Content" },
+    { id: 3, title: "It's a spam" },
+    { id: 4, title: "Other" },
   ];
 
   const handleReport = async (e) => {
@@ -840,10 +842,10 @@ const ProductView = (props) => {
                   )}
                 </Tooltip>
                 <Tooltip title="Compare" aria-label="add" arrow>
-                  <Link to={{ pathname: "/product/compare" }}>
+                  <Link to={{ pathname: `/product/compare/${postId}` }}>
                     <IconButton
                       color="primary"
-                      aria-label="Add to favourite"
+                      aria-label="Product Compare"
                       component="span"
                     >
                       <CompareSharp />

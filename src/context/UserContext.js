@@ -6,6 +6,7 @@ const initialUserData = {
   name: getItem("name"),
   email: getItem("email"),
   token: getItem("token"),
+  role: getItem("role"),
   isLoggedIn: token != "" ? true : false,
 };
 

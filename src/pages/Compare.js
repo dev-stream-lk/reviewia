@@ -18,8 +18,9 @@ import Phone from "../static/img/j7.jpg";
 import SearchIcon from "@material-ui/icons/Search";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { UserContext } from "../context/UserContext";
-import { getPostBySearch } from "../services/posts";
+import { getPostById, getPostBySearch } from "../services/posts";
 import ImageCarousel from "../components/ImageCarousel";
+import { useParams } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -190,11 +191,20 @@ const ShowReviews = (props) => {
 
 export default function Compare(props) {
   const classes = useStyles();
+  const params = useParams();
   const { userData, setUserData } = useContext(UserContext);
   const [post1Data, setPost1Data] = useState({});
   const [post2Data, setPost2Data] = useState({});
   const [post3Data, setPost3Data] = useState({});
 
+  useEffect( async () => {
+    if(params.postId){
+      let res = await getPostById(params.postId);
+      if(res){
+        setPost1Data(res);
+      }
+    }
+  },[params]);
 
   return (
     <>
@@ -255,8 +265,8 @@ export default function Compare(props) {
                           </Grid>
                         </>
                       ): (
-                        <Grid container style={{height:220}} justifyContent="center">
-                          <Skeleton variant="rect" animation="wave" style={{height:"100%", width:"80%"}}>
+                        <Grid container style={{height:230}} justifyContent="center">
+                          <Skeleton variant="rect" animation="wave" style={{height:"85%", width:"80%"}}>
 
                           </Skeleton>
                           <Skeleton variant="rect" animation="wave" style={{height:30,marginTop:10, width:"80%"}}>
@@ -296,8 +306,8 @@ export default function Compare(props) {
                           </Grid>
                         </>
                       ): (
-                        <Grid container style={{height:220}} justifyContent="center">
-                          <Skeleton variant="rect" animation="wave" style={{height:"100%", width:"80%"}}>
+                        <Grid container style={{height:230}} justifyContent="center">
+                          <Skeleton variant="rect" animation="wave" style={{height:"85%", width:"80%"}}>
 
                           </Skeleton>
                           <Skeleton variant="rect" animation="wave" style={{height:30,marginTop:10, width:"80%"}}>
@@ -337,8 +347,8 @@ export default function Compare(props) {
                           </Grid>
                         </>
                       ): (
-                        <Grid container style={{height:220}} justifyContent="center">
-                          <Skeleton variant="rect" animation="wave" style={{height:"100%", width:"80%"}}>
+                        <Grid container style={{height:230}} justifyContent="center">
+                          <Skeleton variant="rect" animation="wave" style={{height:"85%", width:"80%"}}>
 
                           </Skeleton>
                           <Skeleton variant="rect" animation="wave" style={{height:30,marginTop:10, width:"80%"}}>
@@ -433,7 +443,7 @@ export default function Compare(props) {
 
             {/* start view count */}
             <Grid container className={classes.container}>
-              <div className={classes.topics}>Number of reviews</div>
+              <div className={classes.topics}>View Count</div>
               <div className={classes.cardSection}>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
@@ -450,9 +460,9 @@ export default function Compare(props) {
             </Grid>
             {/* end view count */}
 
-            {/* start reviews count */}
+            {/* start reviews */}
             <Grid container className={classes.container}>
-              <div className={classes.topics}>Some reviews</div>
+              <div className={classes.topics}>Recent reviews</div>
               <div className={classes.cardSection}>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
@@ -475,7 +485,26 @@ export default function Compare(props) {
                 </Grid>
               </div>
             </Grid>
-            {/* end review count */}
+            {/* end review */}
+
+            {/* start view count */}
+            <Grid container className={classes.container}>
+              <div className={classes.topics}>Description</div>
+              <div className={classes.cardSection}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    {post1Data.description ? post1Data.description : "-"}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post2Data.description ? post2Data.description : "-"}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {post3Data.description ? post3Data.description : "-"}
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+            {/* end view count */}
 
           </Controls.Paper>
         </Grid>

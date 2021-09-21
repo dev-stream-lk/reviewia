@@ -35,6 +35,10 @@ export default function Router() {
             {" "}
             <Compare />{" "}
           </Route>
+          <Route exact path="/product/compare/:postId">
+            {" "}
+            <Compare />{" "}
+          </Route>
           <Route exact path="/product/view/:id">
             {" "}
             <ProductView />{" "}

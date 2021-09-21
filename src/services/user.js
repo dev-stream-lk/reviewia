@@ -25,7 +25,7 @@ export const getUserDetails = (email) => {
 // update user firstName lastName
 export const updateProfile = (email,firstName, lastName) => {
   const requestOptions = {
-    method: "PUT",
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TOKEN}`,

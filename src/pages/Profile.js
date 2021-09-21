@@ -198,11 +198,20 @@ const Profile = (props) => {
     favouriteList: [],
   };
 
+  const { userData, setUserData } = useContext(UserContext);
+  const history = useHistory();
+  // check user is login
+  useEffect(() => {
+    if (userData) {
+      if (userData.isLoggedIn == false) {
+        history.push("/login");
+      }
+    }
+  }, [userData]);
+
   const classes = useStyles();
   const [active, setActive] = useState("ProductList");
-  const { userData, setUserData } = useContext(UserContext);
   const [profileData, setProfileData] = useState({});
-  const history = useHistory();
   const [pageLoading, setPageLoading] = useState(true);
   const [openEdit, setOpenEdit] = useState(false);
 

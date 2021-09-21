@@ -195,7 +195,6 @@ const Step1 = (props) => {
   // get all categories, subCategories and brands only one time
   useEffect(async () => {
     setLoadingCat(true);
-    console.log(step1Data);
     let data = await getCategoryWithSubCategory();
     let products = [];
     let services = [];
@@ -1110,22 +1109,24 @@ export default function AddProduct(props) {
     description: "",
   };
 
+  const { userData, setUserData } = useContext(UserContext);
+  const history = useHistory();
+  // check user is login
+  useEffect(() => {
+    if (userData) {
+      if (userData.isLoggedIn == false) {
+        history.push("/login");
+      }
+    }
+  }, [userData]);
+
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
-  const history = useHistory();
-  const { userData, setUserData } = useContext(UserContext);
   const [step1Data, setStep1Data] = useState(initialPostData);
   const [selectedImages, setSelectedImages] = useState([]);
   const [newPostId, setNewPostId] = useState(undefined);
 
-  // useEffect( ()=>{
-  //     if(userData){
-  //         if(userData.isLoggedIn == false){
-  //             history.push("/login")
-  //         }
-  //     }
-  // },[userData])
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

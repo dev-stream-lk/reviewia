@@ -20,12 +20,11 @@ import { user_login, user_register } from "../services/auth";
 import MainImage from "../static/img/login_img.svg";
 import {
   getCookie,
-  getCookies,
   setCookie,
-  setCookies,
 } from "../services/cookies";
 import { UserContext } from "../context/UserContext";
 import { PreLoader } from "../components/basic/PreLoader";
+import { getItem } from "../services/localStorage";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -84,8 +83,8 @@ const SignIN = (props) => {
   const { commonMsg, setCommonMsg, setLoading } = props;
 
   const initialValues = {
-    email: "",
-    password: "",
+    email: getCookie("email",""),
+    password: getCookie("password",""),
     rememberMe: false,
   };
 
@@ -139,9 +138,10 @@ const SignIN = (props) => {
     setCommonMsg({});
     if (values.rememberMe) {
       setCookie("password", values.password, 30);
+      setCookie("email", values.email, 30);
     }
 
-    const token = await user_login({
+    const {token, role} = await user_login({
       email: values.email,
       password: values.password,
     });
@@ -151,8 +151,12 @@ const SignIN = (props) => {
         setUserData,
       });
       setShowError("");
-      history.push("/");
-      window.location.reload();
+      if(role === "ADMIN"){
+        history.push("/dashboard");  
+      }else{
+        history.push("/");
+        window.location.reload();
+      }
     } else {
       setShowError("Invalid email or password");
     }

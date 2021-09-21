@@ -6,7 +6,7 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Controls from "../../components/Controls";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
@@ -15,6 +15,8 @@ import ReportedHiddenReview from "./comp_reportHiddenReview";
 import BlockedUsers from "./comp_blockedUsers";
 import AddCaregory from "./comp_addCategory";
 import SystemReport from "./SystemReport";
+import { UserContext } from "../../context/UserContext";
+import { useHistory } from "react-router";
 
 const drawerWidth = 280;
 
@@ -55,6 +57,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DashBoard(props) {
+
+  const { userData, setUserData } = useContext(UserContext);
+  const history = useHistory();
+  // check user is login
+  useEffect(() => {
+    if (userData) {
+      if (userData.isLoggedIn == false || userData.role !== "ADMIN") {
+        history.push("/login");
+      }
+    }
+  }, [userData]);
+
   const classes = useStyles();
   const [selected, setSelected] = useState(1);
 
