@@ -33,7 +33,6 @@ const StatisticCounts = (props) => {
     useEffect( async () => {
         setLoading(true);
         let res = await getStatCounts();
-        console.log(res)
         if(res){
             setCounts(res);
             setLoading(false);

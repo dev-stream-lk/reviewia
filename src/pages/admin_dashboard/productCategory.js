@@ -9,7 +9,7 @@ import {
   makeStyles,
   Typography
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Controls from "../../components/Controls";
@@ -90,9 +90,16 @@ const DeleteCategory = (props) => {
 
 const EditCategory = (props) => {
   const classes = useStyles();
-  const { open, setOpen, editCategory, editCategoryId } = props;
-  const [newName, setNewName] = useState("");
+  const { open, setOpen, editCategory, editCategoryId, oldName } = props;
+  console.log(oldName)
+  const [newName, setNewName] = useState(oldName);
   const [error, setError] = useState("");
+
+  useEffect( () => {
+    if(oldName){
+      setNewName(oldName);
+    }
+  },[oldName])
 
   const onSubmit = async () => {
     let res = await editCategory(editCategoryId, newName);
@@ -104,13 +111,19 @@ const EditCategory = (props) => {
     }
   };
 
+  const handleClose = () =>{
+    setOpen(false);
+    setNewName("");
+    setError("");
+  }
+
   const Actions = () => {
     return (
       <Grid container justifyContent="flex-end">
         <Controls.Button
         color="secondary"
           style={{ marginRight: 10 }}
-          onClick={() => setOpen(false)}
+          onClick={handleClose}
         >
           Cancel
         </Controls.Button>
@@ -169,6 +182,7 @@ export default function ProductCategory(props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [deleteCategoryId, setDeleteCategoryId] = useState(0);
   const [editCategoryId, setEditCategoryId] = useState(0);
+  const [editCategoryName, setEditCategoryName] = useState("");
 
   const handleListItemClick = (event, id) => {
     //call the function to gain sub classes..using index as id.
@@ -182,15 +196,16 @@ export default function ProductCategory(props) {
     setOpenDelete(true);
   }
 
-  const handleEdit = (categoryId) => {
+  const handleEdit = (categoryId, name) => {
     setEditCategoryId(categoryId);
+    setEditCategoryName(name);
     setOpenEdit(true);
   }
 
   return (
     <Grid>
       <DeleteCategory deleteCategory={deleteCategory} deleteCategoryId={deleteCategoryId} open={openDelete} setOpen={setOpenDelete} />
-      <EditCategory editCategory={editCategory} editCategoryId={editCategoryId} open={openEdit} setOpen={setOpenEdit} />
+      <EditCategory oldName={editCategoryName} editCategory={editCategory} editCategoryId={editCategoryId} open={openEdit} setOpen={setOpenEdit} />
       <form noValidate autoComplete="off">
         <Grid item xs={6}>
           <TextField
@@ -224,7 +239,7 @@ export default function ProductCategory(props) {
             >
               <ListItemText primary={`${product.categoryName} (${product.postCount} posts)`} />
               <ListItemSecondaryAction>
-                <IconButton onClick={()=>handleEdit(product.categoryId)} edge="end" aria-label="edit">
+                <IconButton onClick={()=>handleEdit(product.categoryId, product.categoryName)} edge="end" aria-label="edit">
                   <EditIcon />
                 </IconButton>
                 <IconButton onClick={()=>handleDelete(product.categoryId)}  edge="end" aria-label="delete">

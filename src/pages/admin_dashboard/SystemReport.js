@@ -199,7 +199,7 @@ const StatisticFiltersPost = (props) => {
           obj["date"] = a;
           obj["count"] = res[d];
           data = [...data,obj]
-          data = data.slice(-30)
+          data = data.slice(-20)
         }
         setChartData(data);
       }
@@ -277,7 +277,7 @@ const StatisticFiltersReview = (props) => {
           obj["date"] = a;
           obj["count"] = res[d];
           data = [...data,obj]
-          data = data.slice(-30)
+          data = data.slice(-20)
         }
         setChartData(data);
       }
