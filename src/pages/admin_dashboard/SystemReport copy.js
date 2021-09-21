@@ -3,10 +3,9 @@ import React, { useEffect, useState } from "react";
 import AdvancedBarChart from "../../components/AdvanceBarChart";
 import Controls from "../../components/Controls";
 import SimpleBarChart from "../../components/SimpleBarChart";
-import { getChartDataDB, getStatCounts } from "../../services/adminSystemReport";
-import { getDate, getDateTime } from "../../utils/dateTime";
+import { getStatCounts } from "../../services/adminSystemReport";
+import { getDate } from "../../utils/dateTime";
 import {PreLoader} from '../../components/basic/PreLoader';
-import DatePicker from "../../components/basic/DatePicker";
 
 const useStyles = makeStyles((theme) => ({
   paperBox: {
@@ -27,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 // Start statistic count
 const StatisticCounts = (props) => {
   const classes = useStyles();
+  const { selected, setSelected } = props;
   const [counts, setCounts] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -48,7 +48,10 @@ const StatisticCounts = (props) => {
         <Grid item xs={6} sm={4} md={3}>
           <div className={classes.statTileWrapper}>
             <Controls.Paper
-              className={classes.statisticTile}
+              onClick={() => setSelected("user")}
+              className={`${classes.statisticTile} ${
+                selected === "user" ? classes.selectedTile : null
+              } `}
               boxClassName={classes.paperBox}
             >
               <Typography variant="h6">Users</Typography>
@@ -63,7 +66,10 @@ const StatisticCounts = (props) => {
         <Grid item xs={6} sm={4} md={3}>
           <div className={classes.statTileWrapper}>
             <Controls.Paper
-              className={classes.statisticTile}
+              onClick={() => setSelected("post")}
+              className={`${classes.statisticTile} ${
+                selected === "post" ? classes.selectedTile : null
+              } `}
               boxClassName={classes.paperBox}
             >
               <Typography variant="h6">Posts</Typography>
@@ -78,7 +84,10 @@ const StatisticCounts = (props) => {
         <Grid item xs={6} sm={4} md={3}>
           <div className={classes.statTileWrapper}>
             <Controls.Paper
-              className={classes.statisticTile}
+              onClick={() => setSelected("review")}
+              className={`${classes.statisticTile} ${
+                selected === "review" ? classes.selectedTile : null
+              } `}
               boxClassName={classes.paperBox}
             >
               <Typography variant="h6">Reviews</Typography>
@@ -93,7 +102,10 @@ const StatisticCounts = (props) => {
         <Grid item xs={6} sm={4} md={3}>
           <div className={classes.statTileWrapper}>
             <Controls.Paper
-              className={classes.statisticTile}
+              onClick={() => setSelected("category")}
+              className={`${classes.statisticTile} ${
+                selected === "category" ? classes.selectedTile : null
+              } `}
               boxClassName={classes.paperBox}
             >
               <Typography variant="h6">Categories</Typography>
@@ -157,8 +169,7 @@ const StatisticCounts = (props) => {
 };
 // End statistic count
 
-// post counts
-const StatisticFiltersPost = (props) => {
+const StatisticFilters = (props) => {
   const selectedMap = [
     { selected: "user", title: "User" },
     { selected: "post", title: "Posts" },
@@ -168,58 +179,34 @@ const StatisticFiltersPost = (props) => {
   ];
 
   const classes = useStyles();
-  const getStartDate = () => {
-    let d = new Date();
-    d.setDate(d.getDate()-14)
-    return d;
-  }
-  const [startDate, setStartDate] = useState(getStartDate());
-  const [endDate, setEndDate] = useState(new Date);
-
-  const getDateString = (date) => {
-    let y = date.getUTCFullYear();
-    let m = `0${date.getMonth() +1}`.slice(-2);
-    let d = `0${ date.getDate() }`.slice(-2)
-
-    return `${y}-${m}-${d}`
-  }
-
-  const getData = async () => {
-    if(startDate && endDate){
-      let res = await getChartDataDB("p", getDateString(startDate), getDateString(endDate) );
-      console.log(res)
-      if(res){
-
-      }
-    }
-  }
-
-  useEffect(() => {
-    getDate();
-  }, [])
+  const { selected } = props;
 
   return (
     <Grid container>
       <Controls.Paper boxClassName={classes.paperBox}>
-        <Grid container style={{marginTop:20, marginBottom:20, paddingLeft:50}} alignItems="flex-end">
-          <Grid container item xs={4} alignItems="center" >
-            <Typography style={{padding:10}}  component="span">Start Date:</Typography>
-            <DatePicker onChange={(e) => setStartDate(e.target.value) } value={ startDate} />
-          </Grid>
-          <Grid container item xs={4} alignItems="center" >
-            <Typography style={{padding:10}}  component="span">End Date:</Typography>
-            <DatePicker onChange={(e) => setEndDate(e.target.value) } value={endDate} />
-          </Grid>
-          <Grid container item xs={4} alignItems="center" >
-            <Controls.Button onClick={getData()} >
-              Search
-            </Controls.Button>
-          </Grid>
-        </Grid>
+        <Grid container></Grid>
         <Grid container>
           <Grid style={{ width: "100%" }}>
             <AdvancedBarChart
-              title={`Post Count / Date\n${getDateTime(new Date())}`}
+              title={
+                selected === "category"
+                  ? `${
+                      selectedMap.filter((s) => {
+                        if (s.selected === selected) {
+                          return true;
+                        }
+                        return false;
+                      })[0].title
+                    } (count/category)\n ${getDate(new Date())}`
+                  : `New ${
+                      selectedMap.filter((s) => {
+                        if (s.selected === selected) {
+                          return true;
+                        }
+                        return false;
+                      })[0].title
+                    } (count/date)\n ${getDate(new Date())}`
+              }
             />
           </Grid>
         </Grid>
@@ -230,13 +217,14 @@ const StatisticFiltersPost = (props) => {
 
 export default function SystemReport() {
   const classes = useStyles();
+  const [selected, setSelected] = useState("user");
   return (
     <>
       <Grid container>
-        <StatisticCounts/>
+        <StatisticCounts selected={selected} setSelected={setSelected} />
       </Grid>
       <Grid container>
-        <StatisticFiltersPost />
+        <StatisticFilters selected={selected} />
       </Grid>
     </>
   );

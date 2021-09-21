@@ -87,7 +87,7 @@ const AdminBanPost = (props) => {
           Cancel
         </Controls.Button>
         <Controls.Button color="secondary" onClick={() => onSubmit()}>
-          Ban Post
+          Ban Review
         </Controls.Button>
       </Grid>
     );
@@ -96,7 +96,7 @@ const AdminBanPost = (props) => {
   return (
     <>
       <Controls.Popup
-        title="Ban post"
+        title="Ban Review"
         openPopup={open}
         setOpenPopup={setOpen}
         actions={<Actions />}
@@ -795,7 +795,7 @@ export default function ReportedHiddenReview() {
                     ))
                   ) : (
                     <Grid container justifyContent="center">
-                      <Typography>No New reports.</Typography>
+                      <Typography>New reports not found.</Typography>
                     </Grid>
                   )
                 ) : reportedPosts.banned && reportedPosts.banned.length > 0 ? (
@@ -818,7 +818,7 @@ export default function ReportedHiddenReview() {
                   ))
                 ) : (
                   <Grid container justifyContent="center">
-                    <Typography>No banned posts.</Typography>
+                    <Typography>No banned reviews.</Typography>
                   </Grid>
                 )}
               </List>
@@ -858,7 +858,7 @@ export default function ReportedHiddenReview() {
                   //   ...(selected === 0 ? { color: "white" } : { color: "black" }),
                 }}
               >
-                Reported Post Details
+                Reported Review Details
               </Controls.ActionButton>
             </Grid>
             <Grid

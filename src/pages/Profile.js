@@ -15,6 +15,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { ratingFieldRequired, requiredField } from "../components/Validators";
 import { Form, useForm } from "../components/useForm";
 import { updateProfile } from "../services/user";
+import {Link} from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   mainDiv: {
@@ -275,6 +276,7 @@ const Profile = (props) => {
                   className="pictureContainer"
                 >
                   <Controls.ActionButton
+                    onClick={ () => window.location.href="https://en.gravatar.com/"}
                     className={classes.profileCameraButton}
                   >
                     <PhotoCameraIcon />

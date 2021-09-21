@@ -22,3 +22,25 @@ export const getStatCounts = () => {
       })
       .catch((err) => console.error(err));
 };
+
+
+// get counts between dates
+export const getChartDataDB = (type, start, end) => {
+  
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    }
+  };
+
+  return fetch(HOST + `admin/stats/chart?type=${type}&start=${start}&end=${end}`, requestOptions)
+    .then( async (res) => {
+      if (res.ok) {
+        return await res.json();
+      }
+      return false;
+    })
+    .catch((err) => console.error(err));
+};

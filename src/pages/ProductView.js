@@ -628,6 +628,9 @@ const ProductView = (props) => {
     if (postId) {
       let data = await getPostById(postId);
       if (data) {
+        if(data.blocked){
+          history.replace("/")
+        }
         setPostData(data);
         setPostDataLoading(false);
       } else {
@@ -921,13 +924,13 @@ const ProductView = (props) => {
                   {Object.keys(postData).length !== 0 ? postData.title : ""}
                 </Controls.Paper>
                 <Controls.Paper>
-                  Categoty:{" "}
+                  Category:{" "}
                   {Object.keys(postData).length !== 0
                     ? firstLetterCapital(postData.category)
                     : ""}
                 </Controls.Paper>
                 <Controls.Paper>
-                  SubCategoty:{" "}
+                  Subcategory:{" "}
                   {Object.keys(postData).length !== 0
                     ? firstLetterCapital(postData.subCategory)
                     : ""}
