@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import ThumbUp from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbDown from "@material-ui/icons/ThumbDownAltOutlined";
 import { Rating, Skeleton } from "@material-ui/lab";
-import { IconButton } from "@material-ui/core";
+import { Avatar, IconButton } from "@material-ui/core";
 import ReportIcon from "@material-ui/icons/Report";
 import { getDateTime } from "../utils/dateTime";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
@@ -184,6 +184,11 @@ export default function Review(props) {
     disabled = false;
   };
 
+  const getAvatar = (name) => {
+    let n = name.split(" ");
+    return `${n[0][0]}${n[1][0]}`
+  }
+
   return (
     <div className={classes.root}>
       <Grid container>
@@ -199,13 +204,9 @@ export default function Review(props) {
                     className={classes.reviewHeader}
                   >
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <Skeleton
-                        animation="wave"
-                        variant="circle"
-                        width={40}
-                        height={40}
-                        style={{ margin: 10 }}
-                      />
+                    <Avatar style={{width:40, height:40}} title={`${review.reviewedBy}`}  aria-label="recipe">
+                        {getAvatar(review.reviewedBy)}
+                      </Avatar>
                       <div
                         style={{
                           display: "flex",

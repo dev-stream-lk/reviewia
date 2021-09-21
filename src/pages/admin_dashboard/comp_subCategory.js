@@ -9,7 +9,7 @@ import {
   Divider,
   Typography
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Controls from "../../components/Controls";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -179,9 +179,15 @@ const DeleteSubCategory = (props) => {
 
 const EditSubCategory = (props) => {
   const classes = useStyles();
-  const { open, setOpen, editSubCategory, editSubCategoryId } = props;
+  const { open, setOpen, editSubCategory, editSubCategoryId, oldName } = props;
   const [newName, setNewName] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(()=> {
+    if(oldName){
+      setNewName(oldName)
+    }
+  },[oldName]);
 
   const onSubmit = async () => {
     let res = await editSubCategory(newName);
@@ -193,13 +199,19 @@ const EditSubCategory = (props) => {
     }
   };
 
+  const handleClose = () => {
+    setError("");
+    setNewName("");
+    setOpen(false);
+  }
+
   const Actions = () => {
     return (
       <Grid container justifyContent="flex-end">
         <Controls.Button
         color="secondary"
           style={{ marginRight: 10 }}
-          onClick={() => setOpen(false)}
+          onClick={handleClose}
         >
           Cancel
         </Controls.Button>
@@ -259,6 +271,7 @@ export default function SubCategory(props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [deleteSubCatId, setDeleteSubCatId] = useState(0);
   const [editSubCatId, setEditSubCatId] = useState(0);
+  const [editSubCatName, setEditSubCatName] = useState("");
 
   const deleteSubCat = () => {
     return deleteSubCategory(catData.categoryId, deleteSubCatId);
@@ -273,15 +286,16 @@ export default function SubCategory(props) {
     setOpenDelete(true);
   }
 
-  const handleEdit = (subCategoryId) => {
+  const handleEdit = (subCategoryId, name) => {
     setEditSubCatId(subCategoryId);
+    setEditSubCatName(name);
     setOpenEdit(true);
   }
 
   return (
     <>
       <DeleteSubCategory deleteSubCategory={deleteSubCat} open={openDelete} setOpen={setOpenDelete} />
-      <EditSubCategory editSubCategory={editSubCat} open={openEdit} setOpen={setOpenEdit} />
+      <EditSubCategory oldName={editSubCatName} editSubCategory={editSubCat} open={openEdit} setOpen={setOpenEdit} />
       <Grid container justifyContent="space-between" alignItems="center" style={{marginTop: "8px",}}>
         <Typography variant="h6" style={{fontWeight:600}}>
           Sub Categories
@@ -307,7 +321,7 @@ export default function SubCategory(props) {
             <ListItem>
               <ListItemText primary={`${subCategory.subCategoryName} (${subCategory.postCount} posts)`} />
               <ListItemSecondaryAction>
-                <IconButton onClick={()=>handleEdit(subCategory.subCategoryId)} edge="end" aria-label="edit">
+                <IconButton onClick={()=>handleEdit(subCategory.subCategoryId, subCategory.subCategoryName)} edge="end" aria-label="edit">
                   <EditIcon />
                 </IconButton>
                 <IconButton onClick={()=>handleDelete(subCategory.subCategoryId)} edge="end" aria-label="delete">
