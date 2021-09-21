@@ -522,6 +522,13 @@ export default function Login(props) {
   const history = useHistory();
   const location = useLocation();
   const { userData, setUserData } = useContext(UserContext);
+  useEffect(() => {
+    if (userData) {
+      if (userData.isLoggedIn == true) {
+        history.push("/");
+      }
+    }
+  }, [userData]);
   const [commonMsg, setCommonMsg] = useState({
     for: "",
     isError: false,
@@ -532,14 +539,6 @@ export default function Login(props) {
   if (location.state) {
     register = location.state.register;
   }
-
-  useEffect(() => {
-    if (userData) {
-      if (userData.isLoggedIn == true) {
-        history.push("/");
-      }
-    }
-  }, [userData]);
 
   const [selected, setSelected] = useState(register);
   const classes = useStyles();

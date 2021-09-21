@@ -62,7 +62,7 @@ export default function DashBoard(props) {
   const history = useHistory();
   // check user is login
   useEffect(() => {
-    if (userData) {
+    if (userData.role) {
       if (userData.isLoggedIn == false || userData.role !== "ADMIN") {
         history.push("/login");
       }
