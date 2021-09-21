@@ -1,7 +1,7 @@
 import { Grid, Link, makeStyles } from "@material-ui/core";
 import React, { useState } from "react";
 import Controls from "../components/Controls";
-import {  Form } from "../components/useForm";
+import { Form } from "../components/useForm";
 import { Typography } from "@material-ui/core";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import MainImage from "../static/img/login_img.svg";
@@ -138,29 +138,25 @@ const Terms = () => {
       spacing={3}
     >
       <Typography
-        align="center"
+        align="justify"
         style={{
           marginTop: "10px",
           fontWeight: 400,
           fontSize: 15,
         }}
-      >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
-        consectetur luctus nunc, eu ultrices felis consequat sed. Etiam at ante
-        sed lacus aliquam mollis sit amet vel metus. Lorem ipsum dolor sit amet,
-        consectetur adipiscing elit. Etiam consectetur luctus nunc, eu ultrices
-        felis consequat sed. Etiam at ante sed lacus aliquam mollis sit amet vel
-        metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
-        consectetur luctus nunc, eu ultrices felis consequat sed. Etiam at ante
-        sed lacus aliquam mollis sit amet vel metus. Lorem ipsum dolor sit amet,
-        consectetur adipiscing elit. Etiam consectetur luctus nunc, eu ultrices
-        felis consequat sed. Etiam at ante sed lacus aliquam mollis sit amet vel
-        metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
-        consectetur luctus nunc, eu ultrices felis consequat sed. Etiam at ante
-        sed lacus aliquam mollis sit amet vel metus. Lorem ipsum dolor sit amet,
-        consectetur adipiscing elit. Etiam consectetur luctus nunc, eu ultrices
-        felis consequat sed. Etiam at ante sed lacus aliquam mollis sit amet vel
-        metus.
+      > <Typography
+        align="left"
+        style={{
+          fontWeight: 600,
+          fontSize: 15,
+          marginBottom: 8,
+        }}>
+          Welcome to the Reviewia website.
+        </Typography>
+        These terms, conditions, and notices (“Terms”) govern your access to and use of the Reviewia website, including access and use through any other website or platforms or mobile applications, (“Site”).
+        By accessing or using this Site in any manner, you agree to be bound by these Terms. Please read these Terms carefully. If you do not accept all of these Terms, you may not use this Site.
+        Be sure to return to this page periodically to review the most current version of these Terms. We may modify these Terms or any additional terms that apply to this Site to, for example, reflect changes to the law or changes to this Site. We will notify you about material changes to these Terms by either sending a notice to the email address you provided to us and/or by placing a prominent notice of modifications to these Terms on this page. Changes will not apply retroactively and will become effective no sooner than fourteen days after they are posted. However, changes addressing new functions or features of this Site or changes made for legal reasons will be effective immediately. If you do not agree to the modified Terms, you should discontinue your use of this Site.
+        The terms “we”, “us”, “our” and “Reviewia” refer to Reviewia, Inc., a (). The term “you” refers to the person visiting this Site and/or contributing content on this Site. If you are accessing or using this Site on behalf of a business, that business accepts these Terms, and the term “you” also refers to that business.
       </Typography>
     </Grid>
   );
@@ -253,7 +249,7 @@ export default function TermsOfService() {
                 }}
                 component="div"
               >
-                Last updated on June 29, 2021
+                Last updated on August 29, 2021
               </Typography>
             </Grid>
           </Grid>
