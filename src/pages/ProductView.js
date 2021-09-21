@@ -424,7 +424,7 @@ const WriteReview = (props) => {
             error={errors.description}
             onChange={handleInputChange}
             multiline
-            maxRows={6}
+            maxRows={10}
             required={true}
           />
           <Grid container alignItems="center" style={{ marginTop: 20 }}>
