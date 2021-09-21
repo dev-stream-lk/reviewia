@@ -23,6 +23,8 @@ export default function DatePicker(props) {
     value,
     onChange,
     format = "dd/MM/yyyy",
+    minDate,
+    maxDate= new Date(),
     ...others
   } = props;
 
@@ -32,6 +34,8 @@ export default function DatePicker(props) {
         name={name}
         value={value}
         label={label}
+        maxDate={maxDate}
+        minDate={minDate}
         onChange={(date) => onChange(convertToDefaultEventPara(name, date))}
         format={format}
         {...others}

@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
   },
   statisticTile: {
     minHeight: 100,
-    cursor: "pointer",
   },
   statTileWrapper: {
     margin: 10,
@@ -168,13 +167,19 @@ const StatisticFiltersPost = (props) => {
   ];
 
   const classes = useStyles();
-  const getStartDate = () => {
+
+  const getDateAdded = (x, date=null) => {
+    
     let d = new Date();
-    d.setDate(d.getDate()-14)
+    if(date){
+      d = date;
+    }
+    d.setDate(d.getDate()+x)
     return d;
   }
-  const [startDate, setStartDate] = useState(getStartDate());
+  const [startDate, setStartDate] = useState(getDateAdded(-14));
   const [endDate, setEndDate] = useState(new Date);
+  const [chartData, setChartData] = useState([]);
 
   const getDateString = (date) => {
     let y = date.getUTCFullYear();
@@ -189,7 +194,16 @@ const StatisticFiltersPost = (props) => {
       let res = await getChartDataDB("p", getDateString(startDate), getDateString(endDate) );
       console.log(res)
       if(res){
-
+        let data  = []
+        for(var d in res){
+          let a = d.slice(-5);
+          let obj ={};
+          obj["date"] = a;
+          obj["count"] = res[d];
+          data = [...data,obj]
+          data = data.slice(-30)
+        }
+        setChartData(data);
       }
     }
   }
@@ -204,14 +218,14 @@ const StatisticFiltersPost = (props) => {
         <Grid container style={{marginTop:20, marginBottom:20, paddingLeft:50}} alignItems="flex-end">
           <Grid container item xs={4} alignItems="center" >
             <Typography style={{padding:10}}  component="span">Start Date:</Typography>
-            <DatePicker onChange={(e) => setStartDate(e.target.value) } value={ startDate} />
+            <DatePicker maxDate={endDate} onChange={(e) => setStartDate(e.target.value) } value={ startDate} />
           </Grid>
           <Grid container item xs={4} alignItems="center" >
             <Typography style={{padding:10}}  component="span">End Date:</Typography>
-            <DatePicker onChange={(e) => setEndDate(e.target.value) } value={endDate} />
+            <DatePicker minDate={startDate} onChange={(e) => setEndDate(e.target.value) } value={endDate} />
           </Grid>
           <Grid container item xs={4} alignItems="center" >
-            <Controls.Button onClick={getData()} >
+            <Controls.Button onClick={() =>getData()} >
               Search
             </Controls.Button>
           </Grid>
@@ -219,7 +233,87 @@ const StatisticFiltersPost = (props) => {
         <Grid container>
           <Grid style={{ width: "100%" }}>
             <AdvancedBarChart
+              chartData={chartData}
               title={`Post Count / Date\n${getDateTime(new Date())}`}
+            />
+          </Grid>
+        </Grid>
+      </Controls.Paper>
+    </Grid>
+  );
+};
+
+// review counts
+const StatisticFiltersReview = (props) => {
+
+  const classes = useStyles();
+
+  const getDateAdded = (x, date=null) => {
+    let d = new Date();
+    if(date){
+      d = date;
+    }
+    d.setDate(d.getDate()+x)
+    return d;
+  }
+  const [startDate, setStartDate] = useState(getDateAdded(-14));
+  const [endDate, setEndDate] = useState(new Date);
+  const [chartData, setChartData] = useState([]);
+
+  const getDateString = (date) => {
+    let y = date.getUTCFullYear();
+    let m = `0${date.getMonth() +1}`.slice(-2);
+    let d = `0${ date.getDate() }`.slice(-2)
+
+    return `${y}-${m}-${d}`
+  }
+
+  const getData = async () => {
+    if(startDate && endDate){
+      let res = await getChartDataDB("r", getDateString(startDate), getDateString(endDate) );
+      console.log(res)
+      if(res){
+        let data  = []
+        for(var d in res){
+          let a = d.slice(-5);
+          let obj ={};
+          obj["date"] = a;
+          obj["count"] = res[d];
+          data = [...data,obj]
+          data = data.slice(-30)
+        }
+        setChartData(data);
+      }
+    }
+  }
+
+  useEffect(() => {
+    getDate();
+  }, [])
+
+  return (
+    <Grid container>
+      <Controls.Paper boxClassName={classes.paperBox}>
+        <Grid container style={{marginTop:20, marginBottom:20, paddingLeft:50}} alignItems="flex-end">
+          <Grid container item xs={4} alignItems="center" >
+            <Typography style={{padding:10}}  component="span">Start Date:</Typography>
+            <DatePicker maxDate={endDate} onChange={(e) => setStartDate(e.target.value) } value={ startDate} />
+          </Grid>
+          <Grid container item xs={4} alignItems="center" >
+            <Typography style={{padding:10}}  component="span">End Date:</Typography>
+            <DatePicker minDate={startDate} onChange={(e) => setEndDate(e.target.value) } value={endDate} />
+          </Grid>
+          <Grid container item xs={4} alignItems="center" >
+            <Controls.Button onClick={() =>getData()} >
+              Search
+            </Controls.Button>
+          </Grid>
+        </Grid>
+        <Grid container>
+          <Grid style={{ width: "100%" }}>
+            <AdvancedBarChart
+              chartData={chartData}
+              title={`Review Count / Date\n${getDateTime(new Date())}`}
             />
           </Grid>
         </Grid>
@@ -237,6 +331,9 @@ export default function SystemReport() {
       </Grid>
       <Grid container>
         <StatisticFiltersPost />
+      </Grid>
+      <Grid container>
+        <StatisticFiltersReview />
       </Grid>
     </>
   );
