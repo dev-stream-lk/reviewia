@@ -347,6 +347,33 @@ const Terms = () => {
         Other logos and product and company names mentioned herein may be the trademarks of their respective owners.
       </Typography>
 
+      <Typography
+        align="justify"
+        style={{
+          marginTop: "10px",
+          fontWeight: 400,
+          fontSize: 15,
+          marginBottom: 8,
+        }}
+      >
+        <Typography
+          align="left"
+          style={{
+            fontWeight: 600,
+            fontSize: 15,
+            marginBottom: 8,
+          }}
+        >
+          General
+        </Typography>
+        You agree that all claims you may have against Reviewia, Inc. arising from or relating to this Site must be heard and resolved in a court of competent subject matter jurisdiction. Use of this Site is unauthorized in any jurisdiction that does not give effect to all provisions of these Terms, including, without limitation, this paragraph.
+        You agree that no joint venture, agency, partnership, or employment relationship exists between you and Reviewia and/or affiliates as a result of these Terms or use of this Site.
+        Our performance under these Terms is subject to existing laws and legal process, and nothing contained in these Terms limits our right to comply with law enforcement or other governmental or legal requests or requirements relating to your use of this Site or information provided to, or gathered by, us with respect to such use. To the extent allowed by applicable law, you agree that you will bring any claim or cause of action arising from or relating to your access or use of this Site within two (2) years from the date on which such claim or action arose or accrued or such claim or cause of action will be irrevocably waived.
+        If any part of these Terms is determined to be invalid or unenforceable pursuant to applicable law including, but not limited to, the warranty disclaimers and liability limitations set forth above, then the invalid or unenforceable provision will be deemed superseded by a valid, enforceable provision that most closely matches the intent of the original provision and the remaining provisions in these Terms shall continue in effect.
+        These Terms (and any other terms, policies, guidelines, or agreements referenced herein) constitute the entire agreement between you and Reviewia with respect to this Site and supersede all prior or contemporaneous communications and proposals, whether electronic, oral, or written, between you and Reviewia with respect to this Site. A printed version of these Terms and of any notice given in electronic form shall be admissible in judicial or administrative proceedings based upon or relating to these Terms to the same extent and subject to the same conditions as other business documents and records originally generated and maintained in printed form.
+        Fictitious names of companies, products, people, characters, and/or data mentioned on this Site are not intended to represent any real individual, company, product, or event. Any rights not expressly granted herein are reserved.
+      </Typography>
+
     </Grid>
   );
 };
