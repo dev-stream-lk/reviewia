@@ -93,10 +93,12 @@ const GroupCard = (props) => {
               </Grid>
               <Divider orientation="vertical" />
               <CardContent>
-                <Grid item xs={12} lg={6}>
-                  <Typography variant="caption" display="block" gutterBottom>
-                    Created At :{getDateTime(groupData.createdAt)}
-                  </Typography>
+                <Grid item xs={12}>
+                  <Grid container>
+                    <Typography variant="caption" display="block" gutterBottom>
+                      Created At :{getDateTime(groupData.createdAt)}
+                    </Typography>
+                  </Grid>
                   <Typography
                     style={{ textAlign: "left" }}
                     variant="caption"

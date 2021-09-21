@@ -152,7 +152,8 @@ const SignIN = (props) => {
       });
       setShowError("");
       if(role === "ADMIN"){
-        history.push("/dashboard");  
+        history.push("/dashboard"); 
+        window.location.reload();
       }else{
         history.push("/");
         window.location.reload();

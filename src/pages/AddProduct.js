@@ -1060,7 +1060,7 @@ const Step3 = (props) => {
                                   Terms & Conditions{" "}
                                 </a>{" "}
                                 and refrain from adding any sort of
-                                inapprpriate, plagarized or invalid details.
+                                inappropriate, plagarized or invalid details.
                               </Typography>
                             </div>
                           </Grid>
