@@ -84,7 +84,7 @@ const print = async (chart) => {
 };
 
 const options = [
-  { key: 'Print', action: print, text: 'Print' },
+  // { key: 'Print', action: print, text: 'Print' },
   { key: 'JPEG', action: exportToJpeg, text: 'Save as JPEG' },
   { key: 'PNG', action: exportToPng, text: 'Save as PNG' },
   { key: 'PDF', action: exportToPdf, text: 'Save as PDF' },
@@ -254,22 +254,22 @@ export default class AdvancedBarChart extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-        data : [
-            { year: '1950', population: 2.525 },
-            { year: '1960', population: 3.018 },
-            { year: '1970', population: 3.682 },
-            { year: '1980', population: 4.440 },
-            { year: '1990', population: 5.310 },
-            { year: '2000', population: 6.127 },
-            { year: '2010', population: 6.930 },
-        ]
-    };
+    // this.state = {
+    //     data : [
+    //         { year: '1950', population: 2.525 },
+    //         { year: '1960', population: 3.018 },
+    //         { year: '1970', population: 3.682 },
+    //         { year: '1980', population: 4.440 },
+    //         { year: '1990', population: 5.310 },
+    //         { year: '2000', population: 6.127 },
+    //         { year: '2010', population: 6.930 },
+    //     ]
+    // };
   }
 
   render() {
-    const { data: chartData } = this.state;
-
+    const chartData = this.props.chartData;
+    console.log(chartData)
     return (
       <Paper id={rootContainerId}>
         <Chart
@@ -292,8 +292,8 @@ export default class AdvancedBarChart extends React.PureComponent {
 
           <BarSeries
             name={this.props.title}
-            valueField="population"
-            argumentField="year"
+            valueField="count"
+            argumentField="date"
             pointComponent={BarWithLabel}
           />
           <Stack />
