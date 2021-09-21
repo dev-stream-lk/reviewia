@@ -54,7 +54,7 @@ const AddNewSubCategory = (props) => {
       setError("");
       setSubCategoryName("");
     }else{
-      setError("New sub category creation failed.")
+      setError("New subcategory creation failed.")
     }
   };
 
@@ -81,7 +81,7 @@ const AddNewSubCategory = (props) => {
   return (
     <>
       <Controls.Popup
-        title="Create New Sub Category"
+        title="Create New Subcategory"
         openPopup={open}
         setOpenPopup={setOpen}
         actions={<Actions />}
@@ -98,7 +98,7 @@ const AddNewSubCategory = (props) => {
         <div className={classes.addCategory}>
           <Controls.Input
             name="name"
-            label="Sub Caregoty Name"
+            label="Sub Category Name"
             value={subCategoryName}
             onChange={(e) => setSubCategoryName(e.target.value)}
             required={true}

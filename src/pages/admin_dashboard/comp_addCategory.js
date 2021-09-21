@@ -103,7 +103,7 @@ const AddNewCategory = (props) => {
         <div className={classes.addCategory}>
           <Controls.Input
             name="name"
-            label="Caregoty Name"
+            label="Category Name"
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
             required={true}
