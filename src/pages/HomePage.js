@@ -397,17 +397,14 @@ export default function HomePage(props) {
                 component="div"
                 className={classes.headHeader}
               >
-                We are here to Help you
+                We are here to help you!
               </Typography>
               <Typography
                 variant="h6"
                 component="div"
                 className={classes.headSubHeader}
               >
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos
-                blanditiis tenetur unde suscipit, quam beatae rerum inventore
-                consectetur, neque doloribus, cupiditate numquam dignissimos
-                laborum fugiat deleniti?
+                We are here for you to support in making the best purchase choice ever
               </Typography>
             </Grid>
             <Grid item xs={12} md={6} lg={5} className={classes.headImage}>
@@ -468,17 +465,17 @@ export default function HomePage(props) {
         <Grid container style={{ padding: 10 }}>
           <Grid item xs={12} sm={8}>
             <Typography variant="h4" component="div">
-              Get Our Android and Iso App
+              Get Our Android App Now
             </Typography>
             <Typography
               variant="subtitle1"
               component="div"
               style={{ marginTop: 30 }}
             >
-              Now Our Mobile app available.
+              Now Our Reviewia Mobile App is Available For You!
             </Typography>
             <div className={classes.getOurAppImages}>
-              <img style={{ cursor: "pointer" }} src={AppleStore} />
+              {/* <img style={{ cursor: "pointer" }} src={AppleStore} /> */}
               <img style={{ cursor: "pointer" }} src={PlayStore} />
             </div>
           </Grid>
