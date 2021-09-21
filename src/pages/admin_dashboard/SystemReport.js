@@ -32,7 +32,6 @@ const StatisticCounts = (props) => {
     useEffect( async () => {
         setLoading(true);
         let res = await getStatCounts();
-        console.log(res)
         if(res){
             setCounts(res);
             setLoading(false);
@@ -192,7 +191,6 @@ const StatisticFiltersPost = (props) => {
   const getData = async () => {
     if(startDate && endDate){
       let res = await getChartDataDB("p", getDateString(startDate), getDateString(endDate) );
-      console.log(res)
       if(res){
         let data  = []
         for(var d in res){
@@ -271,7 +269,6 @@ const StatisticFiltersReview = (props) => {
   const getData = async () => {
     if(startDate && endDate){
       let res = await getChartDataDB("r", getDateString(startDate), getDateString(endDate) );
-      console.log(res)
       if(res){
         let data  = []
         for(var d in res){
