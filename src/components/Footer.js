@@ -67,7 +67,7 @@ export default function Footer() {
   return (
     <Grid container alignItems="center" id="footer" className={classes.footer}>
       <Grid item xs={12} md={4} className={classes.footerItemSection}>
-        <p>Copyrights all reserved by Reviewia</p>
+        <p>Copyrights all Reserved by Reviewia</p>
       </Grid>
       <Grid item xs={12} md={8}>
         <Grid container alignItems="center">
@@ -80,11 +80,11 @@ export default function Footer() {
           >
             <div style={{ display: "flex", alignItems: "center" }}>
               <PhoneAndroidIcon />
-              <span>+94912345678</span>
+              <span>+94 772345678</span>
             </div>
             <div style={{ display: "flex", alignItems: "center" }}>
               <EmailIcon />
-              <span>Damayanthidarha@gmail.com</span>
+              <span>info@reviewia.com</span>
             </div>
           </Grid>
           <Grid item xs={true}></Grid>
@@ -101,9 +101,9 @@ export default function Footer() {
               component={Link}
               to="/about"
             >
-              About
+              About Us
             </MuiLink>
-            <MuiLink className={classes.footerLink}>Contact US</MuiLink>
+            <MuiLink className={classes.footerLink}>Contact Us</MuiLink>
           </Grid>
           <Grid item className={classes.socialLinks}>
             <FacebookIcon />

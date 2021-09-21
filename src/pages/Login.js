@@ -620,7 +620,7 @@ export default function Login(props) {
                 style={{ marginTop: "20px", marginLeft: 40, fontWeight: 600 }}
                 component="div"
               >
-                We are happy to have you here
+                Join with Reviewia to make purchase decisions with confidence!
               </Typography>
             </Grid>
           </Grid>
