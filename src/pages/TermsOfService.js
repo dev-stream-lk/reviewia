@@ -374,6 +374,29 @@ const Terms = () => {
         Fictitious names of companies, products, people, characters, and/or data mentioned on this Site are not intended to represent any real individual, company, product, or event. Any rights not expressly granted herein are reserved.
       </Typography>
 
+      <Typography
+        align="justify"
+        style={{
+          marginTop: "10px",
+          fontWeight: 400,
+          fontSize: 15,
+          marginBottom: 8,
+        }}
+      >
+        <Typography
+          align="left"
+          style={{
+            fontWeight: 600,
+            fontSize: 15,
+            marginBottom: 8,
+          }}
+        >
+          Service Help
+        </Typography>
+        For answers to your questions or ways to contact us, email us at info@reviewia.com.
+        © Copyright 2021 Reviewia, Inc. All Rights Reserved
+      </Typography>
+      
     </Grid>
   );
 };
