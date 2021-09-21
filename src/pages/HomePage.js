@@ -150,10 +150,10 @@ const useStyles = makeStyles((theme) => ({
   homeSearch: {
     width: "100%",
   },
-  productCardImage:{
-    width:40,
-    height:40,
-    borderRadius:"50%"
+  productCardImage: {
+    width: 40,
+    height: 40,
+    borderRadius: "50%"
   }
 }));
 
@@ -241,16 +241,16 @@ const MostRecentCard = (props) => {
       >
         <Controls.Card className={classes.mostRecentCard}>
           <CardHeader
-            style={{width:"100%", height:80, textAlign:"left"}}
+            style={{ width: "100%", height: 80, textAlign: "left" }}
             title={post.title}
-            avatar={ post.avatarUrl ? (
+            avatar={post.avatarUrl ? (
               <img
                 title={`${post.createdBy}`}
                 alt=""
                 src={`${post.avatarUrl}`}
                 className={classes.productCardImage}
               />
-            ): (
+            ) : (
               <Skeleton
                 title={`${post.createdBy}`}
                 animation="wave"
@@ -258,18 +258,18 @@ const MostRecentCard = (props) => {
                 width={40}
                 height={40}
               />
-            ) }
+            )}
             subheader={getDate(post.createdAt)}
           ></CardHeader>
           <CardMedia title={post.title}>
-            <div style={{ width: 200, height: 200, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <div style={{ width: 200, height: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <img
                 style={{ maxWidth: 200, maxHeight: 200 }}
                 src={`${post.imgURL.length === 0 ? "" : post.imgURL[0].url}`}
               />
             </div>
           </CardMedia>
-          <CardContent style={{ width:"100%"}} >
+          <CardContent style={{ width: "100%" }} >
             <Rating
               name="phone"
               value={post.rate}
@@ -397,14 +397,14 @@ export default function HomePage(props) {
                 component="div"
                 className={classes.headHeader}
               >
-                We are here to help you!
+                Reviewia is where your purchase confidence begins.
               </Typography>
               <Typography
                 variant="h6"
                 component="div"
                 className={classes.headSubHeader}
               >
-                We are here for you to support in making the best purchase choice ever
+                You can choose the most suitable product or service of your liking based on authentic, timely reveiws and ratings from experienced users. Join the community of consumers and reviewers!
               </Typography>
             </Grid>
             <Grid item xs={12} md={6} lg={5} className={classes.headImage}>
