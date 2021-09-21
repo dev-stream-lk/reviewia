@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
@@ -25,6 +25,8 @@ import { useHistory } from "react-router-dom";
 import { PreLoader } from "./basic/PreLoader";
 import { getGroupData } from "../services/instantGroups";
 import { markAsRead } from "../services/notifications";
+import { UserContext } from "../context/UserContext";
+import { logout } from "../services/auth";
 
 const useStyles = makeStyles((theme) => ({
   headerFavIcon: {
@@ -78,15 +80,19 @@ export default function NotificationPanel(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [count, setCount] = useState(0);
-  const { userData } = props;
+  const { userData, setUserData } = useContext(UserContext);
   const [notifiList, setNotifiList] = useState([]);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
   const getCount = async () => {
     let res = await getNotificationCount(userData.email);
-    if (res) {
-      setCount(res);
+    if (res === 423) {
+      await logout(setUserData, history);
+    }else {
+      if(res){
+        setCount(res);
+      }
     }
   };
 

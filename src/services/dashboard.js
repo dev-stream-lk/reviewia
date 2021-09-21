@@ -64,7 +64,7 @@ export const deleteCategoryDB = (categoryId) => {
     }
   };
 
-  return fetch(HOST + `category?id=${categoryId}`, requestOptions)
+  return fetch(HOST + `admin/category/${categoryId}`, requestOptions)
     .then( (res) => {
       if (res.ok) {
         return true;
@@ -85,7 +85,7 @@ export const deleteSubCategoryDB = (subCategoryId) => {
     }
   };
 
-  return fetch(HOST + `subcategory?id=${subCategoryId}`, requestOptions)
+  return fetch(HOST + `admin/subcategory/${subCategoryId}`, requestOptions)
     .then( (res) => {
       if (res.ok) {
         return true;
@@ -99,14 +99,17 @@ export const deleteSubCategoryDB = (subCategoryId) => {
 export const editCategoryDB = (categoryId, newName) => {
   
   const requestOptions = {
-    method: "PUT",
+    "method": "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TOKEN}`,
-    }
+    },
+    body: JSON.stringify({
+      "categoryName":newName
+    })
   };
 
-  return fetch(HOST + `category?id=${categoryId}&set=${newName}`, requestOptions)
+  return fetch(HOST + `admin/category/${categoryId}`, requestOptions)
     .then( (res) => {
       if (res.ok) {
         return true;
@@ -124,10 +127,13 @@ export const editSubCategoryDB = (subCategoryId, newName) => {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TOKEN}`,
-    }
+    },
+    body: JSON.stringify({
+      subCategoryName:newName
+    })
   };
 
-  return fetch(HOST + `subcategory?id=${subCategoryId}&set=${newName}`, requestOptions)
+  return fetch(HOST + `admin/subcategory/${subCategoryId}`, requestOptions)
     .then( (res) => {
       if (res.ok) {
         return true;

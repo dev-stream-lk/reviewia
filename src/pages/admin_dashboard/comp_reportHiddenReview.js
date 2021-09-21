@@ -254,7 +254,7 @@ const ReportedPost = (props) => {
           avatar={
             postData.avatarUrl ? (
               <img
-                title={`${postData.title}`}
+                title={`${postData.createdBy}`}
                 alt=""
                 src={`${postData.avatarUrl}`}
                 className={classes.productCardImage}
@@ -454,26 +454,6 @@ const ReportedPost = (props) => {
                     No of Dislikes :
                   </Typography>
                   {reviewData.dislikeCount}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  style={{ display: "flex", flexDirection: "row" }}
-                >
-                  <Typography style={{ marginRight: 20 }}>
-                    sentimentRate :
-                  </Typography>
-                  {reviewData.sentimentRate}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  style={{ display: "flex", flexDirection: "row" }}
-                >
-                  <Typography style={{ marginRight: 20 }}>
-                    sentimentRate :
-                  </Typography>
-                  {reviewData.sentimentRate}
                 </Typography>
                 <Typography
                   variant="body2"

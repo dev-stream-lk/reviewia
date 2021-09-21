@@ -85,7 +85,7 @@ export const sendMessage = (data) => {
     }),
   };
 
-  return fetch(HOST + `user/chat?group=${group}&email=${email}`, requestOptions)
+  return fetch(HOST + `user/chat?email=${email}&group=${group}`, requestOptions)
     .then(async (res) => {
       if (res.ok) {
         return await res.json();

@@ -17,6 +17,8 @@ export const getNotificationCount = (email) => {
     .then(async (res) => {
       if (res.ok) {
         return await res.json();
+      }else if(res.status === 423){
+        return 423;
       }
       return false;
     })

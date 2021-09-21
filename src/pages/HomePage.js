@@ -33,6 +33,7 @@ import NotFoundImage from "../assets/not-found.svg";
 import { PreLoader } from "../components/basic/PreLoader";
 import { Autocomplete, Skeleton } from "@material-ui/lab";
 import { getPostBySearch } from "../services/posts";
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
 const useStyles = makeStyles((theme) => ({
   headSection: {
@@ -148,7 +149,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "150px",
   },
   homeSearch: {
-    width: "100%",
+    width: "100%"
   },
   productCardImage: {
     width: 40,
@@ -406,6 +407,9 @@ export default function HomePage(props) {
               >
                 You can choose the most suitable product or service of your liking based on authentic, timely reveiws and ratings from experienced users. Join the community of consumers and reviewers!
               </Typography>
+              <Controls.Button to="/products" component={Link} color="primary">
+                Start Reviewing <ArrowRightIcon />
+              </Controls.Button>
             </Grid>
             <Grid item xs={12} md={6} lg={5} className={classes.headImage}>
               <img src={HeadImage} />

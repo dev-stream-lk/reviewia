@@ -213,7 +213,7 @@ export default function Header(props) {
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const openCategoty = Boolean(categoryAnchorEl);
   const res = useContext(CatContext);
-
+  console.log(userData)
   useEffect(() => {
     if (res) {
       setCategories(res);
@@ -317,15 +317,18 @@ export default function Header(props) {
                 }}
               />
             </Controls.ActionButton>
-            {userData.true ? (
-              <Controls.ActionButton
-                textColor="white"
-                component={Link}
-                to={{ pathname: "/product/add" }}
-              >
-                <AddIcon /> New Post
-              </Controls.ActionButton>
-            ) : null}
+            <Controls.ActionButton
+              textColor="white"
+              component={Link}
+              to={{ pathname: userData && userData.isLoggedIn ? "/product/add" : "/login" }}
+            >
+              <Grid container alignItems="center">
+                <AddIcon style={{fontSize:20}} />
+                <Typography variant="subtitle2" style={{fontSize:14}} >
+                  New Post
+                </Typography>
+              </Grid>
+            </Controls.ActionButton>
 
             <Menu
               id="categoryMenu"
